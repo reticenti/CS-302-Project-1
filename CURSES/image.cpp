@@ -146,12 +146,10 @@ int ImageType::meanGray() const
 
 void ImageType::enlargeImage( int s, const ImageType& old )
 {
-
 }
 
 void ImageType::reflectImage( bool flag, const ImageType& old )
 {
-
 }
 
 ImageType& ImageType::operator- ( const ImageType& rhs )
@@ -161,7 +159,6 @@ ImageType& ImageType::operator- ( const ImageType& rhs )
 
 void ImageType::negateImage()
 {
-
 }
 
 /******************Josiah's functions*********************/
