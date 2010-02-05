@@ -191,7 +191,16 @@ void ImageType::shrinkImage( int s, const ImageType& old )
 
 void ImageType::translateImage( int t, const ImageType& old )
 {
-
+	//find the bottom corner
+	//go up s pixels
+	//go left s pixels
+	//cp current to i+t, j+t
+	for(int i = M - 1; i >= 0; i--)
+		for(int j = N - 1; i >= 0; i--){
+			pixelValue[i][j] = pixelValue[i - t][j - t];
+			//make old = 0
+			pixelValue[i - t][j - t] = 0;
+		}
 }
 
 void ImageType::rotateImage( int theta, const ImageType& old )
