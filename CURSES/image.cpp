@@ -195,8 +195,8 @@ void ImageType::translateImage( int t, const ImageType& old )
 	//go up s pixels
 	//go left s pixels
 	//cp current to i+t, j+t
-	for(int i = M - 1; i >= 0; i--)
-		for(int j = N - 1; i >= 0; i--){
+	for(int i = N - 1; i >= 0 + t; i--)
+		for(int j = M - 1; j >= 0 + t; j--){
 			pixelValue[i][j] = pixelValue[i - t][j - t];
 			//make old = 0
 			pixelValue[i - t][j - t] = 0;
