@@ -169,37 +169,22 @@ void ImageType::negateImage()
 void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc, const ImageType& old )
 {
 	int width, height;
-	int **subimg;
 	//get x width
-	width = abs(ULr - LRr);
+	height = abs(ULr - LRr);
 	
 	//get y height
-	height = abs(ULc - LRc);
-
-	//set the new info
-	N = height;
-	M = width;
-	Q = old.Q;
-
+	width = abs(ULc - LRc);
 
 	//make a new array for the exact size of the new subimage
-	*subimg = new int[height];
-	for(int i = 0; i < height; i++){
-		subimg[i] = new int[width]; 
-	}
+	setImageInfo(height, width, old.Q);
+	
 
 	//copy over the old stuff into the new subimage array
-	for(int i = 0; i < height; i++){
-		for(int j = 0; j < width; j++){
-			subimg[i][j] = old.pixelValue[i][j];
+	for(int i = 0; i < N; i++){
+		for(int j = 0; j < M; j++){
+			pixelValue[i][j] = old.pixelValue[ULr + i][ULc + j];
 		}
 	}
-
-	//once I'm done, return this.
-	//I use it dereferenced because it is a double pointer
-//	return *this;
-
-
 }
 
 void ImageType::shrinkImage( int s, const ImageType& old )
@@ -229,7 +214,8 @@ ImageType& ImageType::operator+ ( const ImageType& rhs )
 	for(int i = 0; i < N; i++){
 		for(int j = 0; j < M; j++){
 			//I don't know yet if I need to type cast it, I dont think so
-			//(float)this[i][j]*a + (1.0 - a)*(float)rhs[i][j];
+			//(float)pixelValue[i][j]*a + (1.0 - a)*(float)rhs[i][j];
+			//It turns out that c++ is smart enough to type cast for me
 			pixelValue[i][j] = pixelValue[i][j]*a + (1.0 - a)*rhs.pixelValue[i][j];
 		}
 	}
