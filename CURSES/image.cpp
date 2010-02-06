@@ -148,7 +148,7 @@ int ImageType::meanGray() const
 
 void ImageType::enlargeImage( int s, const ImageType& old )
 {
-	if ( INTERPL )
+	if ( !INTERPL )
 	{
 		setImageInfo( old.N * s, old.M * s, old.Q );
 		for ( int i = 0; i < N; i++ )
