@@ -191,13 +191,17 @@ void ImageType::shrinkImage( int s, const ImageType& old )
 
 void ImageType::translateImage( int t, const ImageType& old )
 {
+
+	//make this image's image array
+	setImageInfo(old.N, old.M, old.Q);
+
 	//find the bottom corner
 	//go up s pixels
 	//go left s pixels
 	//cp current to i+t, j+t
 	for(int i = N - 1; i >= 0 + t; i--)
 		for(int j = M - 1; j >= 0 + t; j--){
-			pixelValue[i][j] = pixelValue[i - t][j - t];
+			pixelValue[i][j] = old.pixelValue[i - t][j - t];
 			//make old = 0
 			pixelValue[i - t][j - t] = 0;
 		}
