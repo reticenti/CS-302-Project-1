@@ -336,7 +336,23 @@ void ImageType::negateImage()
 
 void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc, const ImageType& old )
 {
-
+	int width, height;
+	//get x width
+	height = abs(ULr - LRr);
+ 
+	//get y height
+	width = abs(ULc - LRc);
+ 
+	//make a new array for the exact size of the new subimage
+	setImageInfo(height, width, old.Q);
+ 
+ 
+	//copy over the old stuff into the new subimage array
+	for(int i = 0; i < N; i++){
+		for(int j = 0; j < M; j++){
+			pixelValue[i][j] = old.pixelValue[ULr + i][ULc + j];
+		}
+	}
 }
 
 void ImageType::shrinkImage( int s, const ImageType& old )
@@ -369,6 +385,23 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 
 ImageType& ImageType::operator+ ( const ImageType& rhs )
 {
+
+//this is the value that determines the weight of each image
+	//large a gives more weight to first image
+	//small a gives more weight to second image
+	//a must be 0 >= a <= 1
+	float a = 0.5;
+ 
+	//the general formula is aI1(r,c)+(1-a)I2(r,c)
+	for(int i = 0; i < N; i++){
+		for(int j = 0; j < M; j++){
+			//I don't know yet if I need to type cast it, I dont think so
+			//(float)pixelValue[i][j]*a + (1.0 - a)*(float)rhs[i][j];
+			//It turns out that c++ is smart enough to type cast for me
+			pixelValue[i][j] = pixelValue[i][j]*a + (1.0 - a)*rhs.pixelValue[i][j];
+		}
+	}
+ 
 	return *this;	// temp return value
 }
 
