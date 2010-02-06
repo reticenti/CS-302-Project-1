@@ -15,7 +15,7 @@ public:
 	// returns the value of the spline
 	double getVal( double );
 	double getCubicVal( double );
-//private:
+private:
 	double *coef_0;
 	double *coef_1;
 	double *a;

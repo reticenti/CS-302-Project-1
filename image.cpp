@@ -10,6 +10,11 @@ using namespace std;
 const bool INTERPL = false;	// use interpolation to enlarge
 const bool CUBIC   = true;	// only valid if INTERPL is true
 
+/*****************************************************************************\
+\*****************************************************************************/
+/*****************************************************************************\
+ default constructor allocates no memory and sets the size to zero 
+\*****************************************************************************/
 ImageType::ImageType()
 {
 	N = 0;
@@ -19,6 +24,9 @@ ImageType::ImageType()
 	pixelValue = NULL;
 }
 
+/*****************************************************************************\
+ destructor wipes any memory that was dynamically allocated
+\*****************************************************************************/
 ImageType::~ImageType()
 {
 	int i;
@@ -30,6 +38,9 @@ ImageType::~ImageType()
 	}
 }
 
+/*****************************************************************************\
+ change the dimensions of the image, delete and re-allocate memory if required
+\*****************************************************************************/
 ImageType::ImageType(int tmpN, int tmpM, int tmpQ)
 {
 	int i, j;
@@ -48,6 +59,8 @@ ImageType::ImageType(int tmpN, int tmpM, int tmpQ)
  	}
 }
 
+/*****************************************************************************\
+\*****************************************************************************/
 ImageType::ImageType( const ImageType& rhs )
 {
 	int i, j;
@@ -64,6 +77,8 @@ ImageType::ImageType( const ImageType& rhs )
 	}
 }
 
+/*****************************************************************************\
+\*****************************************************************************/
 ImageType& ImageType::operator= ( const ImageType& rhs )
 {
 	int i, j;
@@ -90,6 +105,8 @@ ImageType& ImageType::operator= ( const ImageType& rhs )
 	return *this;
 }
 
+/*****************************************************************************\
+\*****************************************************************************/
 void ImageType::getImageInfo(int& rows, int& cols, int& levels) const
 {
 	rows = N;
@@ -97,6 +114,8 @@ void ImageType::getImageInfo(int& rows, int& cols, int& levels) const
 	levels = Q;
 } 
 
+/*****************************************************************************\
+\*****************************************************************************/
 void ImageType::setImageInfo(int rows, int cols, int levels)
 {
 	int i, j;
@@ -129,39 +148,58 @@ void ImageType::setImageInfo(int rows, int cols, int levels)
 	Q = levels;
 }
 
+/*****************************************************************************\
+\*****************************************************************************/
 void ImageType::setPixelVal(int i, int j, int val)
 {
 	pixelValue[i][j] = val;
 }
 
+/*****************************************************************************\
+\*****************************************************************************/
 int ImageType::getPixelVal(int i, int j) const
 {
 	return pixelValue[i][j];
 }
 
-/*******************Josh's functions**********************/
+/****************************Josh's functions**********************************/
 
+
+/*****************************************************************************\
+\*****************************************************************************/
 int ImageType::meanGray() const
 {
 	return 0;
 }
 
+/*enlargeImage*****************************************************************\
+ This function enlarges an image by a magnitude of s, so for example if the
+ original function was 100x100 and s is 10, then the new image is 1000x1000
+
+ The method I choose to use was bicubic interpolation which creates cubic
+ splines for each row and column, the splines are then used to approximate the
+ value of the pixels on the larger image.  This is possible because the spline
+ function is a continuous function and is therefore defined at every point.
+\******************************************************************************/
 void ImageType::enlargeImage( int s, const ImageType& old )
 {
+	// if the INTERPL flag is set to false do nearest neighbour enlargement
 	if ( !INTERPL )
 	{
+		// reset image info
 		setImageInfo( old.N * s, old.M * s, old.Q );
+
+		// go through each pixel copying the closest pixel on the old image
 		for ( int i = 0; i < N; i++ )
 			for ( int j = 0; j < M; j++ )
 				pixelValue[i][j] = old.pixelValue[i/s][j/s];
 	}
 	else
 	{
-
+		cubicSpline row, col;
 		int minOld, maxOld, diag, index;
 		int *rows = new int[old.M];
 		int *cols = new int[old.N];
-		cubicSpline row, col;
 		int offR, offC;
 
 		setImageInfo( old.N * s, old.M * s, old.Q );
@@ -178,7 +216,7 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 			maxOld = old.N;
 		}
 
-		// counts diagonally
+		// counts diagonally from one corner to the other
 		for ( diag = 0; diag < minOld; diag++ )
 		{	
 			// fills the column array
@@ -189,23 +227,32 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 			for ( index = 0; index < old.M; index++ )
 				rows[index] = old.pixelValue[diag][index];
 
+			// calculate the cubic spline functions for the current row and column
 			( CUBIC ? row.createCubic( rows, old.M ) : row.create( rows, old.M ) );
 			( CUBIC ? col.createCubic( cols, old.N ) : col.create( cols, old.N ) );
 
+			/* this counts through the rows of the new image setting their values
+			   according to the spline functions */
 			for ( int r = 0; r < N; r++ )
 			{
+				/* this offset makes the pixel on the new image centered rather then pressed up
+				   against the upper left corner like they want to be */
 				offR = r-s/2;
+				
+				// evaluate the value of the pixel here
 				if ( CUBIC )
 					pixelValue[r][diag*s+s/2] = (int)col.getCubicVal( (double)offR/(N-s+1) * 100.0 );
 				else
 					pixelValue[r][diag*s+s/2] = (int)col.getVal( (double)offR/(N-s+1) * 100.0 );
 
-				if ( pixelValue[r][diag*s+s/2] > 255 )
-					pixelValue[r][diag*s+s/2] = 255;
+				// clip the pixel value if it goes out of bounds
+				if ( pixelValue[r][diag*s+s/2] > Q )
+					pixelValue[r][diag*s+s/2] = Q;
 				if ( pixelValue[r][diag*s+s/2] < 0 )
 					pixelValue[r][diag*s+s/2] = 0;
 			}
-
+			
+			// same as previous loop except counts through the columns
 			for ( int c = 0; c < M; c++ )
 			{
 				offC = c-s/2;
@@ -214,14 +261,16 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 				else
 					pixelValue[diag*s+s/2][c] = (int)row.getVal( (double)offC/(M-s+1) * 100.0 );
 
-				if ( pixelValue[diag*s+s/2][c] > 255 )
-					pixelValue[diag*s+s/2][c] = 255;
+				if ( pixelValue[diag*s+s/2][c] > Q )
+					pixelValue[diag*s+s/2][c] = Q;
 				if ( pixelValue[diag*s+s/2][c] < 0 )
 					pixelValue[diag*s+s/2][c] = 0;
 			}
 		}
 
-		// fills in the longer right/left sides
+		/* if the image isn't square finish filling the grid on the longer side
+		   these are the same as the previous loops except they only do rows or
+		   columns depending on the value of minOld and maxOld */
 		if ( minOld != maxOld && maxOld == old.M )
 			for ( diag = minOld; diag < maxOld; diag++ )
 			{
@@ -238,8 +287,8 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 					else
 						pixelValue[r][diag*s+s/2] = (int)col.getVal( (double)offR/(N-s+1) * 100.0 );
 
-					if ( pixelValue[r][diag*s+s/2] > 255 )
-						pixelValue[r][diag*s+s/2] = 255;
+					if ( pixelValue[r][diag*s+s/2] > Q )
+						pixelValue[r][diag*s+s/2] = Q;
 					if ( pixelValue[r][diag*s+s/2] < 0 )
 						pixelValue[r][diag*s+s/2] = 0;
 				}	
@@ -260,20 +309,30 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 					else
 						pixelValue[diag*s+s/2][c] = (int)row.getVal( (double)offC/(M-s+1) * 100.0 );
 
-					if ( pixelValue[diag*s+s/2][c] > 255 )
-						pixelValue[diag*s+s/2][c] = 255;
+					if ( pixelValue[diag*s+s/2][c] > Q )
+						pixelValue[diag*s+s/2][c] = Q;
 					if ( pixelValue[diag*s+s/2][c] < 0 )
 						pixelValue[diag*s+s/2][c] = 0;
 				}
 			}
 
+		/* At this point in the function the image is just a grid of lines calculated
+		   using the spline functions, everything else is black space, the old image
+		   pixel values will no longer be needed as everything is now based on the
+		   approximations between the known pixels */
+
+		/* this counts vertically and fills in the rest of the picture based on
+		   values of the gridlines */
 		for ( diag = 0; diag < N; diag++ )
 		{
+			// obtain the values of grid lines from the current image
 			for ( index = 0; index < old.M; index++ )
 				rows[index] = pixelValue[diag][index*s+s/2];
 
+			// create the spline function for the current row
 			( CUBIC ? row.createCubic( rows, old.M ) : row.create( rows, old.M ) );
 
+			// count through the columns calculating the values between every point
 			for ( int c = 0; c < M; c++ )
 			{
 				offC = c-s/2;
@@ -282,13 +341,16 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 				else
 					pixelValue[diag][c] = (int)row.getVal( (double)offC/(M-s+1) * 100.0 );
 
-				if ( pixelValue[diag][c] > 255 )
-					pixelValue[diag][c] = 255;
+				if ( pixelValue[diag][c] > Q )
+					pixelValue[diag][c] = Q;
 				if ( pixelValue[diag][c] < 0 )
 					pixelValue[diag][c] = 0;
 			}
 		}
 
+		/* at this point the image is actually filled completely but this takes
+		   the average of the values calculated from the horizonal approximation
+		   in the above loop and this loop which is a vertical approximation */
 		for ( diag = 0; diag < M; diag++ )
 		{
 			for ( index = 0; index < old.N; index++ )
@@ -303,36 +365,50 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 					pixelValue[r][diag] += (int)col.getCubicVal( (double)offR/(N-s+1) * 100.0 );
 				else
 					pixelValue[r][diag] += (int)col.getVal( (double)offR/(N-s+1) * 100.0 );
+
+				/* this is the line that takes the average of the pixel value
+				   that was just calculated */
 				pixelValue[r][diag] /= 2;
 
-				if ( pixelValue[r][diag] > 255 )
-					pixelValue[r][diag] = 255;
+				if ( pixelValue[r][diag] > Q )
+					pixelValue[r][diag] = Q;
 				if ( pixelValue[r][diag] < 0 )
 					pixelValue[r][diag] = 0;
 			}
 		} 
 		
+		// de-allocate the memory for the temporary arrays
 		delete [] rows;
 		delete [] cols;
 	}
 }
 
+/******************************************************************************\
+\******************************************************************************/
 void ImageType::reflectImage( bool flag, const ImageType& old )
 {
-
+	setImageInfo( old.N, old.M, old.Q );
+	
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
+			pixelValue[i][j] = ( flag ? old.pixelValue[i][M-j-1] : old.pixelValue[N-i-1][j] );
 }
 
+/******************************************************************************\
+\******************************************************************************/
 ImageType& ImageType::operator- ( const ImageType& rhs )
 {
 	return *this;	// temp return value
 }
 
+/******************************************************************************\
+\******************************************************************************/
 void ImageType::negateImage()
 {
 
 }
 
-/******************Josiah's functions*********************/
+/*****************************Josiah's functions*******************************/
 
 void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc, const ImageType& old )
 {
