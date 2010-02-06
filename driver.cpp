@@ -624,9 +624,10 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index, x, y;
-	int N, M, Q, s;
+	int N, M, Q;
 	int maxS;
 	string msg;
+	double s;
 
 	ImageType temp;
 
@@ -645,9 +646,9 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		x+=2;
 		y+=2;
 
-		s = promptForIntAt( x, y, "Enter enlargement multiplier(-1 to cancel): " );
+		s = promptForDoubleAt( x, y, "Enter enlargement multiplier(-1 to cancel): " );
 
-		while ( ( s < 2 || s > maxS ) && s != -1 )
+		while ( ( s <= 0 || s > maxS ) && s != -1 )
 		{
 			x = screenWidth() / 2 - 30;
 			y = screenHeight() / 2 - 3;
@@ -673,7 +674,7 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			x+=2;
 			y+=2;
 
-			s = promptForIntAt( x, y, "Enter enlargement multiplier(-1 to cancel): " );
+			s = promptForDoubleAt( x, y, "Enter enlargement multiplier(-1 to cancel): " );
 		}
 
 		if ( s > -1 )

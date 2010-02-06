@@ -7,7 +7,7 @@ using namespace std;
 
 #include "image.h"
 
-const bool INTERPL = false;	// use interpolation to enlarge
+const bool INTERPL = true;	// use interpolation to enlarge
 const bool CUBIC   = true;	// only valid if INTERPL is true
 
 /*****************************************************************************\
@@ -187,8 +187,10 @@ double ImageType::meanGray() const
  value of the pixels on the larger image.  This is possible because the spline
  function is a continuous function and is therefore defined at every point.
 \******************************************************************************/
-void ImageType::enlargeImage( int s, const ImageType& old )
+void ImageType::enlargeImage( double S, const ImageType& old )
 {
+	int s = S;
+
 	// if the INTERPL flag is set to false do nearest neighbour enlargement
 	if ( !INTERPL )
 	{
@@ -206,9 +208,11 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 		int minOld, maxOld, diag, index;
 		int *rows = new int[old.M];
 		int *cols = new int[old.N];
-		int offR, offC;
+		double offR, offC;
 
-		setImageInfo( old.N * s, old.M * s, old.Q );
+		setImageInfo( old.N * S, old.M * S, old.Q );
+
+		std::cout << N << '\n' << M << '\n';
 		
 		// find the lesser of M and N
 		if ( old.M > old.N )
@@ -243,34 +247,34 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 			{
 				/* this offset makes the pixel on the new image centered rather then pressed up
 				   against the upper left corner like they want to be */
-				offR = r-s/2;
+				offR = r-S/2;
 				
 				// evaluate the value of the pixel here
 				if ( CUBIC )
-					pixelValue[r][diag*s+s/2] = (int)col.getCubicVal( (double)offR/(N-s+1) * 100.0 );
+					pixelValue[r][(int)(diag*S+s/2)] = (int)col.getCubicVal( (double)offR/(N-S+1) * 100.0 );
 				else
-					pixelValue[r][diag*s+s/2] = (int)col.getVal( (double)offR/(N-s+1) * 100.0 );
+					pixelValue[r][(int)(diag*S+s/2)] = (int)col.getVal( (double)offR/(N-S+1) * 100.0 );
 
 				// clip the pixel value if it goes out of bounds
-				if ( pixelValue[r][diag*s+s/2] > Q )
-					pixelValue[r][diag*s+s/2] = Q;
-				if ( pixelValue[r][diag*s+s/2] < 0 )
-					pixelValue[r][diag*s+s/2] = 0;
+				if ( pixelValue[r][(int)(diag*S+s/2)] > Q )
+					pixelValue[r][(int)(diag*S+s/2)] = Q;
+				if ( pixelValue[r][(int)(diag*S+s/2)] < 0 )
+					pixelValue[r][(int)(diag*S+s/2)] = 0;
 			}
 			
 			// same as previous loop except counts through the columns
 			for ( int c = 0; c < M; c++ )
 			{
-				offC = c-s/2;
+				offC = c-S/2;
 				if ( CUBIC )
-					pixelValue[diag*s+s/2][c] = (int)row.getCubicVal( (double)offC/(M-s+1) * 100.0 );
+					pixelValue[(int)(diag*S+s/2)][c] = (int)row.getCubicVal( (double)offC/(M-S+1) * 100.0 );
 				else
-					pixelValue[diag*s+s/2][c] = (int)row.getVal( (double)offC/(M-s+1) * 100.0 );
+					pixelValue[(int)(diag*S+s/2)][c] = (int)row.getVal( (double)offC/(M-S+1) * 100.0 );
 
-				if ( pixelValue[diag*s+s/2][c] > Q )
-					pixelValue[diag*s+s/2][c] = Q;
-				if ( pixelValue[diag*s+s/2][c] < 0 )
-					pixelValue[diag*s+s/2][c] = 0;
+				if ( pixelValue[(int)(diag*S+s/2)][c] > Q )
+					pixelValue[(int)(diag*S+s/2)][c] = Q;
+				if ( pixelValue[(int)(diag*S+s/2)][c] < 0 )
+					pixelValue[(int)(diag*S+s/2)][c] = 0;
 			}
 		}
 
@@ -287,16 +291,16 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 
 				for ( int r = 0; r < N; r++ )
 				{
-					offR = r-s/2;
+					offR = r-S/2;
 					if ( CUBIC )
-						pixelValue[r][diag*s+s/2] = (int)col.getCubicVal( (double)offR/(N-s+1) * 100.0 );
+						pixelValue[r][(int)(diag*S+s/2)] = (int)col.getCubicVal( (double)offR/(N-S+1) * 100.0 );
 					else
-						pixelValue[r][diag*s+s/2] = (int)col.getVal( (double)offR/(N-s+1) * 100.0 );
+						pixelValue[r][(int)(diag*S+s/2)] = (int)col.getVal( (double)offR/(N-S+1) * 100.0 );
 
-					if ( pixelValue[r][diag*s+s/2] > Q )
-						pixelValue[r][diag*s+s/2] = Q;
-					if ( pixelValue[r][diag*s+s/2] < 0 )
-						pixelValue[r][diag*s+s/2] = 0;
+					if ( pixelValue[r][(int)(diag*S+s/2)] > Q )
+						pixelValue[r][(int)(diag*S+s/2)] = Q;
+					if ( pixelValue[r][(int)(diag*S+s/2)] < 0 )
+						pixelValue[r][(int)(diag*S+s/2)] = 0;
 				}	
 			}
 		else if ( minOld != maxOld && maxOld == old.N )
@@ -309,16 +313,16 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 
 				for ( int c = 0; c < M; c++ )
 				{
-					offC = c-s/2;
+					offC = c-S/2;
 					if ( CUBIC )
-						pixelValue[diag*s+s/2][c] = (int)row.getCubicVal( (double)offC/(M-s+1) * 100.0 );
+						pixelValue[(int)(diag*S+s/2)][c] = (int)row.getCubicVal( (double)offC/(M-S+1) * 100.0 );
 					else
-						pixelValue[diag*s+s/2][c] = (int)row.getVal( (double)offC/(M-s+1) * 100.0 );
+						pixelValue[(int)(diag*S+s/2)][c] = (int)row.getVal( (double)offC/(M-S+1) * 100.0 );
 
-					if ( pixelValue[diag*s+s/2][c] > Q )
-						pixelValue[diag*s+s/2][c] = Q;
-					if ( pixelValue[diag*s+s/2][c] < 0 )
-						pixelValue[diag*s+s/2][c] = 0;
+					if ( pixelValue[(int)(diag*S+s/2)][c] > Q )
+						pixelValue[(int)(diag*S+s/2)][c] = Q;
+					if ( pixelValue[(int)(diag*S+s/2)][c] < 0 )
+						pixelValue[(int)(diag*S+s/2)][c] = 0;
 				}
 			}
 
@@ -333,7 +337,7 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 		{
 			// obtain the values of grid lines from the current image
 			for ( index = 0; index < old.M; index++ )
-				rows[index] = pixelValue[diag][index*s+s/2];
+				rows[index] = pixelValue[diag][(int)(index*S+s/2)];
 
 			// create the spline function for the current row
 			( CUBIC ? row.createCubic( rows, old.M ) : row.create( rows, old.M ) );
@@ -341,11 +345,11 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 			// count through the columns calculating the values between every point
 			for ( int c = 0; c < M; c++ )
 			{
-				offC = c-s/2;
+				offC = c-S/2;
 				if ( CUBIC )
-					pixelValue[diag][c] = (int)row.getCubicVal( (double)offC/(M-s+1) * 100.0 );
+					pixelValue[diag][c] = (int)row.getCubicVal( (double)offC/(M-S+1) * 100.0 );
 				else
-					pixelValue[diag][c] = (int)row.getVal( (double)offC/(M-s+1) * 100.0 );
+					pixelValue[diag][c] = (int)row.getVal( (double)offC/(M-S+1) * 100.0 );
 
 				if ( pixelValue[diag][c] > Q )
 					pixelValue[diag][c] = Q;
@@ -357,20 +361,21 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 		/* at this point the image is actually filled completely but this takes
 		   the average of the values calculated from the horizonal approximation
 		   in the above loop and this loop which is a vertical approximation */
+
 		for ( diag = 0; diag < M; diag++ )
 		{
 			for ( index = 0; index < old.N; index++ )
-				cols[index] = pixelValue[index*s+s/2][diag];
+				cols[index] = pixelValue[(int)(index*S+s/2)][diag];
 
 			( CUBIC ? col.createCubic( cols, old.N ) : col.create( cols, old.N ) );
 
 			for ( int r = 0; r < N; r++ )
 			{
-				offR = r-s/2;
+				offR = r-S/2;
 				if ( CUBIC )
-					pixelValue[r][diag] += (int)col.getCubicVal( (double)offR/(N-s+1) * 100.0 );
+					pixelValue[r][diag] += (int)col.getCubicVal( (double)offR/(N-S+1) * 100.0 );
 				else
-					pixelValue[r][diag] += (int)col.getVal( (double)offR/(N-s+1) * 100.0 );
+					pixelValue[r][diag] += (int)col.getVal( (double)offR/(N-S+1) * 100.0 );
 
 				/* this is the line that takes the average of the pixel value
 				   that was just calculated */
@@ -381,7 +386,7 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 				if ( pixelValue[r][diag] < 0 )
 					pixelValue[r][diag] = 0;
 			}
-		} 
+		}
 		
 		// de-allocate the memory for the temporary arrays
 		delete [] rows;
