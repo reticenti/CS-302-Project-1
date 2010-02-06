@@ -11,8 +11,6 @@ const bool INTERPL = false;	// use interpolation to enlarge
 const bool CUBIC   = true;	// only valid if INTERPL is true
 
 /*****************************************************************************\
-\*****************************************************************************/
-/*****************************************************************************\
  default constructor allocates no memory and sets the size to zero 
 \*****************************************************************************/
 ImageType::ImageType()
@@ -166,10 +164,18 @@ int ImageType::getPixelVal(int i, int j) const
 
 
 /*****************************************************************************\
+ this calculates the average gray value in the picture, this is done by adding
+ all of the pixels and dividing by the total number of pixels
 \*****************************************************************************/
-int ImageType::meanGray() const
+double ImageType::meanGray() const
 {
-	return 0;
+	double gray = 0;
+
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
+			gray += pixelValue[i][j];
+
+	return ( M*N != 0 ? gray/(M*N) : 0 );
 }
 
 /*enlargeImage*****************************************************************\
@@ -384,6 +390,9 @@ void ImageType::enlargeImage( int s, const ImageType& old )
 }
 
 /******************************************************************************\
+ reflects image by moving the pixel to N or M minus the current row or column
+ depending on the value of the flag (true being a horizontal reflection and
+ false being a vertical reflection)
 \******************************************************************************/
 void ImageType::reflectImage( bool flag, const ImageType& old )
 {
@@ -395,17 +404,33 @@ void ImageType::reflectImage( bool flag, const ImageType& old )
 }
 
 /******************************************************************************\
+ subtract two images from eachother to see the differences, if the magnitude of
+ the difference is less then Q/10 then the pixel is replaced with black,
+ otherwise white is used.
 \******************************************************************************/
 ImageType& ImageType::operator- ( const ImageType& rhs )
 {
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
+		{
+			pixelValue[i][j] = abs(pixelValue[i][j] - rhs.pixelValue[i][j]);
+			if ( pixelValue[i][j] < Q/10 )
+				pixelValue[i][j] = 0;
+			else
+				pixelValue[i][j] = Q;
+		}
 	return *this;	// temp return value
 }
 
 /******************************************************************************\
+ This function simply subtracts the current pixel value from the max value of
+ the pixel, thus negating the image
 \******************************************************************************/
 void ImageType::negateImage()
 {
-
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
+			pixelValue[i][j] = Q - pixelValue[i][j];
 }
 
 /*****************************Josiah's functions*******************************/

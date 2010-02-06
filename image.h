@@ -27,7 +27,7 @@ class ImageType {
 
 	// Josh's functions
 
-	int meanGray() const;
+	double meanGray() const;
 	void enlargeImage( int, const ImageType& );
 	void reflectImage( bool, const ImageType& );
 	ImageType& operator- ( const ImageType& );
