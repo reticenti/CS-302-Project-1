@@ -7,7 +7,7 @@ using namespace std;
 
 #include "image.h"
 
-const bool INTERPL = true;	// use interpolation to enlarge
+const bool INTERPL = false;	// use interpolation to enlarge
 const bool CUBIC   = true;	// only valid if INTERPL is true
 
 ImageType::ImageType()
