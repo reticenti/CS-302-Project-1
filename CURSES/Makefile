@@ -1,5 +1,8 @@
-main.out: driver.cpp ReadImage.o ReadImageHeader.o WriteImage.o image.h image.o curses_io_V13.h
-	g++ -lncurses -g -o main.out image.o ReadImage.o ReadImageHeader.o WriteImage.o driver.cpp
+main.out: driver.cpp ReadImage.o ReadImageHeader.o WriteImage.o image.h image.o cubicSpline.o curses_io_V13.h
+	g++ -lncurses -g -o main.out image.o ReadImage.o ReadImageHeader.o WriteImage.o cubicSpline.o driver.cpp
+
+cubicSpline.o: cubicSpline.cpp cubicSpline.h
+	g++ -c cubicSpline.cpp
 
 ReadImage.o: image.h ReadImage.cpp
 	g++ -c ReadImage.cpp
