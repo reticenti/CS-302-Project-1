@@ -15,6 +15,7 @@ const bool CUBIC   = true;	// only valid if INTERPL is true
 \*****************************************************************************/
 ImageType::ImageType()
 {
+	// start everything at zero
 	N = 0;
 	M = 0;
 	Q = 0;
@@ -30,6 +31,7 @@ ImageType::~ImageType()
 	int i;
 	if ( pixelValue != NULL )
 	{
+		// delete all the memory for the array
 		for ( i = 0; i < N; i++ )
 			delete [] pixelValue[i];
 		delete [] pixelValue;
@@ -41,69 +43,45 @@ ImageType::~ImageType()
 \*****************************************************************************/
 ImageType::ImageType(int tmpN, int tmpM, int tmpQ)
 {
-	int i, j;
-
-	N = tmpN;
-	M = tmpM;
-	Q = tmpQ;
-
-	pixelValue = new int* [N];
-	for(i=0; i<N; i++)
-	{
-		pixelValue[i] = new int[M];
-
-		for(j=0; j<M; j++)
-			pixelValue[i][j] = 0;
- 	}
+	// set the new values of N, M and Q
+	setImageInfo( tmpN, tmpM, tmpQ );
 }
 
 /*****************************************************************************\
+ copy contructor, copys data from rhs to the current object
 \*****************************************************************************/
 ImageType::ImageType( const ImageType& rhs )
 {
 	int i, j;
+	
+	// set the info to the new image data
+	setImageInfo( rhs.N, rhs.M, rhs.Q );
 
-	rhs.getImageInfo( M, N, Q );
-
-	pixelValue = new int* [N];
 	for ( i = 0; i < N; i++ )
-	{
-		pixelValue[i] = new int[M];
-
 		for ( j = 0; j < M; j++ )
-			pixelValue[i][j] = rhs.getPixelVal(i, j);
-	}
+			pixelValue[i][j] = rhs.pixelValue[i][j];
 }
 
 /*****************************************************************************\
+ equal operator overload, this is basically the same as the copy constructor
+ except it will likely have to de-allocate memory before copying values, all
+ this is decided in setImageInfo however
 \*****************************************************************************/
 ImageType& ImageType::operator= ( const ImageType& rhs )
 {
 	int i, j;
 
-	if ( pixelValue != NULL )
-	{
-		for ( i = 0; i < N; i++ )
-			delete [] pixelValue[i];
-		delete [] pixelValue;
-	}
-
-	rhs.getImageInfo( N, M, Q );
-
-	pixelValue = new int* [N];
+	setImageInfo( rhs.N, rhs.M, rhs.Q );
 
 	for ( i = 0; i < N; i++ )
-	{
-		pixelValue[i] = new int[M];
-
 		for ( j = 0; j < M; j++ )
-			pixelValue[i][j] = rhs.getPixelVal(i, j);
-	}
+			pixelValue[i][j] = rhs.pixelValue[i][j];
 
 	return *this;
 }
 
 /*****************************************************************************\
+ returns the width height and color depth to reference variables
 \*****************************************************************************/
 void ImageType::getImageInfo(int& rows, int& cols, int& levels) const
 {
@@ -113,15 +91,16 @@ void ImageType::getImageInfo(int& rows, int& cols, int& levels) const
 } 
 
 /*****************************************************************************\
+ sets the image info, deleting and allocating memory as required
 \*****************************************************************************/
 void ImageType::setImageInfo(int rows, int cols, int levels)
 {
 	int i, j;
 
 	// re-allocate the integer array if the size changes
-
 	if ( N != rows && M != cols )
 	{
+		// delete memory if not NULL
 		if ( pixelValue != NULL )
 		{
 			for ( i = 0; i < N; i++ )
@@ -129,24 +108,30 @@ void ImageType::setImageInfo(int rows, int cols, int levels)
 			delete [] pixelValue;
 		}
 
+		// sets N and M
 		N = rows;
 		M = cols;
 
+		// allocate the rows of pixel value
 		pixelValue = new int* [N];
 
+		// allocate the columns of pixel value
 		for ( i = 0; i < N; i++ )
 		{
 			pixelValue[i] = new int[M];
-
+			
+			// set all the values to black
 			for ( j = 0; j < M; j++ )
 				pixelValue[i][j] = 0;
 		}
 	}
 	
+	// set Q equal to the levels
 	Q = levels;
 }
 
 /*****************************************************************************\
+ sets the value of a pixel
 \*****************************************************************************/
 void ImageType::setPixelVal(int i, int j, int val)
 {
@@ -154,6 +139,7 @@ void ImageType::setPixelVal(int i, int j, int val)
 }
 
 /*****************************************************************************\
+ returns the value of a pixel
 \*****************************************************************************/
 int ImageType::getPixelVal(int i, int j) const
 {
@@ -251,9 +237,20 @@ void ImageType::enlargeImage( double S, const ImageType& old )
 				
 				// evaluate the value of the pixel here
 				if ( CUBIC )
-					pixelValue[r][(int)(diag*S+s/2)] = (int)col.getCubicVal( (double)offR/(N-S+1) * 100.0 );
+				{
+					if ( (int)(diag*S+s/2) > M-1 || (int)(diag*S+s/2) < 0 )
+					{
+						std::cout << "N-1  : " << M-1  << std::endl;
+						std::cout << "diag : " << diag << std::endl;
+						std::cout << "S    : " << S    << std::endl;
+						std::cout << "s    : " << s    << std::endl;
+						std::cout << "s/2  : " << s/2  << std::endl;
+						std::cout << "whole: " << (int)(diag*S+s/2) << std::endl;
+					}
+					pixelValue[r][(int)(diag*S+s/2)] = (int)col.getCubicVal( (double)offR/(N-S) * 100.0 );
+				}
 				else
-					pixelValue[r][(int)(diag*S+s/2)] = (int)col.getVal( (double)offR/(N-S+1) * 100.0 );
+					pixelValue[r][(int)(diag*S+s/2)] = (int)col.getVal( (double)offR/(N-S) * 100.0 );
 
 				// clip the pixel value if it goes out of bounds
 				if ( pixelValue[r][(int)(diag*S+s/2)] > Q )
@@ -267,9 +264,11 @@ void ImageType::enlargeImage( double S, const ImageType& old )
 			{
 				offC = c-S/2;
 				if ( CUBIC )
-					pixelValue[(int)(diag*S+s/2)][c] = (int)row.getCubicVal( (double)offC/(M-S+1) * 100.0 );
+				{
+					pixelValue[(int)(diag*S+s/2)][c] = (int)row.getCubicVal( (double)offC/(M-S) * 100.0 );
+				}
 				else
-					pixelValue[(int)(diag*S+s/2)][c] = (int)row.getVal( (double)offC/(M-S+1) * 100.0 );
+					pixelValue[(int)(diag*S+s/2)][c] = (int)row.getVal( (double)offC/(M-S) * 100.0 );
 
 				if ( pixelValue[(int)(diag*S+s/2)][c] > Q )
 					pixelValue[(int)(diag*S+s/2)][c] = Q;
@@ -293,9 +292,9 @@ void ImageType::enlargeImage( double S, const ImageType& old )
 				{
 					offR = r-S/2;
 					if ( CUBIC )
-						pixelValue[r][(int)(diag*S+s/2)] = (int)col.getCubicVal( (double)offR/(N-S+1) * 100.0 );
+						pixelValue[r][(int)(diag*S+s/2)] = (int)col.getCubicVal( (double)offR/(N-S) * 100.0 );
 					else
-						pixelValue[r][(int)(diag*S+s/2)] = (int)col.getVal( (double)offR/(N-S+1) * 100.0 );
+						pixelValue[r][(int)(diag*S+s/2)] = (int)col.getVal( (double)offR/(N-S) * 100.0 );
 
 					if ( pixelValue[r][(int)(diag*S+s/2)] > Q )
 						pixelValue[r][(int)(diag*S+s/2)] = Q;
@@ -315,9 +314,9 @@ void ImageType::enlargeImage( double S, const ImageType& old )
 				{
 					offC = c-S/2;
 					if ( CUBIC )
-						pixelValue[(int)(diag*S+s/2)][c] = (int)row.getCubicVal( (double)offC/(M-S+1) * 100.0 );
+						pixelValue[(int)(diag*S+s/2)][c] = (int)row.getCubicVal( (double)offC/(M-S) * 100.0 );
 					else
-						pixelValue[(int)(diag*S+s/2)][c] = (int)row.getVal( (double)offC/(M-S+1) * 100.0 );
+						pixelValue[(int)(diag*S+s/2)][c] = (int)row.getVal( (double)offC/(M-S) * 100.0 );
 
 					if ( pixelValue[(int)(diag*S+s/2)][c] > Q )
 						pixelValue[(int)(diag*S+s/2)][c] = Q;
@@ -333,6 +332,7 @@ void ImageType::enlargeImage( double S, const ImageType& old )
 
 		/* this counts vertically and fills in the rest of the picture based on
 		   values of the gridlines */
+		 
 		for ( diag = 0; diag < N; diag++ )
 		{
 			// obtain the values of grid lines from the current image
@@ -347,9 +347,9 @@ void ImageType::enlargeImage( double S, const ImageType& old )
 			{
 				offC = c-S/2;
 				if ( CUBIC )
-					pixelValue[diag][c] = (int)row.getCubicVal( (double)offC/(M-S+1) * 100.0 );
+					pixelValue[diag][c] = (int)row.getCubicVal( (double)offC/(M-S) * 100.0 );
 				else
-					pixelValue[diag][c] = (int)row.getVal( (double)offC/(M-S+1) * 100.0 );
+					pixelValue[diag][c] = (int)row.getVal( (double)offC/(M-S) * 100.0 );
 
 				if ( pixelValue[diag][c] > Q )
 					pixelValue[diag][c] = Q;
@@ -373,12 +373,12 @@ void ImageType::enlargeImage( double S, const ImageType& old )
 			{
 				offR = r-S/2;
 				if ( CUBIC )
-					pixelValue[r][diag] += (int)col.getCubicVal( (double)offR/(N-S+1) * 100.0 );
+					pixelValue[r][diag] += (int)col.getCubicVal( (double)offR/(N-S) * 100.0 );
 				else
-					pixelValue[r][diag] += (int)col.getVal( (double)offR/(N-S+1) * 100.0 );
+					pixelValue[r][diag] += (int)col.getVal( (double)offR/(N-S) * 100.0 );
 
 				/* this is the line that takes the average of the pixel value
-				   that was just calculated */
+    			   that was just calculated */
 				pixelValue[r][diag] /= 2;
 
 				if ( pixelValue[r][diag] > Q )
@@ -419,10 +419,10 @@ ImageType& ImageType::operator- ( const ImageType& rhs )
 		for ( int j = 0; j < M; j++ )
 		{
 			pixelValue[i][j] = abs(pixelValue[i][j] - rhs.pixelValue[i][j]);
-			if ( pixelValue[i][j] < Q/10 )
-				pixelValue[i][j] = 0;
-			else
-				pixelValue[i][j] = Q;
+	//		if ( pixelValue[i][j] < Q/10 )
+//				pixelValue[i][j] = 0;
+//			else
+//				pixelValue[i][j] = Q;
 		}
 	return *this;	// temp return value
 }
