@@ -190,207 +190,104 @@ void ImageType::enlargeImage( double S, const ImageType& old )
 	}
 	else
 	{
-		cubicSpline row, col;
-		int minOld, maxOld, diag, index;
-		int *rows = new int[old.M];
-		int *cols = new int[old.N];
-		double offR, offC;
+		// set the new image info
+		setImageInfo( (int)(old.N * S), (int)(old.M * S), old.Q );
 
-		setImageInfo( old.N * S, old.M * S, old.Q );
+		// horizontal and vertical, sum them at the end
+		ImageType horiz;
+		ImageType vert;
 
-		std::cout << N << '\n' << M << '\n';
+		horiz.setImageInfo(N, M, Q);
+		vert.setImageInfo(N, M, Q);
 		
-		// find the lesser of M and N
-		if ( old.M > old.N )
+		cubicSpline spline;
+
+		int *rowVals = new int[old.M];
+		int *colVals = new int[old.N];
+
+		// create horizontal bars first
+		for ( int i = 0; i < old.N; i++ )
 		{
-			minOld = old.N;
-			maxOld = old.M;
-		}
-		else
-		{
-			minOld = old.M;
-			maxOld = old.N;
-		}
+			for ( int j = 0; j < old.M; j++ )
+				rowVals[j] = old.pixelValue[i][j];
 
-		// counts diagonally from one corner to the other
-		for ( diag = 0; diag < minOld; diag++ )
-		{	
-			// fills the column array
-			for ( index = 0; index < old.N; index++ )
-				cols[index] = old.pixelValue[index][diag];
+			spline.createCubic( rowVals, old.M );
 
-			// sets the rows array
-			for ( index = 0; index < old.M; index++ )
-				rows[index] = old.pixelValue[diag][index];
-
-			// calculate the cubic spline functions for the current row and column
-			( CUBIC ? row.createCubic( rows, old.M ) : row.create( rows, old.M ) );
-			( CUBIC ? col.createCubic( cols, old.N ) : col.create( cols, old.N ) );
-
-			/* this counts through the rows of the new image setting their values
-			   according to the spline functions */
-			for ( int r = 0; r < N; r++ )
+			for ( int j = 0; j < M; j++ )
 			{
-				/* this offset makes the pixel on the new image centered rather then pressed up
-				   against the upper left corner like they want to be */
-				offR = r-S/2;
-				
-				// evaluate the value of the pixel here
-				if ( CUBIC )
-				{
-					if ( (int)(diag*S+s/2) > M-1 || (int)(diag*S+s/2) < 0 )
-					{
-						std::cout << "N-1  : " << M-1  << std::endl;
-						std::cout << "diag : " << diag << std::endl;
-						std::cout << "S    : " << S    << std::endl;
-						std::cout << "s    : " << s    << std::endl;
-						std::cout << "s/2  : " << s/2  << std::endl;
-						std::cout << "whole: " << (int)(diag*S+s/2) << std::endl;
-					}
-					pixelValue[r][(int)(diag*S+s/2)] = (int)col.getCubicVal( (double)offR/(N-S) * 100.0 );
-				}
-				else
-					pixelValue[r][(int)(diag*S+s/2)] = (int)col.getVal( (double)offR/(N-S) * 100.0 );
+				int row = (double)(i)/(old.N-1)*(N-1);
 
-				// clip the pixel value if it goes out of bounds
-				if ( pixelValue[r][(int)(diag*S+s/2)] > Q )
-					pixelValue[r][(int)(diag*S+s/2)] = Q;
-				if ( pixelValue[r][(int)(diag*S+s/2)] < 0 )
-					pixelValue[r][(int)(diag*S+s/2)] = 0;
-			}
-			
-			// same as previous loop except counts through the columns
-			for ( int c = 0; c < M; c++ )
-			{
-				offC = c-S/2;
-				if ( CUBIC )
-				{
-					pixelValue[(int)(diag*S+s/2)][c] = (int)row.getCubicVal( (double)offC/(M-S) * 100.0 );
-				}
-				else
-					pixelValue[(int)(diag*S+s/2)][c] = (int)row.getVal( (double)offC/(M-S) * 100.0 );
-
-				if ( pixelValue[(int)(diag*S+s/2)][c] > Q )
-					pixelValue[(int)(diag*S+s/2)][c] = Q;
-				if ( pixelValue[(int)(diag*S+s/2)][c] < 0 )
-					pixelValue[(int)(diag*S+s/2)][c] = 0;
+				horiz.pixelValue[row][j] = spline.getCubicVal( (j-S/2)/(M-S-1) * 100.0 );
+				if ( horiz.pixelValue[row][j] > Q ) horiz.pixelValue[row][j] = Q;
+				if ( horiz.pixelValue[row][j] < 0 ) horiz.pixelValue[row][j] = 0;
 			}
 		}
 
-		/* if the image isn't square finish filling the grid on the longer side
-		   these are the same as the previous loops except they only do rows or
-		   columns depending on the value of minOld and maxOld */
-		if ( minOld != maxOld && maxOld == old.M )
-			for ( diag = minOld; diag < maxOld; diag++ )
-			{
-				for ( index = 0; index < old.N; index++ )
-					cols[index] = old.pixelValue[index][diag];
-
-				( CUBIC ? col.createCubic( cols, old.N ) : col.create( cols, old.N ) );
-
-				for ( int r = 0; r < N; r++ )
-				{
-					offR = r-S/2;
-					if ( CUBIC )
-						pixelValue[r][(int)(diag*S+s/2)] = (int)col.getCubicVal( (double)offR/(N-S) * 100.0 );
-					else
-						pixelValue[r][(int)(diag*S+s/2)] = (int)col.getVal( (double)offR/(N-S) * 100.0 );
-
-					if ( pixelValue[r][(int)(diag*S+s/2)] > Q )
-						pixelValue[r][(int)(diag*S+s/2)] = Q;
-					if ( pixelValue[r][(int)(diag*S+s/2)] < 0 )
-						pixelValue[r][(int)(diag*S+s/2)] = 0;
-				}	
-			}
-		else if ( minOld != maxOld && maxOld == old.N )
-			for ( diag = minOld; diag < maxOld; diag++ )
-			{
-				for ( index = 0; index < old.M; index++ )
-					rows[index] = old.pixelValue[diag][index];
-
-				( CUBIC ? row.createCubic( rows, old.M ) : row.create( rows, old.M ) );
-
-				for ( int c = 0; c < M; c++ )
-				{
-					offC = c-S/2;
-					if ( CUBIC )
-						pixelValue[(int)(diag*S+s/2)][c] = (int)row.getCubicVal( (double)offC/(M-S) * 100.0 );
-					else
-						pixelValue[(int)(diag*S+s/2)][c] = (int)row.getVal( (double)offC/(M-S) * 100.0 );
-
-					if ( pixelValue[(int)(diag*S+s/2)][c] > Q )
-						pixelValue[(int)(diag*S+s/2)][c] = Q;
-					if ( pixelValue[(int)(diag*S+s/2)][c] < 0 )
-						pixelValue[(int)(diag*S+s/2)][c] = 0;
-				}
-			}
-
-		/* At this point in the function the image is just a grid of lines calculated
-		   using the spline functions, everything else is black space, the old image
-		   pixel values will no longer be needed as everything is now based on the
-		   approximations between the known pixels */
-
-		/* this counts vertically and fills in the rest of the picture based on
-		   values of the gridlines */
-		 
-		for ( diag = 0; diag < N; diag++ )
+		// now create vertical bars
+		for ( int j = 0; j < old.M; j++ )
 		{
-			// obtain the values of grid lines from the current image
-			for ( index = 0; index < old.M; index++ )
-				rows[index] = pixelValue[diag][(int)(index*S+s/2)];
+			for ( int i = 0; i < old.N; i++ )
+				colVals[i] = old.pixelValue[i][j];
 
-			// create the spline function for the current row
-			( CUBIC ? row.createCubic( rows, old.M ) : row.create( rows, old.M ) );
+			spline.createCubic( colVals, old.N );
 
-			// count through the columns calculating the values between every point
-			for ( int c = 0; c < M; c++ )
+			for ( int i = 0; i < N; i++ )
 			{
-				offC = c-S/2;
-				if ( CUBIC )
-					pixelValue[diag][c] = (int)row.getCubicVal( (double)offC/(M-S) * 100.0 );
-				else
-					pixelValue[diag][c] = (int)row.getVal( (double)offC/(M-S) * 100.0 );
+				int col = (double)(j)/(old.M-1)*(M-1);
 
-				if ( pixelValue[diag][c] > Q )
-					pixelValue[diag][c] = Q;
-				if ( pixelValue[diag][c] < 0 )
-					pixelValue[diag][c] = 0;
-			}
-		}
-
-		/* at this point the image is actually filled completely but this takes
-		   the average of the values calculated from the horizonal approximation
-		   in the above loop and this loop which is a vertical approximation */
-
-		for ( diag = 0; diag < M; diag++ )
-		{
-			for ( index = 0; index < old.N; index++ )
-				cols[index] = pixelValue[(int)(index*S+s/2)][diag];
-
-			( CUBIC ? col.createCubic( cols, old.N ) : col.create( cols, old.N ) );
-
-			for ( int r = 0; r < N; r++ )
-			{
-				offR = r-S/2;
-				if ( CUBIC )
-					pixelValue[r][diag] += (int)col.getCubicVal( (double)offR/(N-S) * 100.0 );
-				else
-					pixelValue[r][diag] += (int)col.getVal( (double)offR/(N-S) * 100.0 );
-
-				/* this is the line that takes the average of the pixel value
-    			   that was just calculated */
-				pixelValue[r][diag] /= 2;
-
-				if ( pixelValue[r][diag] > Q )
-					pixelValue[r][diag] = Q;
-				if ( pixelValue[r][diag] < 0 )
-					pixelValue[r][diag] = 0;
+				vert.pixelValue[i][col] = spline.getCubicVal( (i-S/2)/(N-S-1) * 100.0 );
+				if ( vert.pixelValue[i][col] > Q ) vert.pixelValue[i][col] = Q;
+				if ( vert.pixelValue[i][col] < 0 ) vert.pixelValue[i][col] = 0;
 			}
 		}
 		
-		// de-allocate the memory for the temporary arrays
-		delete [] rows;
-		delete [] cols;
+		// if the image is being enlarged then we need to fill stuff in
+		if ( S >= 1.0 )
+		{
+			// count accross columns filling them in based on completed rows
+			for ( int j = 0; j < M; j++ )
+			{	
+				for ( int i = 0; i < old.N; i++ )
+				{
+					int row = (double)(i)/(old.N-1)*(N-1);
+					colVals[i] = horiz.pixelValue[row][j];
+				}
+
+				spline.createCubic( colVals, old.N );
+
+				for ( int i = 0; i < N; i++ )
+				{
+					horiz.pixelValue[i][j] = spline.getCubicVal( (i-S/2)/(N-1) * 100 );
+					if ( horiz.pixelValue[i][j] > Q ) horiz.pixelValue[i][j] = Q;
+					if ( horiz.pixelValue[i][j] < 0 ) horiz.pixelValue[i][j] = 0;
+				}
+			}
+
+			// count accross columns filling them in based on completed rows
+			for ( int i = 0; i < N; i++ )
+			{	
+				for ( int j = 0; j < old.M; j++ )
+				{
+					int col = (double)(j)/(old.M-1)*(M-1);
+					rowVals[j] = vert.pixelValue[i][col];
+				}
+
+				spline.createCubic( rowVals, old.M );
+
+				for ( int j = 0; j < M; j++ )
+				{
+					vert.pixelValue[i][j] = spline.getCubicVal( (j-S/2)/(M-1) * 100 );
+					if ( vert.pixelValue[i][j] > Q ) vert.pixelValue[i][j] = Q;
+					if ( vert.pixelValue[i][j] < 0 ) vert.pixelValue[i][j] = 0;
+				}
+			}
+
+		}
+		
+		*this = horiz+vert;
+
+		delete [] rowVals;
+		delete [] colVals;
 	}
 }
 

@@ -648,7 +648,7 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 
 		s = promptForDoubleAt( x, y, "Enter enlargement multiplier(-1 to cancel): " );
 
-		while ( ( s < 1 || s > maxS ) && s != -1 )
+		while ( ( s <= 0 || s > maxS ) && s != -1 )
 		{
 			x = screenWidth() / 2 - 30;
 			y = screenHeight() / 2 - 3;
