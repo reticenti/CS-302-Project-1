@@ -213,8 +213,8 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 
 		for ( int j = 0; j < M; j++ )
 		{
-			int row = (double)(i)/(old.N-1)*(N-1);
-			
+			int row = ((double)(i)/(old.N)*(N-1))+S/2;
+
 			if ( cubic )
 				horiz.pixelValue[row][j] = spline.getCubicVal( (j-S/2)/(M-S-1) * 100.0 );
 			else
@@ -238,15 +238,15 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 
 		for ( int i = 0; i < N; i++ )
 		{
-			int col = (double)(j)/(old.M-1)*(M-1);
+			int col = (double)(j)/(old.M)*(M-1)+S/2;
 
 			if ( cubic )
-				vert.pixelValue[i][col] = spline.getCubicVal( (i-S/2)/(N-S-1) * 100.0 );
+				horiz.pixelValue[i][col] = spline.getCubicVal( (i-S/2)/(N-S-1) * 100.0 );
 			else
-				vert.pixelValue[i][col] = spline.getVal( (i-S/2)/(N-S-1) * 100.0 );
+				horiz.pixelValue[i][col] = spline.getVal( (i-S/2)/(N-S-1) * 100.0 );
 
-			if ( vert.pixelValue[i][col] > Q ) vert.pixelValue[i][col] = Q;
-			if ( vert.pixelValue[i][col] < 0 ) vert.pixelValue[i][col] = 0;
+			if ( horiz.pixelValue[i][col] > Q ) horiz.pixelValue[i][col] = Q;
+			if ( horiz.pixelValue[i][col] < 0 ) horiz.pixelValue[i][col] = 0;
 		}
 	}
 	
@@ -258,7 +258,7 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 		{	
 			for ( int i = 0; i < old.N; i++ )
 			{
-				int row = (double)(i)/(old.N-1)*(N-1);
+				int row = (double)(i)/(old.N)*(N-1)+S/2;
 				colVals[i] = horiz.pixelValue[row][j];
 			}
 
@@ -270,9 +270,9 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 			for ( int i = 0; i < N; i++ )
 			{
 				if ( cubic )
-					horiz.pixelValue[i][j] = spline.getCubicVal( (i-S/2)/(N-1) * 100.0 );
+					horiz.pixelValue[i][j] = spline.getCubicVal( (i-S/2)/(N-S-1) * 100.0 );
 				else
-					horiz.pixelValue[i][j] = spline.getVal( (i-S/2)/(N-1) * 100.0 );
+					horiz.pixelValue[i][j] = spline.getVal( (i-S/2)/(N-S-1) * 100.0 );
 
 				if ( horiz.pixelValue[i][j] > Q ) horiz.pixelValue[i][j] = Q;
 				if ( horiz.pixelValue[i][j] < 0 ) horiz.pixelValue[i][j] = 0;
@@ -284,8 +284,8 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 		{	
 			for ( int j = 0; j < old.M; j++ )
 			{
-				int col = (double)(j)/(old.M-1)*(M-1);
-				rowVals[j] = vert.pixelValue[i][col];
+				int col = (double)(j)/(old.M)*(M-1)+S/2;
+				rowVals[j] = horiz.pixelValue[i][col];
 			}
 			
 			if ( cubic )
@@ -296,18 +296,20 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 			for ( int j = 0; j < M; j++ )
 			{
 				if ( cubic )
-					vert.pixelValue[i][j] = spline.getCubicVal( (j-S/2)/(M-1) * 100.0 );
+					horiz.pixelValue[i][j] += spline.getCubicVal( (j-S/2)/(M-S-1) * 100.0 );
 				else
-					vert.pixelValue[i][j] = spline.getVal( (j-S/2)/(M-1) * 100.0 );
+					horiz.pixelValue[i][j] += spline.getVal( (j-S/2)/(M-S-1) * 100.0 );
+				
+				horiz.pixelValue[i][j] /= 2;
 
-				if ( vert.pixelValue[i][j] > Q ) vert.pixelValue[i][j] = Q;
-				if ( vert.pixelValue[i][j] < 0 ) vert.pixelValue[i][j] = 0;
+				if ( horiz.pixelValue[i][j] > Q ) horiz.pixelValue[i][j] = Q;
+				if ( horiz.pixelValue[i][j] < 0 ) horiz.pixelValue[i][j] = 0;
 			}
 		}
 
 	}
 	
-	*this = horiz+vert;
+	*this = horiz;//+vert;
 
 	delete [] rowVals;
 	delete [] colVals;
