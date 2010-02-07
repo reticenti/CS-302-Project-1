@@ -386,6 +386,18 @@ void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc, const ImageType
 
 void ImageType::shrinkImage( int s, const ImageType& old )
 {
+	int offset = 0;
+        int row = 0, col = 0;
+
+        //make new array with correct size
+        setImageInfo(old.N / s, old.M / s, old.Q);
+
+        //copy over every s pixel
+        for(int i = 0; i < N; i++){
+                for(int j = 0; j < M; j++){
+                        pixelValue[i][j] = old.pixelValue[i*s][j*s];
+                }
+        }
 
 }
 
