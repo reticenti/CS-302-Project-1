@@ -28,8 +28,8 @@ class ImageType {
 	// Josh's functions
 
 	double meanGray() const;
-	void enlargeImage( double, const ImageType& );
-	void enlargeImage( int, const ImageType& );
+	void enlargeImage( double, const ImageType&, bool=true );
+	void enlargeImage( int, const ImageType&, bool=true );
 	void reflectImage( bool, const ImageType& );
 	ImageType& operator- ( const ImageType& );
 	void negateImage();
