@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "cubicSpline.h"
+#include <cmath>
 
 using namespace std;
 
@@ -421,6 +422,18 @@ void ImageType::translateImage( int t, const ImageType& old )
 
 void ImageType::rotateImage( int theta, const ImageType& old )
 {
+	setImageInfo(old.N, old.M, old.Q);
+	float rad = theta * 3.1415/180;
+	float r, c;
+
+	for(int i = 0; i < N; i++){
+		for(int j = 0; i < M; i++){
+			r = i*cos(rad) - j*sin(rad);
+			c = i*sin(rad) + j*cos(rad);
+			if(((int)r < N) && ((int)c < M))
+				pixelValue[i][j] = old.pixelValue[(int)r][(int)c];
+		}
+	}
 
 }
 
@@ -432,7 +445,7 @@ ImageType& ImageType::operator+ ( const ImageType& rhs )
 	//small a gives more weight to second image
 	//a must be 0 >= a <= 1
 	float a = 0.5;
- 
+
 	//the general formula is aI1(r,c)+(1-a)I2(r,c)
 	for(int i = 0; i < N; i++){
 		for(int j = 0; j < M; j++){
@@ -442,7 +455,7 @@ ImageType& ImageType::operator+ ( const ImageType& rhs )
 			pixelValue[i][j] = pixelValue[i][j]*a + (1.0 - a)*rhs.pixelValue[i][j];
 		}
 	}
- 
+
 	return *this;	// temp return value
 }
 
