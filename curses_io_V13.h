@@ -660,7 +660,7 @@ void printCharAt( int xPos, int yPos, char charVal )
     mvaddch( yPos, xPos, charVal );
 
     // update screen
-    refresh();
+    //refresh();
    }
 
 void printIntAt( int xPos, int yPos, int intVal, const string &justify )
@@ -727,7 +727,7 @@ void printStringAt( int xPos, int yPos, const string &outString, const string &j
         mvaddstr( yPos, xPos, outString.c_str() );
        }
 
-    refresh();
+    //refresh();
    }
 
 void printStringVertical( int xStart, int yStart, const string &text, const string &orient )

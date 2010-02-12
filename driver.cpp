@@ -177,6 +177,7 @@ void drawWindow( const string title, int x, int y, int width, int height,
 	printCharAt( x+2, y, ' ' );
 	printStringAt(x+3, y, title, "LEFT" );
 	printCharAt( x+3+title.length(), y, ' ' );
+	refresh();
 }
 
 char showMenu( const char msg[], bool loaded[], char name[][NAME_LEN] )
@@ -241,6 +242,7 @@ char showMenu( const char msg[], bool loaded[], char name[][NAME_LEN] )
 	}
 	printStringAt( X, Y, "Enter Choice: ", "LEFT" );
 
+	refresh();
 	do {
 		input = waitForInput( FIXED_WAIT );
 	} while ( ! ( ( input >= 'a' && input <= 'o' ) ||
@@ -248,7 +250,7 @@ char showMenu( const char msg[], bool loaded[], char name[][NAME_LEN] )
 				  ( input == 'x' || input == 'X' ) ) );
 
 	printCharAt( X+14, Y, input );
-	
+	refresh();
 	return input;
 }
 
@@ -371,6 +373,7 @@ void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc, 
 			printStringAt( 0, 1, msg, "LEFT" );
 			waitForInput( FIXED_WAIT );
 	}
+	refresh();
 }
 
 void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -399,6 +402,7 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		loaded[index] = true;
 		strcpy( name[index], strInput.c_str() );
 	}
+	refresh();
 }
 
 void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -420,6 +424,7 @@ void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		writeImage( strInput.c_str(), img[index] );
 		strcpy( name[index], strInput.c_str() );
 	}
+	refresh();
 }
 
 void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -454,6 +459,7 @@ void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		printStringAt( x, y, "Mean Gray value   :", "LEFT" );
 		printIntAt( x+22, y, img[index].meanGray(), "LEFT" ); y+=2;
 		printStringAt( x, y, "Press any key to continue...", "LEFT" );
+		refresh();
 		waitForInput( FIXED_WAIT );
 	}
 }
@@ -518,7 +524,7 @@ void setPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			}
 		}
 	}
-
+	refresh();
 }
 
 void getPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -564,6 +570,7 @@ void getPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			waitForInput( FIXED_WAIT );
 		}
 	}
+	refresh();
 }
 
 void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -598,6 +605,7 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			y+=2;
 
 			printStringAt( x, y, "Press any key to continue...", "LEFT" );
+			refresh();
 
 			waitForInput( FIXED_WAIT );
 
@@ -619,6 +627,7 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
+	refresh();
 }
 
 void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -664,6 +673,7 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			printStringAt( x, y, msg, "LEFT" );
 			y+=2;
 			printStringAt( x, y, "Press any key to continue...", "LEFT" );
+			refresh();	
 
 			waitForInput( FIXED_WAIT );
 
@@ -688,6 +698,7 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
+	refresh();	
 }
 
 void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -733,6 +744,7 @@ void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			y+=2;
 			printStringAt( x, y, "Press any key to continue...", "LEFT" );
 
+			refresh();	
 			waitForInput( FIXED_WAIT );
 
 			x = screenWidth() / 2 - 30;
@@ -756,6 +768,7 @@ void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
+	refresh();	
 }
 
 void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -778,6 +791,7 @@ void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		printStringAt(x, y, "Enter mirror direction (H(oriz), V(ert), C(ancel)): ", "LEFT");
 		
 		do {
+			refresh();	
 			dir = waitForInput( FIXED_WAIT );
 		} while ( dir != 'h' && dir != 'H' &&
 		          dir != 'v' && dir != 'V' &&
@@ -796,6 +810,7 @@ void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
+	refresh();	
 }
 
 void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -841,6 +856,7 @@ void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			y+=2;
 
 			printStringAt( x, y, "Press any key to continue...", "LEFT" );
+			refresh();	
 
 			waitForInput( FIXED_WAIT );
 
@@ -865,6 +881,7 @@ void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
+	refresh();	
 }
 
 void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -915,6 +932,7 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
+	refresh();	
 
 }
 
@@ -942,6 +960,7 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index1], " (modified)" );
 		}
 	}
+	refresh();	
 }
 
 void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -968,6 +987,7 @@ void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index1], " (modified)" );
 		}
 	}
+	refresh();	
 }
 
 void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -984,6 +1004,7 @@ void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		if ( name[index][strlen(name[index])-1] != ')' )
 			strcat( name[index], " (modified)" );
 	}
+	refresh();	
 }
 
 // first parameter is array of loaded flags for the register
@@ -1034,6 +1055,7 @@ int promptForReg( const string title, bool loaded[], const bool check )
 			printStringAt( x, y, "Invalid register please choose again.", "LEFT" );
 			y+=2;
 			printStringAt( x, y, "Press any key to continue...", "LEFT" );
+			refresh();	
 			waitForInput( FIXED_WAIT );
 
 			valid = false;
@@ -1047,10 +1069,12 @@ int promptForReg( const string title, bool loaded[], const bool check )
 			printStringAt( x, y, msg, "LEFT" );
 			y+=2;
 			printStringAt( x, y, "Press any key to continue...", "LEFT" );
+			refresh();	
 			waitForInput( FIXED_WAIT );
 			valid = false;
 		}
 		
+		refresh();	
 	} while ( ! valid );
 	
 	if ( inner_choice == 'c' || inner_choice == 'C' )
@@ -1092,6 +1116,7 @@ void promptForLoc( const string title, ImageType& img, int& row, int& col )
 		printStringAt( x, y, msg, "LEFT" );
 		y+=2;
 		printStringAt( x, y, "Press any key to continue...", "LEFT" );
+		refresh();	
 
 		waitForInput( FIXED_WAIT );
 
@@ -1125,6 +1150,7 @@ void promptForLoc( const string title, ImageType& img, int& row, int& col )
 			printStringAt( x, y, msg, "LEFT" );
 			y+=2;
 			printStringAt( x, y, "Press any key to continue...", "LEFT" );
+			refresh();	
 
 			waitForInput( FIXED_WAIT );
 
