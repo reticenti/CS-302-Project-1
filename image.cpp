@@ -423,15 +423,17 @@ void ImageType::translateImage( int t, const ImageType& old )
 void ImageType::rotateImage( int theta, const ImageType& old )
 {
 	setImageInfo(old.N, old.M, old.Q);
-	float rad = theta * 3.1415/180;
-	float r, c;
+	float rad = theta * 3.14159265/180;
+	int r, c, r_0, c_0;
+	r_0 = N/2;
+	c_0 = M/2;
 
 	for(int i = 0; i < N; i++){
-		for(int j = 0; i < M; i++){
-			r = i*cos(rad) - j*sin(rad);
-			c = i*sin(rad) + j*cos(rad);
-			if(((int)r < N) && ((int)c < M))
-				pixelValue[i][j] = old.pixelValue[(int)r][(int)c];
+		for(int j = 0; j < M; j++){
+			r = r_0 + (i-r_0)*cos(rad) - (j-c_0)*sin(rad);
+			c = c_0 + (i-r_0)*sin(rad) + (j-c_0)*cos(rad);
+			if ( r > 0 && r < N && c > 0 && c < M )
+				pixelValue[i][j] = old.pixelValue[r][c];
 		}
 	}
 
