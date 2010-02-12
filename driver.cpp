@@ -8,6 +8,8 @@
 using namespace std;
 
 // CONSTANTS
+	const bool CUBIC_INTER = true;
+
 	const int REGS = 3;	   // values 1-9
 	const int NAME_LEN = 50;   // the max string length of names
 	const int MSG_LEN = 100;   // the max string length of messages
@@ -689,7 +691,7 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 
 		if ( s > -1 )
 		{
-			temp.enlargeImage( s, img[index] );
+			temp.enlargeImage( s, img[index], CUBIC_INTER );
 
 			img[index] = temp;
 

@@ -146,7 +146,6 @@ int ImageType::getPixelVal(int i, int j) const
 
 /****************************Josh's functions**********************************/
 
-
 /*****************************************************************************\
  this calculates the average gray value in the picture, this is done by adding
  all of the pixels and dividing by the total number of pixels
@@ -175,67 +174,102 @@ void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
  original function was 100x100 and s is 10, then the new image is 1000x1000
 
  The method I choose to use was bicubic interpolation which creates cubic
- splines for each row and column, the splines are then used to approximate the
- value of the pixels on the larger image.  This is possible because the spline
- function is a continuous function and is therefore defined at every point.
+ splines for each row, then using those splines creates an image 
 
  if cubic = true then use cubic interpolation
  if cubic = false then use linear interpolation
 \******************************************************************************/
 void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 {
+	// slightly modify S to make it a better value for spline
+	S = (double)((int)(old.M*S))/old.M;
+	
 	// scale size rounded to integer value
-	int s = S+0.5;
-	int *horizVals = new int[old.M];
-	int *vertVals = new int[old.N];
+	int s = S+0.5;	
+	int colorVal;	// used to hold the calculated color value
+	double splineX; // the x value passed to the spline function
 
+	int *horizVals = new int[old.M];	// holds points for spline
+	int *vertVals = new int[old.N];		// holds points for spline
+
+	// temporary image used to stretch before interpolating across rows
 	ImageType temp;
 
+	// this is the spline object used to store the spline values
 	cubicSpline spline;
 
-	setImageInfo( old.M * s, old.N * s, old.Q );
+	// set the new image to the
+	setImageInfo( old.N * S, old.M * S, old.Q );
 
-	temp.setImageInfo( old.M, N, old.Q );
+	// set temp to a stretched horizontally only
+	temp.setImageInfo( old.N, M, old.Q );
 
+	// stretch old image horizontally and store in temp
 	for ( int row = 0; row < old.N; row++ )
 	{
+		// get the values used to create the spline for the row
 		for ( int col = 0; col < old.M; col++ )
 			horizVals[col] = old.pixelValue[row][col];
 
-		spline.createCubic( horizVals, old.M );
+		// actually create the spline (assumed the pixels are equally spaced)
+		if ( cubic )
+			spline.createCubic( horizVals, old.M );
+		else
+			spline.create( horizVals, old.M );
 
+		// using the spline set the values of temp
 		for ( int col = 0; col < M; col++ )
 		{
 			// value to pull from spline for current j
-			double splineX = (col-s/2.0)/(M-S-1) * 100.0;
-			int colorVal = spline.getCubicVal(splineX);
+			double splineX = (col-S/2.0)/(M-S-1.0) * 100.0;
+			int colorVal;
 			
-			if ( colorVal < 0 ) colorVal = 0;
-			if ( colorVal > Q ) colorVal = Q;
+			if ( cubic )
+				colorVal = spline.getCubicVal(splineX);
+			else
+				colorVal = spline.getVal(splineX);
+			
+			// NOTE: don't clip values yet, it causes problems...
 
 			temp.pixelValue[row][col] = colorVal;
 		}
 	}
 
+	// now stretch temp vertically and store in new image
 	for ( int col = 0; col < M; col++ )
 	{
+		// get the values used to create the spline for the column
 		for ( int row = 0; row < old.N; row++ )
 			vertVals[row] = temp.pixelValue[row][col];
 
-		spline.createCubic( vertVals, old.N );
+		// actually create the spline (cubic if parameter is true)
+		if ( cubic )
+			spline.createCubic( vertVals, old.N );
+		else
+			spline.create( vertVals, old.N );
 
+		// using the spline set the values
 		for ( int row = 0 ; row < N; row++ )
 		{
-			double splineX = (row-s/2.0)/(M-S-1) * 100.0;
-			int colorVal = spline.getCubicVal(splineX);
+			double splineX = (row-S/2.0)/(N-S-1.0) * 100.0;
+			int colorVal;
 			
+			// obtain new color from spline value
+			if ( cubic )
+				colorVal = spline.getCubicVal(splineX);
+			else
+				colorVal = spline.getVal(splineX);
+			
+			// clip the color if it goes out of bounds
 			if ( colorVal < 0 ) colorVal = 0;
 			if ( colorVal > Q ) colorVal = Q;
 
+			// set the final pixel value
 			pixelValue[row][col] = colorVal;
 		}
 	}
 
+	// de-allocate all that memory
 	delete [] horizVals;
 	delete [] vertVals;
 }
