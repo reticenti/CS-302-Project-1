@@ -185,31 +185,59 @@ void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
 void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 {
 	// scale size rounded to integer value
-	int s = S+0.5;
+	int s = S;
 	int *horizVals = new int[old.M];
 	int *vertVals = new int[old.N];
 
-	ImageType horiz, vert;
+	ImageType temp;
 
 	cubicSpline spline;
 
 	setImageInfo( old.M * s, old.N * s, old.Q );
 
-	horiz.setImageInfo( old.M, N, old.Q );
-	vert.setImageInfo( M, N, Q );
+	temp.setImageInfo( old.M, N, old.Q );
 
-	for ( int i = 0; i < N; i++ )
+	for ( int row = 0; row < old.N; row++ )
 	{
-		for ( int j = 0; j < old.M; j++ )
-			horizVals[j] = old.pixelValues[i][j];
+		for ( int col = 0; col < old.M; col++ )
+			horizVals[col] = old.pixelValue[row][col];
 
 		spline.createCubic( horizVals, old.M );
 
-		for ( int j = 0; j < M; j++ )
+		for ( int col = 0; col < M; col++ )
 		{
+			// value to pull from spline for current j
+			double splineX = (col-S/2.0)/(M-S) * 100.0;
+			int colorVal = spline.getCubicVal(splineX);
 			
+			if ( colorVal < 0 ) colorVal = 0;
+			if ( colorVal > Q ) colorVal = Q;
+
+			temp.pixelValue[row][col] = colorVal;
 		}
 	}
+
+	for ( int col = 0; col < M; col++ )
+	{
+		for ( int row = 0; row < old.N; row++ )
+			vertVals[row] = temp.pixelValue[row][col];
+
+		spline.createCubic( vertVals, old.N );
+
+		for ( int row = 0 ; row < N; row++ )
+		{
+			double splineX = (row-S/2.0)/(M-S) * 100.0;
+			int colorVal = spline.getCubicVal(splineX);
+			
+			if ( colorVal < 0 ) colorVal = 0;
+			if ( colorVal > Q ) colorVal = Q;
+
+			pixelValue[row][col] = colorVal;
+		}
+	}
+
+	delete [] horizVals;
+	delete [] vertVals;
 }
 
 /******************************************************************************\
