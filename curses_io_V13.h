@@ -8,10 +8,17 @@
     use as long as the above copyright statement is included.
     
     Code Written:        08/18/2008
-    Most Recent Update:  12/19/2009 - 5:30 p.m.
-    Date Due for Review: 01/20/2010
+    Most Recent Update:  01/11/2010 - 5:30 p.m.
+    Date Due for Review: 02/16/2010
 
-	Updated by Joshua Gleason 01/31/2010 - 3:30 p.m.
+	Update by Joshua Gleason 01/31/2010 - 3:30 p.m.
+		- added ability to have variable terminal size
+		- added screenWidth and screenHeight functions which return the
+		  teminals width and height
+	
+	Update by Josiah Humphrey 02/11/2010 - 9:00 p.m.
+		- removed redundent refresh calls, assumed now to be refreshed
+		  by main driver program
 
 /////////////////////////////////////////////////////////////////////////*/
 /*
