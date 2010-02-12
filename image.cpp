@@ -184,7 +184,32 @@ void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
 \******************************************************************************/
 void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 {
+	// scale size rounded to integer value
+	int s = S+0.5;
+	int *horizVals = new int[old.M];
+	int *vertVals = new int[old.N];
 
+	ImageType horiz, vert;
+
+	cubicSpline spline;
+
+	setImageInfo( old.M * s, old.N * s, old.Q );
+
+	horiz.setImageInfo( old.M, N, old.Q );
+	vert.setImageInfo( M, N, Q );
+
+	for ( int i = 0; i < N; i++ )
+	{
+		for ( int j = 0; j < old.M; j++ )
+			horizVals[j] = old.pixelValues[i][j];
+
+		spline.createCubic( horizVals, old.M );
+
+		for ( int j = 0; j < M; j++ )
+		{
+			
+		}
+	}
 }
 
 /******************************************************************************\
