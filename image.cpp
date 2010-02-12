@@ -185,7 +185,7 @@ void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
 void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 {
 	// scale size rounded to integer value
-	int s = S;
+	int s = S+0.5;
 	int *horizVals = new int[old.M];
 	int *vertVals = new int[old.N];
 
@@ -207,7 +207,7 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 		for ( int col = 0; col < M; col++ )
 		{
 			// value to pull from spline for current j
-			double splineX = (col-S/2.0)/(M-S) * 100.0;
+			double splineX = (col-s/2.0)/(M-S-1) * 100.0;
 			int colorVal = spline.getCubicVal(splineX);
 			
 			if ( colorVal < 0 ) colorVal = 0;
@@ -226,7 +226,7 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 
 		for ( int row = 0 ; row < N; row++ )
 		{
-			double splineX = (row-S/2.0)/(M-S) * 100.0;
+			double splineX = (row-s/2.0)/(M-S-1) * 100.0;
 			int colorVal = spline.getCubicVal(splineX);
 			
 			if ( colorVal < 0 ) colorVal = 0;
