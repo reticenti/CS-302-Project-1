@@ -15,7 +15,7 @@ using namespace std;
 	const int MSG_LEN = 100;   // the max string length of messages
 
 	const int MAX_IMG = 10000; // the max size you can enlarge to
-	const int MIN_IMG = 5;     // the min size you can reduce to
+	const int MIN_IMG = 4;     // the min size you can reduce to
 
 	const short BG_COLOR = COLOR_BLACK;
 	const short OTHER_COLOR = COLOR_WHITE;	// not displayed, dif than BG_COLOR

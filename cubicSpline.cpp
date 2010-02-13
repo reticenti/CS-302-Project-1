@@ -216,7 +216,7 @@ void cubicSpline::create( int points[], int num )
 \******************************************************************************/
 double cubicSpline::getVal( double x )
 {
-	if ( len = 0 ) return 0; // protects from divide by 0
+	if ( len == 0 ) return 0; // protects from divide by 0
 
 	// define the step size again so we can use it in our calculations
 	double stepsize = 100.0 / len;
