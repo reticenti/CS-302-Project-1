@@ -1,3 +1,4 @@
+#include <iostream>
 #include "cubicSpline.h"
 
 /******************************************************************************\
@@ -117,6 +118,8 @@ cubicSpline::cubicSpline( const cubicSpline& rhs )
  creates a CUBIC spline function for the given points, note that an equal
  distance between nodes is assumed, since this function is being used only
  for images this should be fine since pixels are evenly spaced
+
+ NOTE: This creates a natural cubic spline
 \*****************************************************************************/
 void cubicSpline::createCubic( int points[], int num )
 {
@@ -213,6 +216,8 @@ void cubicSpline::create( int points[], int num )
 \******************************************************************************/
 double cubicSpline::getVal( double x )
 {
+	if ( len = 0 ) return 0; // protects from divide by 0
+
 	// define the step size again so we can use it in our calculations
 	double stepsize = 100.0 / len;
 
@@ -235,6 +240,8 @@ double cubicSpline::getVal( double x )
 \******************************************************************************/
 double cubicSpline::getCubicVal( double x )
 {
+	if ( len2 == 0 ) return 0;  // protects against divide by zero
+
 	// define the step size to be used in the calculation
 	double h = 100.0 / (len2+1);
 
