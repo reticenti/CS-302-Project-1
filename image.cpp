@@ -1,12 +1,11 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <iostream>
-#include "cubicSpline.h"
+#include <cstdlib>
 #include <cmath>
+#include "cubicSpline.h"
+#include "image.h"
 
 using namespace std;
 
-#include "image.h"
 
 /*****************************************************************************\
  default constructor allocates no memory and sets the size to zero 
@@ -173,8 +172,11 @@ void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
  This function enlarges an image by a magnitude of s, so for example if the
  original function was 100x100 and s is 10, then the new image is 1000x1000
 
- The method I choose to use was bicubic interpolation which creates cubic
- splines for each row, then using those splines creates an image 
+ The method I choose to use was bicubic/linear interpolation which creates
+ splines for each row(cubic or linear), then using those splines create an
+ which is a stretched version of the original image.  The way I implemented
+ this was to stretch the entire image only horizontally, and then stretch it
+ vertically to obtain the end result.
 
  if cubic = true then use cubic interpolation
  if cubic = false then use linear interpolation
