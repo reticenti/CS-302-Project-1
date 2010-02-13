@@ -474,7 +474,7 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 				final = old.pixelValue[(int)r][(int)c];
 			}				
 			else {
-				final = 0;
+				final = 0; // black background
 			}
 
 			// make sure final value is not out of bounds
