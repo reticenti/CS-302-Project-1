@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstring>
 #include "image.h"
+#include "imageIO.h"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ using namespace std;
 	const int MSG_LEN = 100;   // the max string length of messages
 
 	const int MAX_IMG = 10000; // the max size you can enlarge to
-	const int MIN_IMG = 5;     // the min size you can reduce to
+	const int MIN_IMG = 4;     // the min size you can reduce to
 
 	const short BG_COLOR = COLOR_BLACK;
 	const short OTHER_COLOR = COLOR_WHITE;	// not displayed, dif than BG_COLOR
@@ -30,11 +31,6 @@ using namespace std;
 	const bool BRIGHT = true;
 
 // FUNCTION PROTOTYPES
-	// read/write functions
-	void readImageHeader( const char[], int&, int&, int&, bool& );
-	void readImage( const char[], ImageType& );
-	void writeImage( const char[], ImageType& );
-
 	// displays the main menu with a message
 	char showMenu( const char[], bool[], char[][NAME_LEN] );
 
@@ -906,7 +902,7 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		y+=2;
 
 		theta = promptForIntAt( x, y, 
-			"Rotate counter-clockwise by angle theta(-1 to cancel):" );
+			"Rotate clockwise by angle theta(-1 to cancel):" );
 
 		while ( ( theta < 1 || theta > 360 ) && theta != -1 )
 		{

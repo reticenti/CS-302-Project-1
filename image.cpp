@@ -6,6 +6,8 @@
 
 using namespace std;
 
+// size of one grid on the background grid
+const int BACKGRID = 25;
 
 /*****************************************************************************\
  default constructor allocates no memory and sets the size to zero 
@@ -88,7 +90,8 @@ void ImageType::getImageInfo(int& rows, int& cols, int& levels) const
 } 
 
 /*****************************************************************************\
- sets the image info, deleting and allocating memory as required
+ sets the image info, deleting and allocating memory as required, also create
+ background grid
 \*****************************************************************************/
 void ImageType::setImageInfo(int rows, int cols, int levels)
 {
@@ -114,17 +117,24 @@ void ImageType::setImageInfo(int rows, int cols, int levels)
 
 		// allocate the columns of pixel value
 		for ( i = 0; i < N; i++ )
-		{
 			pixelValue[i] = new int[M];
-			
-			// set all the values to black
-			for ( j = 0; j < M; j++ )
-				pixelValue[i][j] = 0;
-		}
 	}
-	
+
 	// set Q equal to the levels
 	Q = levels;
+
+	// make a checkered background
+	for ( i = 0; i < N; i++ )
+		for ( j = 0; j < M; j++ )
+		{
+			if ( ( (i%(BACKGRID*2)+1.0) / (BACKGRID*2.0) > 0.5 &&
+				   (j%(BACKGRID*2)+1.0) / (BACKGRID*2.0) <= 0.5 ) ||
+			     ( (i%(BACKGRID*2)+1.0) / (BACKGRID*2.0) <= 0.5 &&
+				   (j%(BACKGRID*2)+1.0) / (BACKGRID*2.0) > 0.5 ) )
+				pixelValue[i][j] = Q/2;
+			else
+				pixelValue[i][j] = Q/3;
+		}
 }
 
 /*****************************************************************************\
@@ -347,27 +357,26 @@ void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc, const ImageType
 
 void ImageType::shrinkImage( int s, const ImageType& old )
 {
-	int offset = 0;
-	int row = 0, col = 0;
-	int total;
-	int num;
+	// used to find average pixel value
+	int total, num;
 
     //make new array with correct size
 	setImageInfo(old.N / s, old.M / s, old.Q);
 
 	//copy over every s pixel
 	for(int i = 0; i < N; i++)
-		for(int j = 0; j < M; j++)
-		{
-			for ( int k = 0; k < s; k++ )
-			{
-				total = num = 0;
-				for ( int l = 0; l < s; l++ )
-				{
-					total += old.pixelValue[i*s+k][j*s+k];
+		for(int j = 0; j < M; j++) {
+			// reset values for averaging
+			total = num = 0;
+
+			// sum the total value of pixels in the row/col
+			for ( int row = i*s; row < (i+1)*s; row++ )
+				for ( int col = j*s; col < (j+1)*s; col++ ) {
+					total += old.pixelValue[row][col];
 					num++;
 				}
-			}
+
+			// set the new pixel value
 			pixelValue[i][j] = total/num;
 		}
 }
@@ -383,25 +392,27 @@ void ImageType::translateImage( int t, const ImageType& old )
 	//go left s pixels
 	//cp current to i+t, j+t
 	for(int i = N - 1; i >= 0 + t; i--)
-		for(int j = M - 1; j >= 0 + t; j--){
-			pixelValue[i][j] = old.pixelValue[i - t][j - t];
-			//make old = 0
-			pixelValue[i - t][j - t] = 0;
-		}
+		for(int j = M - 1; j >= 0 + t; j--)
+			pixelValue[i][j] = old.pixelValue[i-t][j-t];
+		
 }
 
 void ImageType::rotateImage( int theta, const ImageType& old )
 {
 	setImageInfo(old.N, old.M, old.Q);
+	int final;	// holds final pixel value for location
 	float rad = theta * 4 * atan(1.0)/180;
 	double r, c, r_0, c_0;
 	r_0 = N/2.0;
 	c_0 = M/2.0;
 
+	// loops through entire picture, going from dest, to source to prev holes
 	for(int i = 0; i < N; i++){
 		for(int j = 0; j < M; j++){
+			// calculate where the original value should be
 			r = r_0 + (i-r_0)*cos(rad) - (j-c_0)*sin(rad);
 			c = c_0 + (i-r_0)*sin(rad) + (j-c_0)*cos(rad);
+<<<<<<< HEAD:image.cpp
 			if ( r > 0 && ceil(r) < N && c > 0 && ceil(c) < M )
 			{
 				int UL, UR, LL, LR, U, L, final;
@@ -427,6 +438,85 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 			}
 			else
 				pixelValue[i][j] = 0;
+=======
+
+			// only draw a pixel if source value is valid
+			if ( r > 0 && ceil(r) < N && c > 0 && ceil(c) < M ) {
+				// holds various color values
+				int UL, UR, LL, LR, U, D, L, R, Hval, Vval;
+
+				// holds the slopes between different points
+				int USlope, DSlope, LSlope, RSlope, HSlope, VSlope;
+
+				// get four pixel value which surround the desired value
+				UL = old.pixelValue[(int)r][(int)c];
+				UR = old.pixelValue[(int)r][(int)ceil(c)];
+				LL = old.pixelValue[(int)ceil(r)][(int)c];
+				LR = old.pixelValue[(int)ceil(r)][(int)ceil(c)];
+
+				// find the slope of the line between all four corners
+				USlope = UR - UL;
+				DSlope = LR - LL;
+				LSlope = LL - UL;
+				RSlope = LR - UR;
+	
+				// get the intermediate value corresponding with desired r/c val
+				U = UL + USlope*(c - (int)c);
+				D = LL + DSlope*(c - (int)c);
+				L = UL + LSlope*(r - (int)r);
+				R = UR + RSlope*(r - (int)r);
+
+				// get the slop between intermediate values
+				HSlope = D-U;
+				VSlope = R-L;
+
+				// find 2 different color estimations of the desired pixel
+				Hval = U + HSlope*(r - (int)r);
+				Vval = L + VSlope*(c - (int)c);
+
+				// average the estimations
+				final = (Hval + Vval) / 2;
+			}
+			else if ( r > 0 && ceil(r) < N && c > 0 && c < M ) { // right edge
+				int UL, LL, slope;
+
+				// get upper and lower value
+				UL = old.pixelValue[(int)r][(int)c];
+				LL = old.pixelValue[(int)ceil(r)][(int)c];
+
+				// find slope between two values
+				slope = LL - UL;
+
+				// get value of final point
+				final = UL + slope*(r - (int)r);
+			}
+			else if ( r > 0 && r < N && c > 0 && ceil(c) < M ) { // bottom edge
+				int UL, UR, slope;
+
+				// get left and right values
+				UL = old.pixelValue[(int)r][(int)c];
+				UR = old.pixelValue[(int)r][(int)ceil(c)];
+
+				// find slope between two values
+				slope = UR - UL;
+
+				// get value of final point
+				final = UL + slope*(c - (int)c);
+			}
+			else if ( r > 0 && r < N && c > 0 && c < M ) { // lower left
+				// no slopes, just set value
+				final = old.pixelValue[(int)r][(int)c];
+			}				
+			else {
+				final = pixelValue[i][j]; // retain background
+			}
+
+			// make sure final value is not out of bounds
+			if ( final < 0 ) final = 0;
+			if ( final > Q ) final = Q;
+
+			// set final pixel value
+			pixelValue[i][j] = final;
 		}
 	}
 
