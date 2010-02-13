@@ -114,15 +114,14 @@ void ImageType::setImageInfo(int rows, int cols, int levels)
 
 		// allocate the columns of pixel value
 		for ( i = 0; i < N; i++ )
-		{
 			pixelValue[i] = new int[M];
-			
-			// set all the values to black
-			for ( j = 0; j < M; j++ )
-				pixelValue[i][j] = 0;
-		}
 	}
-	
+
+	// make sure image starts totally black
+	for ( i = 0; i < N; i++ )
+		for ( j = 0; j < M; j++ )
+			pixelValue[i][j] = 0;
+
 	// set Q equal to the levels
 	Q = levels;
 }
@@ -347,27 +346,26 @@ void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc, const ImageType
 
 void ImageType::shrinkImage( int s, const ImageType& old )
 {
-	int offset = 0;
-	int row = 0, col = 0;
-	int total;
-	int num;
+	// used to find average pixel value
+	int total, num;
 
     //make new array with correct size
 	setImageInfo(old.N / s, old.M / s, old.Q);
 
 	//copy over every s pixel
 	for(int i = 0; i < N; i++)
-		for(int j = 0; j < M; j++)
-		{
-			for ( int k = 0; k < s; k++ )
-			{
-				total = num = 0;
-				for ( int l = 0; l < s; l++ )
-				{
-					total += old.pixelValue[i*s+k][j*s+k];
+		for(int j = 0; j < M; j++) {
+			// reset values for averaging
+			total = num = 0;
+
+			// sum the total value of pixels in the row/col
+			for ( int row = i*s; row < (i+1)*s; row++ )
+				for ( int col = j*s; col < (j+1)*s; col++ ) {
+					total += old.pixelValue[row][col];
 					num++;
 				}
-			}
+
+			// set the new pixel value
 			pixelValue[i][j] = total/num;
 		}
 }
