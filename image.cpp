@@ -412,33 +412,6 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 			// calculate where the original value should be
 			r = r_0 + (i-r_0)*cos(rad) - (j-c_0)*sin(rad);
 			c = c_0 + (i-r_0)*sin(rad) + (j-c_0)*cos(rad);
-<<<<<<< HEAD:image.cpp
-			if ( r > 0 && ceil(r) < N && c > 0 && ceil(c) < M )
-			{
-				int UL, UR, LL, LR, U, L, final;
-				int USlope, LSlope, HSlope;
-
-				UL = old.pixelValue[(int)r][(int)c];
-				UR = old.pixelValue[(int)r][(int)ceil(c)];
-
-				LL = old.pixelValue[(int)ceil(r)][(int)c];
-				LR = old.pixelValue[(int)ceil(r)][(int)ceil(c)];
-
-				USlope = UR - UL;
-				LSlope = LR - LL;
-
-				U = UL + USlope*(c - (int)c);
-				L = LL + LSlope*(c - (int)c);
-
-				HSlope = L-U;
-
-				final = U + HSlope*(r - (int)r);
-
-				pixelValue[i][j] = final; //old.pixelValue[r][c];
-			}
-			else
-				pixelValue[i][j] = 0;
-=======
 
 			// only draw a pixel if source value is valid
 			if ( r > 0 && ceil(r) < N && c > 0 && ceil(c) < M ) {
