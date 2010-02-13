@@ -906,7 +906,7 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		y+=2;
 
 		theta = promptForIntAt( x, y, 
-			"Rotate counter-clockwise by angle theta(-1 to cancel):" );
+			"Rotate clockwise by angle theta(-1 to cancel):" );
 
 		while ( ( theta < 1 || theta > 360 ) && theta != -1 )
 		{
