@@ -366,15 +366,19 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 void ImageType::reflectImage( bool flag, const ImageType& old )
 {
 	setImageInfo( old.N, old.M, old.Q );
-	
+
+	// if flag is set copy opposite row, if not copy opposite column
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
-			pixelValue[i][j] = ( flag ? old.pixelValue[i][M-j-1] : old.pixelValue[N-i-1][j] );
+			if ( flag )
+				pixelValue[i][j] = old.pixelValue[i][M-j-1];
+			else
+				pixelValue[i][j] = old.pixelValue[N-i-1][j];
 }
 
 /******************************************************************************\
  subtract two images from eachother to see the differences, if the magnitude of
- the difference is less then Q/10 then the pixel is replaced with black,
+ the difference is less then Q/9 then the pixel is replaced with black,
  otherwise white is used.
 \******************************************************************************/
 ImageType& ImageType::operator- ( const ImageType& rhs )
@@ -382,15 +386,16 @@ ImageType& ImageType::operator- ( const ImageType& rhs )
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 		{
+			// calculate subtracted value
 			pixelValue[i][j] = abs(pixelValue[i][j] - rhs.pixelValue[i][j]);
 
-			// if pixels are less than Q/10 different then make them black
-			if ( pixelValue[i][j] < Q/10 )
+			// if pixels are less than Q/9 different then make them black
+			if ( pixelValue[i][j] < Q/9 )
 				pixelValue[i][j] = 0;
 			else
 				pixelValue[i][j] = Q; 
 		}
-	return *this;	// temp return value
+	return *this;	// return current object
 }
 
 /******************************************************************************\
@@ -472,9 +477,21 @@ void ImageType::translateImage( int t, const ImageType& old )
 void ImageType::rotateImage( int theta, const ImageType& old )
 {
 	setImageInfo(old.N, old.M, old.Q);
-	int final;	// holds final pixel value for location
+	int final;	// holds final color value for given location
+	
+	// holds various color values
+	int UL, UR, LL, LR, U, D, L, R, Hval, Vval;
+
+	// holds the slopes between different points
+	int USlope, DSlope, LSlope, RSlope, HSlope, VSlope;
+
+	// 4 * atan(1) = pi
 	float rad = theta * 4 * atan(1.0)/180;
+
+	// row, column, middle row, middle column
 	double r, c, r_0, c_0;
+
+	// set middle values
 	r_0 = N/2.0;
 	c_0 = M/2.0;
 
@@ -485,14 +502,8 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 			r = r_0 + (i-r_0)*cos(rad) - (j-c_0)*sin(rad);
 			c = c_0 + (i-r_0)*sin(rad) + (j-c_0)*cos(rad);
 
-			// only draw a pixel if source value is valid
+			// only draw a pixel if source value is in range
 			if ( r > 0 && ceil(r) < N && c > 0 && ceil(c) < M ) {
-				// holds various color values
-				int UL, UR, LL, LR, U, D, L, R, Hval, Vval;
-
-				// holds the slopes between different points
-				int USlope, DSlope, LSlope, RSlope, HSlope, VSlope;
-
 				// get four pixel value which surround the desired value
 				UL = old.pixelValue[(int)r][(int)c];
 				UR = old.pixelValue[(int)r][(int)ceil(c)];
@@ -523,40 +534,36 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 				final = (Hval + Vval) / 2;
 			}
 			else if ( r > 0 && ceil(r) < N && c > 0 && c < M ) { // right edge
-				int UL, LL, slope;
-
 				// get upper and lower value
 				UL = old.pixelValue[(int)r][(int)c];
 				LL = old.pixelValue[(int)ceil(r)][(int)c];
 
 				// find slope between two values
-				slope = LL - UL;
+				LSlope = LL - UL;
 
 				// get value of final point
-				final = UL + slope*(r - (int)r);
+				final = UL + LSlope*(r - (int)r);
 			}
 			else if ( r > 0 && r < N && c > 0 && ceil(c) < M ) { // bottom edge
-				int UL, UR, slope;
-
 				// get left and right values
 				UL = old.pixelValue[(int)r][(int)c];
 				UR = old.pixelValue[(int)r][(int)ceil(c)];
 
 				// find slope between two values
-				slope = UR - UL;
+				USlope = UR - UL;
 
 				// get value of final point
-				final = UL + slope*(c - (int)c);
+				final = UL + USlope*(c - (int)c);
 			}
-			else if ( r > 0 && r < N && c > 0 && c < M ) { // lower left
+			else if ( r > 0 && r < N && c > 0 && c < M ) { // lower right
 				// no slopes, just set value
 				final = old.pixelValue[(int)r][(int)c];
 			}				
-			else {
+			else { // no value here
 				final = pixelValue[i][j]; // retain background
 			}
 
-			// make sure final value is not out of bounds
+			// make sure final value is not out of color bounds
 			if ( final < 0 ) final = 0;
 			if ( final > Q ) final = Q;
 
@@ -586,6 +593,6 @@ ImageType& ImageType::operator+ ( const ImageType& rhs )
 		}
 	}
 
-	return *this;	// temp return value
+	return *this;	// return current object
 }
 
