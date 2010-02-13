@@ -6,6 +6,8 @@
 
 using namespace std;
 
+// size of one grid on the background grid
+const int BACKGRID = 25;
 
 /*****************************************************************************\
  default constructor allocates no memory and sets the size to zero 
@@ -88,7 +90,8 @@ void ImageType::getImageInfo(int& rows, int& cols, int& levels) const
 } 
 
 /*****************************************************************************\
- sets the image info, deleting and allocating memory as required
+ sets the image info, deleting and allocating memory as required, also create
+ background grid
 \*****************************************************************************/
 void ImageType::setImageInfo(int rows, int cols, int levels)
 {
@@ -117,13 +120,21 @@ void ImageType::setImageInfo(int rows, int cols, int levels)
 			pixelValue[i] = new int[M];
 	}
 
-	// make sure image starts totally black
-	for ( i = 0; i < N; i++ )
-		for ( j = 0; j < M; j++ )
-			pixelValue[i][j] = 0;
-
 	// set Q equal to the levels
 	Q = levels;
+
+	// make a checkered background
+	for ( i = 0; i < N; i++ )
+		for ( j = 0; j < M; j++ )
+		{
+			if ( ( (i%(BACKGRID*2)+1.0) / (BACKGRID*2.0) > 0.5 &&
+				   (j%(BACKGRID*2)+1.0) / (BACKGRID*2.0) <= 0.5 ) ||
+			     ( (i%(BACKGRID*2)+1.0) / (BACKGRID*2.0) <= 0.5 &&
+				   (j%(BACKGRID*2)+1.0) / (BACKGRID*2.0) > 0.5 ) )
+				pixelValue[i][j] = Q/2;
+			else
+				pixelValue[i][j] = Q/3;
+		}
 }
 
 /*****************************************************************************\
@@ -381,11 +392,9 @@ void ImageType::translateImage( int t, const ImageType& old )
 	//go left s pixels
 	//cp current to i+t, j+t
 	for(int i = N - 1; i >= 0 + t; i--)
-		for(int j = M - 1; j >= 0 + t; j--){
-			pixelValue[i][j] = old.pixelValue[i - t][j - t];
-			//make old = 0
-			pixelValue[i - t][j - t] = 0;
-		}
+		for(int j = M - 1; j >= 0 + t; j--)
+			pixelValue[i][j] = old.pixelValue[i-t][j-t];
+		
 }
 
 void ImageType::rotateImage( int theta, const ImageType& old )
@@ -472,7 +481,7 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 				final = old.pixelValue[(int)r][(int)c];
 			}				
 			else {
-				final = 0; // black background
+				final = pixelValue[i][j]; // retain background
 			}
 
 			// make sure final value is not out of bounds
