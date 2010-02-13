@@ -348,18 +348,28 @@ void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc, const ImageType
 void ImageType::shrinkImage( int s, const ImageType& old )
 {
 	int offset = 0;
-        int row = 0, col = 0;
+	int row = 0, col = 0;
+	int total;
+	int num;
 
-        //make new array with correct size
-        setImageInfo(old.N / s, old.M / s, old.Q);
+    //make new array with correct size
+	setImageInfo(old.N / s, old.M / s, old.Q);
 
-        //copy over every s pixel
-        for(int i = 0; i < N; i++){
-                for(int j = 0; j < M; j++){
-                        pixelValue[i][j] = old.pixelValue[i*s][j*s];
-                }
-        }
-
+	//copy over every s pixel
+	for(int i = 0; i < N; i++)
+		for(int j = 0; j < M; j++)
+		{
+			for ( int k = 0; k < s; k++ )
+			{
+				total = num = 0;
+				for ( int l = 0; l < s; l++ )
+				{
+					total += old.pixelValue[i*s+k][j*s+k];
+					num++;
+				}
+			}
+			pixelValue[i][j] = total/num;
+		}
 }
 
 void ImageType::translateImage( int t, const ImageType& old )
@@ -383,17 +393,40 @@ void ImageType::translateImage( int t, const ImageType& old )
 void ImageType::rotateImage( int theta, const ImageType& old )
 {
 	setImageInfo(old.N, old.M, old.Q);
-	float rad = theta * 3.14159265/180;
-	int r, c, r_0, c_0;
-	r_0 = N/2;
-	c_0 = M/2;
+	float rad = theta * 4 * atan(1.0)/180;
+	double r, c, r_0, c_0;
+	r_0 = N/2.0;
+	c_0 = M/2.0;
 
 	for(int i = 0; i < N; i++){
 		for(int j = 0; j < M; j++){
 			r = r_0 + (i-r_0)*cos(rad) - (j-c_0)*sin(rad);
 			c = c_0 + (i-r_0)*sin(rad) + (j-c_0)*cos(rad);
-			if ( r > 0 && r < N && c > 0 && c < M )
-				pixelValue[i][j] = old.pixelValue[r][c];
+			if ( r > 0 && ceil(r) < N && c > 0 && ceil(c) < M )
+			{
+				int UL, UR, LL, LR, U, L, final;
+				int USlope, LSlope, HSlope;
+
+				UL = old.pixelValue[(int)r][(int)c];
+				UR = old.pixelValue[(int)r][(int)ceil(c)];
+
+				LL = old.pixelValue[(int)ceil(r)][(int)c];
+				LR = old.pixelValue[(int)ceil(r)][(int)ceil(c)];
+
+				USlope = UR - UL;
+				LSlope = LR - LL;
+
+				U = UL + USlope*(c - (int)c);
+				L = LL + LSlope*(c - (int)c);
+
+				HSlope = L-U;
+
+				final = U + HSlope*(r - (int)r);
+
+				pixelValue[i][j] = final; //old.pixelValue[r][c];
+			}
+			else
+				pixelValue[i][j] = 0;
 		}
 	}
 
