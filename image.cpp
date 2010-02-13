@@ -146,7 +146,6 @@ int ImageType::getPixelVal(int i, int j) const
 
 /****************************Josh's functions**********************************/
 
-
 /*****************************************************************************\
  this calculates the average gray value in the picture, this is done by adding
  all of the pixels and dividing by the total number of pixels
@@ -175,145 +174,104 @@ void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
  original function was 100x100 and s is 10, then the new image is 1000x1000
 
  The method I choose to use was bicubic interpolation which creates cubic
- splines for each row and column, the splines are then used to approximate the
- value of the pixels on the larger image.  This is possible because the spline
- function is a continuous function and is therefore defined at every point.
+ splines for each row, then using those splines creates an image 
 
  if cubic = true then use cubic interpolation
  if cubic = false then use linear interpolation
 \******************************************************************************/
 void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 {
-	int s = S;
-
-	// set the new image info
-	setImageInfo( (int)(old.N * S), (int)(old.M * S), old.Q );
-
-	// horizontal and vertical, sum them at the end
-	ImageType horiz;
-	ImageType vert;
-
-	horiz.setImageInfo(N, M, Q);
-	vert.setImageInfo(N, M, Q);
+	// slightly modify S to make it a better value for spline
+	S = (double)((int)(old.M*S))/old.M;
 	
+	// scale size rounded to integer value
+	int s = S+0.5;	
+	int colorVal;	// used to hold the calculated color value
+	double splineX; // the x value passed to the spline function
+
+	int *horizVals = new int[old.M];	// holds points for spline
+	int *vertVals = new int[old.N];		// holds points for spline
+
+	// temporary image used to stretch before interpolating across rows
+	ImageType temp;
+
+	// this is the spline object used to store the spline values
 	cubicSpline spline;
 
-	int *rowVals = new int[old.M];
-	int *colVals = new int[old.N];
+	// set the new image to the
+	setImageInfo( old.N * S, old.M * S, old.Q );
 
-	// create horizontal bars first
-	for ( int i = 0; i < old.N; i++ )
+	// set temp to a stretched horizontally only
+	temp.setImageInfo( old.N, M, old.Q );
+
+	// stretch old image horizontally and store in temp
+	for ( int row = 0; row < old.N; row++ )
 	{
-		for ( int j = 0; j < old.M; j++ )
-			rowVals[j] = old.pixelValue[i][j];
+		// get the values used to create the spline for the row
+		for ( int col = 0; col < old.M; col++ )
+			horizVals[col] = old.pixelValue[row][col];
 
+		// actually create the spline (assumed the pixels are equally spaced)
 		if ( cubic )
-			spline.createCubic( rowVals, old.M );
+			spline.createCubic( horizVals, old.M );
 		else
-			spline.create( rowVals, old.M );
+			spline.create( horizVals, old.M );
 
-		for ( int j = 0; j < M; j++ )
+		// using the spline set the values of temp
+		for ( int col = 0; col < M; col++ )
 		{
-			int row = ((double)(i)/(old.N)*(N-1))+S/2;
-
-			if ( cubic )
-				horiz.pixelValue[row][j] = spline.getCubicVal( (j-S/2)/(M-S-1) * 100.0 );
-			else
-				horiz.pixelValue[row][j] = spline.getVal( (j-S/2)/(M-S-1) * 100.0 );
-
-			if ( horiz.pixelValue[row][j] > Q ) horiz.pixelValue[row][j] = Q;
-			if ( horiz.pixelValue[row][j] < 0 ) horiz.pixelValue[row][j] = 0;
-		}
-	}
-
-	// now create vertical bars
-	for ( int j = 0; j < old.M; j++ )
-	{
-		for ( int i = 0; i < old.N; i++ )
-			colVals[i] = old.pixelValue[i][j];
-
-		if ( cubic )
-			spline.createCubic( colVals, old.N );
-		else
-			spline.create( colVals, old.N );
-
-		for ( int i = 0; i < N; i++ )
-		{
-			int col = (double)(j)/(old.M)*(M-1)+S/2;
-
-			if ( cubic )
-				horiz.pixelValue[i][col] = spline.getCubicVal( (i-S/2)/(N-S-1) * 100.0 );
-			else
-				horiz.pixelValue[i][col] = spline.getVal( (i-S/2)/(N-S-1) * 100.0 );
-
-			if ( horiz.pixelValue[i][col] > Q ) horiz.pixelValue[i][col] = Q;
-			if ( horiz.pixelValue[i][col] < 0 ) horiz.pixelValue[i][col] = 0;
-		}
-	}
-	
-	// if the image is being enlarged then we need to fill stuff in
-	if ( S >= 1.0 )
-	{
-		// count accross columns filling them in based on completed rows
-		for ( int j = 0; j < M; j++ )
-		{	
-			for ( int i = 0; i < old.N; i++ )
-			{
-				int row = (double)(i)/(old.N)*(N-1)+S/2;
-				colVals[i] = horiz.pixelValue[row][j];
-			}
-
-			if ( cubic )
-				spline.createCubic( colVals, old.N );
-			else
-				spline.create( colVals, old.N );
-
-			for ( int i = 0; i < N; i++ )
-			{
-				if ( cubic )
-					horiz.pixelValue[i][j] = spline.getCubicVal( (i-S/2)/(N-S-1) * 100.0 );
-				else
-					horiz.pixelValue[i][j] = spline.getVal( (i-S/2)/(N-S-1) * 100.0 );
-
-				if ( horiz.pixelValue[i][j] > Q ) horiz.pixelValue[i][j] = Q;
-				if ( horiz.pixelValue[i][j] < 0 ) horiz.pixelValue[i][j] = 0;
-			}
-		}
-
-		// count accross columns filling them in based on completed rows
-		for ( int i = 0; i < N; i++ )
-		{	
-			for ( int j = 0; j < old.M; j++ )
-			{
-				int col = (double)(j)/(old.M)*(M-1)+S/2;
-				rowVals[j] = horiz.pixelValue[i][col];
-			}
+			// value to pull from spline for current j
+			double splineX = (col-S/2.0)/(M-S-1.0) * 100.0;
+			int colorVal;
 			
 			if ( cubic )
-				spline.createCubic( rowVals, old.M );
+				colorVal = spline.getCubicVal(splineX);
 			else
-				spline.create( rowVals, old.M );
+				colorVal = spline.getVal(splineX);
+			
+			// NOTE: don't clip values yet, it causes problems...
 
-			for ( int j = 0; j < M; j++ )
-			{
-				if ( cubic )
-					horiz.pixelValue[i][j] += spline.getCubicVal( (j-S/2)/(M-S-1) * 100.0 );
-				else
-					horiz.pixelValue[i][j] += spline.getVal( (j-S/2)/(M-S-1) * 100.0 );
-				
-				horiz.pixelValue[i][j] /= 2;
-
-				if ( horiz.pixelValue[i][j] > Q ) horiz.pixelValue[i][j] = Q;
-				if ( horiz.pixelValue[i][j] < 0 ) horiz.pixelValue[i][j] = 0;
-			}
+			temp.pixelValue[row][col] = colorVal;
 		}
-
 	}
-	
-	*this = horiz;//+vert;
 
-	delete [] rowVals;
-	delete [] colVals;
+	// now stretch temp vertically and store in new image
+	for ( int col = 0; col < M; col++ )
+	{
+		// get the values used to create the spline for the column
+		for ( int row = 0; row < old.N; row++ )
+			vertVals[row] = temp.pixelValue[row][col];
+
+		// actually create the spline (cubic if parameter is true)
+		if ( cubic )
+			spline.createCubic( vertVals, old.N );
+		else
+			spline.create( vertVals, old.N );
+
+		// using the spline set the values
+		for ( int row = 0 ; row < N; row++ )
+		{
+			double splineX = (row-S/2.0)/(N-S-1.0) * 100.0;
+			int colorVal;
+			
+			// obtain new color from spline value
+			if ( cubic )
+				colorVal = spline.getCubicVal(splineX);
+			else
+				colorVal = spline.getVal(splineX);
+			
+			// clip the color if it goes out of bounds
+			if ( colorVal < 0 ) colorVal = 0;
+			if ( colorVal > Q ) colorVal = Q;
+
+			// set the final pixel value
+			pixelValue[row][col] = colorVal;
+		}
+	}
+
+	// de-allocate all that memory
+	delete [] horizVals;
+	delete [] vertVals;
 }
 
 /******************************************************************************\
