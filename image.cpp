@@ -424,7 +424,7 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 {
 	setImageInfo(old.N, old.M, old.Q);
 	float rad = theta * 3.14159265/180;
-	int r, c, r_0, c_0;
+	float r, c, r_0, c_0;
 	r_0 = N/2;
 	c_0 = M/2;
 
@@ -433,7 +433,15 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 			r = r_0 + (i-r_0)*cos(rad) - (j-c_0)*sin(rad);
 			c = c_0 + (i-r_0)*sin(rad) + (j-c_0)*cos(rad);
 			if ( r > 0 && r < N && c > 0 && c < M )
-				pixelValue[i][j] = old.pixelValue[r][c];
+				pixelValue[i][j] = old.pixelValue[(int)r][(int)c];
+			if ( r > 0 && r < N + 1 && c > 0 && c < M + 1 )
+				pixelValue[i][j] = old.pixelValue[(int)ceil(r)][(int)ceil(c)];
+
+			if ( r > 0 && r < N + 1 && c > 0 && c < M )
+				pixelValue[i][j] = old.pixelValue[(int)ceil(r)][(int)c];
+
+			if ( r > 0 && r < N && c > 0 && c < M + 1)
+				pixelValue[i][j] = old.pixelValue[(int)r][(int)ceil(c)];
 		}
 	}
 
