@@ -27,11 +27,10 @@ ImageType::ImageType()
 \*****************************************************************************/
 ImageType::~ImageType()
 {
-	int i;
 	if ( pixelValue != NULL )
 	{
 		// delete all the memory for the array
-		for ( i = 0; i < N; i++ )
+		for ( int i = 0; i < N; i++ )
 			delete [] pixelValue[i];
 		delete [] pixelValue;
 	}
@@ -51,13 +50,11 @@ ImageType::ImageType(int tmpN, int tmpM, int tmpQ)
 \*****************************************************************************/
 ImageType::ImageType( const ImageType& rhs )
 {
-	int i, j;
-	
 	// set the info to the new image data
 	setImageInfo( rhs.N, rhs.M, rhs.Q );
 
-	for ( i = 0; i < N; i++ )
-		for ( j = 0; j < M; j++ )
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
 			pixelValue[i][j] = rhs.pixelValue[i][j];
 }
 
@@ -68,12 +65,11 @@ ImageType::ImageType( const ImageType& rhs )
 \*****************************************************************************/
 ImageType& ImageType::operator= ( const ImageType& rhs )
 {
-	int i, j;
-
 	setImageInfo( rhs.N, rhs.M, rhs.Q );
 
-	for ( i = 0; i < N; i++ )
-		for ( j = 0; j < M; j++ )
+	// copy pixel values
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
 			pixelValue[i][j] = rhs.pixelValue[i][j];
 
 	return *this;
@@ -95,15 +91,13 @@ void ImageType::getImageInfo(int& rows, int& cols, int& levels) const
 \*****************************************************************************/
 void ImageType::setImageInfo(int rows, int cols, int levels)
 {
-	int i, j;
-
 	// re-allocate the integer array if the size changes
 	if ( N != rows && M != cols )
 	{
 		// delete memory if not NULL
 		if ( pixelValue != NULL )
 		{
-			for ( i = 0; i < N; i++ )
+			for ( int i = 0; i < N; i++ )
 				delete [] pixelValue[i];
 			delete [] pixelValue;
 		}
@@ -116,7 +110,7 @@ void ImageType::setImageInfo(int rows, int cols, int levels)
 		pixelValue = new int* [N];
 
 		// allocate the columns of pixel value
-		for ( i = 0; i < N; i++ )
+		for ( int i = 0; i < N; i++ )
 			pixelValue[i] = new int[M];
 	}
 
@@ -124,8 +118,8 @@ void ImageType::setImageInfo(int rows, int cols, int levels)
 	Q = levels;
 
 	// make a checkered background
-	for ( i = 0; i < N; i++ )
-		for ( j = 0; j < M; j++ )
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
 		{
 			if ( ( (i%(BACKGRID*2)+1.0) / (BACKGRID*2.0) > 0.5 &&
 				   (j%(BACKGRID*2)+1.0) / (BACKGRID*2.0) <= 0.5 ) ||
@@ -167,6 +161,7 @@ double ImageType::meanGray() const
 		for ( int j = 0; j < M; j++ )
 			gray += pixelValue[i][j];
 
+	// return 0 if there are no pixels
 	return ( M*N != 0 ? gray/(M*N) : 0 );
 }
 
@@ -175,6 +170,7 @@ double ImageType::meanGray() const
 \******************************************************************************/
 void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
 {
+	// call double version of enlarge
 	enlargeImage( (double)S, old, cubic );
 }
 
@@ -188,7 +184,8 @@ void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
  this was to stretch the entire image only vertically, and then stretch that
  image horizontally.  I did the same thing except reversed (stretched image
  horizontally first) and then summed the two images together.  This gives an
- average value between both methods.
+ average value between both methods.  Although it can handle S values less
+ than 1, the shrinkImage function works better for this.
 
  if cubic = true then use cubic interpolation
  if cubic = false then use linear interpolation
@@ -237,8 +234,8 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 		for ( int row = 0; row < N; row++ )
 		{
 			// value to pull from spline for current row
-			double splineX = (row-Svert/2.0)/(N-Svert-1.0) * 100.0;
-			int colorVal;
+			splineX = (row-Svert/2.0)/(N-Svert-1.0) * 100.0;
+			colorVal;
 			
 			if ( cubic )
 				colorVal = spline.getCubicVal(splineX);
@@ -267,8 +264,8 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 		// using the spline set the values
 		for ( int col = 0 ; col < M; col++ )
 		{
-			double splineX = (col-Shoriz/2.0)/(M-Shoriz-1.0) * 100.0;
-			int colorVal;
+			splineX = (col-Shoriz/2.0)/(M-Shoriz-1.0) * 100.0;
+			colorVal;
 			
 			// obtain new color from spline value
 			if ( cubic )
@@ -301,9 +298,9 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 		// using the spline set the values of temp
 		for ( int col = 0; col < M; col++ )
 		{
-			// value to pull from spline for current j
-			double splineX = (col-Shoriz/2.0)/(M-Shoriz-1.0) * 100.0;
-			int colorVal;
+			// value to pull from spline for current col
+			splineX = (col-Shoriz/2.0)/(M-Shoriz-1.0) * 100.0;
+			colorVal;
 			
 			if ( cubic )
 				colorVal = spline.getCubicVal(splineX);
@@ -332,8 +329,8 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 		// using the spline set the values
 		for ( int row = 0 ; row < N; row++ )
 		{
-			double splineX = (row-Svert/2.0)/(N-Svert-1.0) * 100.0;
-			int colorVal;
+			splineX = (row-Svert/2.0)/(N-Svert-1.0) * 100.0;
+			colorVal;
 			
 			// obtain new color from spline value
 			if ( cubic )
@@ -586,9 +583,7 @@ ImageType& ImageType::operator+ ( const ImageType& rhs )
 	//the general formula is aI1(r,c)+(1-a)I2(r,c)
 	for(int i = 0; i < N; i++){
 		for(int j = 0; j < M; j++){
-			//I don't know yet if I need to type cast it, I dont think so
-			//(float)pixelValue[i][j]*a + (1.0 - a)*(float)rhs[i][j];
-			//It turns out that c++ is smart enough to type cast for me
+			// set new pixel value
 			pixelValue[i][j] = pixelValue[i][j]*a + (1.0 - a)*rhs.pixelValue[i][j];
 		}
 	}

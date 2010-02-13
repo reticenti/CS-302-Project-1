@@ -11,7 +11,7 @@ using namespace std;
 // CONSTANTS
 	const bool CUBIC_INTER = true;
 
-	const int REGS = 3;	   // values 1-9
+	const int REGS = 9;	   // values 1-9
 	const int NAME_LEN = 50;   // the max string length of names
 	const int MSG_LEN = 100;   // the max string length of messages
 
