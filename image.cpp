@@ -423,7 +423,7 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 
 				final = U + HSlope*(r - (int)r);
 
-				pixelValue[i][j] = final; //old.pixelValue[r][c];
+				pixelValue[i][j] = final;
 			}
 			else
 				pixelValue[i][j] = 0;
