@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstring>
 #include "image.h"
+#include "imageIO.h"
 
 using namespace std;
 
@@ -30,11 +31,6 @@ using namespace std;
 	const bool BRIGHT = true;
 
 // FUNCTION PROTOTYPES
-	// read/write functions
-	void readImageHeader( const char[], int&, int&, int&, bool& );
-	void readImage( const char[], ImageType& );
-	void writeImage( const char[], ImageType& );
-
 	// displays the main menu with a message
 	char showMenu( const char[], bool[], char[][NAME_LEN] );
 
