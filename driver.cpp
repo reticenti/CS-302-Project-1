@@ -641,6 +641,8 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		{
 			temp.getSubImage( ULr, ULc, LRr, LRc, img[index] );
 
+			writeImage( "OUTPUT.pgm", temp );
+
 			img[index] = temp;
 
 			// adds modified to register name
