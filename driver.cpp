@@ -17,6 +17,9 @@ using namespace std;
 	const int NAME_LEN = 50;   	// the max string length of names
 	const int MSG_LEN = 100;   	// the max string length of messages
 
+	const int MSGBOX_WIDTH = 60;
+	const int MSGBOX_HEIGHT = 4;
+
 	const int MAX_IMG = 10000; 	// the max size you can enlarge to
 	const int MIN_IMG = 4;     	// the min size you can reduce to
 
@@ -52,6 +55,7 @@ using namespace std;
 	int promptForScaleValue( const char[], const char[], int );
 	char promptForMirror( const char[], const char[] );
 	int promptForAngle( const char[], const char[] );
+	void messageBox( const char[], const char[] );
 
 	// fills registers based on parameters
 	void fillRegs( ImageType[], bool[], char[][NAME_LEN], int, char** );
@@ -140,6 +144,10 @@ int main( int argc, char **argv )
 		{
 			// this is the main driving function that calls all others
 			processEntry( image, imgLoaded, imgName, choice );
+		}
+		catch( string err )
+		{
+			messageBox( "Error!", err.c_str() );
 		}
 		catch( ... )
 		{
@@ -1028,18 +1036,22 @@ int promptForScaleValue( const char title[], const char prompt[], int maxVal )
 void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 {
 	int N, M, Q, x, y;
+	char msg[NAME_LEN];
 	WINDOW *pixWin;
 	row = -1;
 	col = -1;
 	img.getImageInfo( N, M, Q );
 
-	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	drawWindow( pixWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, screenHeight()/2-3, screenWidth()/2-30 );
 
 	row = promptForInt( pixWin, 1, 2, "Enter pixel row(-1 to cancel): " );
 	while ( row < -1 || row >= N )
 	{
+		sprintf( msg, "Invalid Row, must be (0-%i)", N );
+		messageBox( "Invalid Row", msg );
+
 		// clear the line
-		for ( int i = 1; i < screenWidth()/2-4; i++ )
+		for ( int i = 1; i < MSGBOX_WIDTH-1; i++ )
 			mvwaddch( pixWin, 1, i, ' ' );
 
 		// re-prompt user
@@ -1051,13 +1063,36 @@ void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 		col = promptForInt( pixWin, 2, 2, "Enter pixel column(-1 to cancel): " );
 		while ( col < -1 || col >= M )
 		{
-			for ( int i = 1; i < screenWidth()/2-4; i++ )
+			// show message box warning
+			sprintf( msg, "Invalid Column, must be (0-%i)", M );
+			messageBox( "Invalid Column", msg );
+
+			// reprint the upper line
+			mvwprintw( pixWin, 1, 2, "Enter pixel row(-1 to cancel): %i", row );
+
+			for ( int i = 1; i < MSGBOX_WIDTH-1; i++ )
 				mvwaddch( pixWin, 2, i, ' ' );
 			col = promptForInt( pixWin, 2, 2, "Enter pixel column(-1 to cancel): " );
 		}
 	}
 
 	delwin( pixWin );
+}
+
+void messageBox( const char title[], const char msg[] )
+{
+	WINDOW *msgBox;
+	int input;
+
+	drawWindow( msgBox, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+
+	mvwaddstr( msgBox, 1, 2, msg );
+
+	do {
+		input = wgetch( msgBox );
+	} while ( input != KEY_RETURN );
+
+	delwin( msgBox );
 }
 
 int findLocalPGM( char **&filenames )
