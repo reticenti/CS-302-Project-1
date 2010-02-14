@@ -207,7 +207,8 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 		}
 
 		// set mode to highlight
-		wattron( menu, A_STANDOUT );
+//		wattron( menu, A_STANDOUT );
+		setColor( menu, MENU_BACKGROUND, MENU_FOREGROUND );
 		y = 2 + menuLoc*2;
 
 		// highlight current selection
@@ -222,7 +223,8 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 		          input != KEY_RETURN );
 		
 		// dont highlight for now
-		wattroff( menu, A_STANDOUT );
+//		wattroff( menu, A_STANDOUT );
+		setColor( menu, MENU_FOREGROUND, MENU_BACKGROUND );
 
 		// unhighlight current option
 		mvwprintw( menu, y, x, formatStr, menuStr[choiceLoc] );
@@ -319,7 +321,7 @@ void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN], int ch
 			saveImage( img, loaded, name );
 			break;
 		case 2:	// image info
-//			getImageInfo( img, loaded, name );
+			getImageInfo( img, loaded, name );
 			break;
 		case 3:	// set pixel val
 //			setPixel( img, loaded, name );
@@ -469,6 +471,9 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			loaded[index] = true;
 			strcpy( name[index], menuChoices[imageVal] );
 		}
+
+		// de-allocate fileMenu
+		delwin( fileMenu );
 	}
 
 	// de-allocate list of menuChoices
@@ -495,44 +500,44 @@ void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		delete [] strInput;
 	}
 }
-/*
+
 void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int N, M, Q, index, x, y;
+	WINDOW *infoWin;
 
-	index = promptForReg( "Get Image Info", loaded );
+	index = promptForReg( "Get Image Info", loaded, name );
 	
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
-		setColor( OTHER_COLOR, BG_COLOR, BRIGHT );
-		clearScreen();
-
 		img[index].getImageInfo( N, M, Q );
 
-		x = screenWidth() / 2 - 20;
-		y = screenHeight() / 2 - 5;
-
-		drawWindow( name[index], x, y, 40, 10 );
-
-		x+=2;
-		y+=2;
+		drawWindow( infoWin, name[index], 14, 40, screenHeight()/2-7, screenWidth()/2-20 );
+	
+		x = 2;
+		y = 2;
 		
-		printStringAt( x, y, "Saved in Register :", "LEFT" );
-		printIntAt( x+22, y, index+1, "LEFT" ); y++;
-		printStringAt( x, y, "Image Width       :", "LEFT" );
-		printIntAt( x+22, y, M, "LEFT" ); y++;
-		printStringAt( x, y, "Image Height      :", "LEFT" );
-		printIntAt( x+22, y, N, "LEFT" ); y++;
-		printStringAt( x, y, "Color Depth       :", "LEFT" );
-		printIntAt( x+22, y, Q, "LEFT" ); y++;
-		printStringAt( x, y, "Mean Gray value   :", "LEFT" );
-		printIntAt( x+22, y, img[index].meanGray(), "LEFT" ); y+=2;
-		printStringAt( x, y, "Press any key to continue...", "LEFT" );
-		refresh();
-		waitForInput( FIXED_WAIT );
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Saved in Register", ':', index+1 );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Image Width(pixels)", ':', M );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Image Height(pixels)", ':', N );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Color Depth", ':', Q );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Gray Value", ':', img[index].meanGray() );
+		y+=2;
+		mvwprintw( infoWin, y, x, "Press any key to continue..." );
+
+		wrefresh( infoWin );
+		
+		// wait for input
+		wgetch( infoWin );
+
+		delwin( infoWin );
 	}
 }
-
+/*
 void setPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index, row, col, val, x, y;

@@ -155,14 +155,14 @@ int ImageType::getPixelVal(int i, int j) const
 \*****************************************************************************/
 double ImageType::meanGray() const
 {
-	double gray = 0;
+	double gray = 0.0;
 
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 			gray += pixelValue[i][j];
 
 	// return 0 if there are no pixels
-	return ( M*N != 0 ? gray/(M*N) : 0 );
+	return ( M*N == 0 ? 0 : gray/(M*N) );
 }
 
 /******************************************************************************\
