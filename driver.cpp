@@ -35,17 +35,20 @@ using namespace std;
 	// make height an odd number for more ballanced windows
 	int showMenu( WINDOW *&, const char[], int, int, int, int, char[][NAME_LEN], int );
 	int showMenu( WINDOW *&, const char[], int, int, int, int, char*[], int );
+	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );
 
 	// this function clears all windows, redraw any you want after this is called
 	void deleteMenu( WINDOW *& );
+	void deleteWindow( WINDOW *& );
 
 	// processes the choice returned by showMenu
 	void processEntry( ImageType[], bool[], char[][NAME_LEN], int );
 
 	// verify input for common prompts
-	int promptForReg( const char[], bool[], char[][NAME_LEN], const bool = true );
+	int promptForReg( bool[], char[][NAME_LEN], const bool = true );
 	int promptForFilename( const char[], const char[], char*& );
-	void promptForLoc( const string, ImageType&, int&, int& );
+	void promptForLoc( const char[], ImageType&, int&, int& );
+	int promptForPixValue( const char[], const char[], int );
 
 	// fills registers based on parameters
 	void fillRegs( ImageType[], bool[], char[][NAME_LEN], int, char** );
@@ -78,6 +81,7 @@ int main( int argc, char **argv )
 {
 	// main menu object
 	WINDOW *menu;
+	WINDOW *regWin;
 	int choice;
 
 	// holds the name of the image stored in the register
@@ -91,22 +95,22 @@ int main( int argc, char **argv )
 
 	// create main menu strings
 	char choices[MENU_OPTIONS][NAME_LEN] = {
-	"  Read an image from a file",
-	"  Save an image to a file",
-	"  Get image info",
-	"  Set the value of a pixel",
-	"  Get the value of a pixel",
-	"  Extract a subimage from an imagei",
-	"  Enlarge image",
-	"  Shrink image",
-	"  Reflect image",
-	"  Translate image",
-	"  Rotate image",
-	"  Sum two images",
-	"  Subtract two images",
-	"  Compute negative of an image",
-	"  Clear a register",
-	"  Exit" };
+		"  Read an image from a file",
+		"  Save an image to a file",
+		"  Get image info",
+		"  Set the value of a pixel",
+		"  Get the value of a pixel",
+		"  Extract a subimage from an imagei",
+		"  Enlarge image",
+		"  Shrink image",
+		"  Reflect image",
+		"  Translate image",
+		"  Rotate image",
+		"  Sum two images",
+		"  Subtract two images",
+		"  Compute negative of an image",
+		"  Clear a register",
+		"  Exit" };
 
 	// start
 	startCurses();
@@ -123,7 +127,10 @@ int main( int argc, char **argv )
 	fillRegs( image, imgLoaded, imgName, argc, argv );
 
 	do {
-		// display main menu
+		// display register window
+		showRegs( regWin, imgLoaded, imgName );
+
+		// show and get input from menu
 		choice = showMenu( menu, "Main Menu", 3+2*MENU_OPTIONS, 40, 1, 1, choices, MENU_OPTIONS );
 
 		try
@@ -139,7 +146,8 @@ int main( int argc, char **argv )
 
 		// makes sure everything is reset
 		deleteMenu( menu );
-	} while ( choice != 15 );
+		deleteWindow( regWin );
+	} while ( choice != MENU_OPTIONS-1 );
 
 	// end curses
 	endCurses();
@@ -207,7 +215,6 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 		}
 
 		// set mode to highlight
-//		wattron( menu, A_STANDOUT );
 		setColor( menu, MENU_BACKGROUND, MENU_FOREGROUND );
 		y = 2 + menuLoc*2;
 
@@ -223,7 +230,6 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 		          input != KEY_RETURN );
 		
 		// dont highlight for now
-//		wattroff( menu, A_STANDOUT );
 		setColor( menu, MENU_FOREGROUND, MENU_BACKGROUND );
 
 		// unhighlight current option
@@ -269,6 +275,17 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 
 	// return the menu choice
 	return choiceLoc;
+}
+
+void showRegs( WINDOW *& regWin, const bool loaded[], const char names[][NAME_LEN] )
+{
+	drawWindow( regWin, "Registers", REGS+4, 40, 1, 43 );
+
+	// add the register names to the window
+	for ( int i = 0; i < REGS; i++ )
+		mvwprintw( regWin, i+2, 2, "%.38s", names[i] );
+	
+	wrefresh( regWin );
 }
 
 void deleteMenu( WINDOW *& menu )
@@ -324,13 +341,13 @@ void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN], int ch
 			getImageInfo( img, loaded, name );
 			break;
 		case 3:	// set pixel val
-//			setPixel( img, loaded, name );
+			setPixel( img, loaded, name );
 			break;
 		case 4:	// get pixel val
-//			getPixel( img, loaded, name );
+			getPixel( img, loaded, name );
 			break;
 		case 5:	// extract subimage
-//			extractSub( img, loaded, name );
+			extractSub( img, loaded, name );
 			break;
 		case 6:	// enlarge
 //			enlargeImg( img, loaded, name );
@@ -368,11 +385,11 @@ void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN], int ch
 void clearRegister( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index;
-	index = promptForReg( "Clear Register", loaded, name );
+	index = promptForReg( loaded, name );
 	if ( index != BAD_REG )
 	{
 		loaded[index] = false;
-		name[index][0] = '\0';
+		sprintf( name[index], "Register %i: Empty", index+1 );
 	}
 }
 
@@ -386,7 +403,7 @@ void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc, 
 	msg[0] = '\0';
 
 	for ( int index = 0; index < REGS; index++ )
-		sprintf( name[index], "Register %i", index+1 );
+		sprintf( name[index], "Register %i: Empty", index+1 );
 
 	for ( int index = 1; index < argc && index <= REGS; index++ )
 	{
@@ -397,7 +414,7 @@ void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc, 
 
 			readImage( argv[index], img[index-1] );
 
-			strcpy( name[index-1], argv[index] );
+			sprintf( name[index-1], "Register %i: %s", index, argv[index] );
 
 			loaded[index-1] = true;
 		}
@@ -452,7 +469,7 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	strcpy( menuChoices[files], "Exit" );
 
 	// prompt for a register (false indicated it doesn't need to be full)
-	index = promptForReg( "Load Image", loaded, name, false );
+	index = promptForReg( loaded, name, false );
 
 	// if exit wasn't choosen then prompt for a file
 	if ( index != BAD_REG )
@@ -469,7 +486,8 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			readImage( menuChoices[imageVal], img[index] );
 	
 			loaded[index] = true;
-			strcpy( name[index], menuChoices[imageVal] );
+
+			sprintf( name[index], "Register %i: %s", index+1, menuChoices[imageVal] );
 		}
 
 		// de-allocate fileMenu
@@ -488,14 +506,15 @@ void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	char *strInput;
 	int index, x, y;
 
-	index = promptForReg( "Save Image", loaded, name );
+	index = promptForReg( loaded, name );
 	
 	if ( index != BAD_REG )
 	{
 		promptForFilename( "Save Image", "Enter filename: ", strInput );
 
 		writeImage( strInput, img[index] );
-		strcpy( name[index], strInput );
+
+		sprintf( name[index], "Register %i: %s", index+1, strInput );
 
 		delete [] strInput;
 	}
@@ -506,7 +525,7 @@ void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	int N, M, Q, index, x, y;
 	WINDOW *infoWin;
 
-	index = promptForReg( "Get Image Info", loaded, name );
+	index = promptForReg( loaded, name );
 	
 	if ( index != BAD_REG )
 	{
@@ -537,59 +556,25 @@ void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		delwin( infoWin );
 	}
 }
-/*
+
 void setPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index, row, col, val, x, y;
 	int N, M, Q;
 	string msg;
 
-	index = promptForReg( "Set Pixel Value", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
-		promptForLoc( "Choose a pixel", img[index], row, col );
+		promptForLoc( "Set Pixel Value", img[index], row, col );
 
 		if ( row != -1 && col != -1 )
 		{
 			img[index].getImageInfo( N, M, Q );
 			
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
+			promptForPixValue( "Set Pixel Value", "Enter new pixel value(-1 to cancel): ", Q );
 
-			drawWindow( "Pixel Value", x, y, 60, 4 );
-			x+=2;
-			y+=2;
-			
-			val = promptForIntAt( x, y, "Enter new pixel value(-1 to cancel): " );
-
-			while ( val < -1 || val > Q )
-			{
-				x = screenWidth() / 2 - 30;
-				y = screenHeight() / 2 - 3;
-
-				drawWindow( "Pixel Value", x, y, 60, 4 );
-				
-				x+=2;
-				y+=1;
-				
-				msg = "Invalid pixel value, must be value 0-";
-				msg += intToString(Q);
-				printStringAt( x, y, msg, "LEFT" );
-				y+=2;
-				printStringAt( x, y, "Press any key to continue...", "LEFT" );
-				
-				waitForInput( FIXED_WAIT );
-			
-				x = screenWidth() / 2 - 30;
-				y = screenHeight() / 2 - 3;
-
-				drawWindow( "Pixel Value", x, y, 60, 4 );
-				x+=2;
-				y+=2;
-
-				val = promptForIntAt( x, y, "Enter new pixel value(-1 to cancel): " );
-			}
 			if ( val != -1 )
 			{
 				img[index].setPixelVal( row, col, val );
@@ -598,53 +583,34 @@ void setPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			}
 		}
 	}
-	refresh();
 }
 
 void getPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index, row = -1, col = -1, val, x, y;
 	int N, M, Q;
-	string msg;
+	WINDOW *infoWin;
 
-	index = promptForReg( "Get Pixel Value", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
-		promptForLoc( "Choose a pixel", img[index], row, col );
+		promptForLoc( "Get Pixel Value", img[index], row, col );
 
-		if ( row > -1 && col > -1 )
+		if ( row != -1 && col != -1 )
 		{
 			img[index].getImageInfo( N, M, Q );
-			val = img[index].getPixelVal( row, col );
+			
+			drawWindow( infoWin, "Get Pixel Value", 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+			mvwprintw( infoWin, 1, 2, "The pixel Value at (%i,%i) is %i", 
+				col, row, img[index].getPixelVal(row, col) );
 
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-
-			msg = "(";
-			msg += intToString(row+1);
-			msg += ", ";
-			msg += intToString(col+1);
-			msg += ")";
-
-			drawWindow( msg, x, y, 60, 4 );
-			x+=2;
-			y++;
-
-			msg = "Pixel value is ";
-			msg += intToString(val);
-			msg += "/";
-			msg += intToString(Q);
-			msg += " white";
-	
-			printStringAt( x, y, msg, "LEFT" );
-			y+=2;
-			printStringAt( x, y, "Press any key to continue...", "LEFT" );
-
-			waitForInput( FIXED_WAIT );
+			wgetch( infoWin );
+			
+			delwin( infoWin );
+			
 		}
 	}
-	refresh();
 }
 
 void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -653,44 +619,25 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	int ULr, ULc, LRr = -1, LRc = -1;
 	ImageType temp;
 
-	index = promptForReg( "Extract Sub Image", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
-
 		promptForLoc( "Upper Left Corner", img[index], ULr, ULc );
-		if ( ULr > -1 && ULc > -1 )
-		{
+
+		if ( ULr != -1 && ULc != -1 )
 			promptForLoc( "Lower Right Corner", img[index], LRr, LRc );
-		}
 
 		while ( ( LRr <= ULr || LRc <= ULc ) &&
-			 ULr > -1 && ULc > -1 && LRr > -1 && LRc > -1 )
+			 ULr != -1 && ULc != -1 && LRr != -1 && LRc != -1 )
 		{	
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-
-			drawWindow( "Extract Sub Image", x, y, 60, 4 );
-			x+=2;
-			y++;
-
-			printStringAt( x, y, "Invalid corners, please enter valid coordinates", "LEFT" );
-			
-			y+=2;
-
-			printStringAt( x, y, "Press any key to continue...", "LEFT" );
-			refresh();
-
-			waitForInput( FIXED_WAIT );
-
 			promptForLoc( "Upper Left Corner", img[index], ULr, ULc );
-			if ( ULr > -1 && ULc > -1 )
-			{
+
+			if ( ULr != -1 && ULc != -1 )
 				promptForLoc( "Lower Right Corner", img[index], LRr, LRc );
-			}
 		}
 		
-		if ( ULr > -1 && ULc > -1 && LRr > -1 && LRc > -1 )
+		if ( ULr != -1 && ULc != -1 && LRr != -1 && LRc != -1 )
 		{
 			temp.getSubImage( ULr, ULc, LRr, LRc, img[index] );
 
@@ -701,9 +648,8 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
-	refresh();
 }
-
+/*
 void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index, x, y;
@@ -1083,7 +1029,7 @@ void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 */
 // first parameter is array of loaded flags for the register
 // if check == true, only allow registers that are loaded
-int promptForReg( const char title[], bool loaded[], char name[][NAME_LEN], const bool check )
+int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
 {
 	WINDOW *regMenu;
 
@@ -1099,7 +1045,7 @@ int promptForReg( const char title[], bool loaded[], char name[][NAME_LEN], cons
 
 
 	do {
-		val = showMenu( regMenu, "Choose Register", 15, 36, 1, 43, menuVals, REGS+1 );
+		val = showMenu( regMenu, "Registers", 15, 36, 1, 43, menuVals, REGS+1 );
 		if ( val == BAD_REG )
 			loop = false;
 		else if ( ! loaded[val] && check )
@@ -1129,95 +1075,61 @@ int promptForFilename( const char title[], const char prompt[], char *&str )
 	return strlen( str );
 }
 
-/*
-void promptForLoc( const string title, ImageType& img, int& row, int& col )
+int promptForPixValue( const char title[], const char prompt[], int maxVal)
+{
+	WINDOW *pixWin;
+	int val;
+
+	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	
+	val = promptForInt( pixWin, 1, 2, prompt );
+	while ( val < -1 || val > maxVal )
+	{
+		// redraw window
+		delwin( pixWin );
+		drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+
+		// re-prompt user
+		val = promptForInt( pixWin, 1, 2, prompt );
+	}
+
+	delwin( pixWin );
+}
+
+void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 {
 	int N, M, Q, x, y;
+	WINDOW *pixWin;
 	row = -1;
 	col = -1;
-	string msg;
 	img.getImageInfo( N, M, Q );
 
-	x = screenWidth() / 2 - 30;
-	y = screenHeight() / 2 - 3;
+	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
 
-	drawWindow( title, x, y, 60, 4 );
-
-	x+=2;
-	y++;
-
-	row = promptForIntAt( x, y, "Enter pixel row(-1 to cancel): " );
-	
-	while ( ( row < 1 || row > N ) && row != -1 )
+	row = promptForInt( pixWin, 1, 2, "Enter pixel row(-1 to cancel): " );
+	while ( row < -1 || row >= N )
 	{
-		x = screenWidth() / 2 - 30;
-		y = screenHeight() / 2 - 3;
-		drawWindow( title, x, y, 60, 4 );
+		// clear the line
+		for ( int i = 1; i < screenWidth()/2-4; i++ )
+			mvwaddch( pixWin, 1, i, ' ' );
 
-		x+=2;
-		y++;
-		
-		msg = "Invalid row, must be a value 1-";
-		msg += intToString(N);
-	
-		printStringAt( x, y, msg, "LEFT" );
-		y+=2;
-		printStringAt( x, y, "Press any key to continue...", "LEFT" );
-		refresh();	
+		// re-prompt user
+		row = promptForInt( pixWin, 1, 2, "Enter pixel row(-1 to cancel): " );
+	};
 
-		waitForInput( FIXED_WAIT );
-
-		x = screenWidth() / 2 - 30;
-		y = screenHeight() / 2 - 3;
-
-		drawWindow( title, x, y, 60, 4 );
-		x+=2;
-		y++;
-		row = promptForIntAt( x, y, "Enter pixel row(-1 to cancel): " );
-	}
-
-	// adjust for actual value
 	if ( row != -1 )
 	{
-		row--;
-		y+=2;
-		col = promptForIntAt( x, y, "Enter pixel column(-1 to cancel): " );
-		while ( ( col < 1 || col > M ) && col != -1 )
+		col = promptForInt( pixWin, 2, 2, "Enter pixel column(-1 to cancel): " );
+		while ( col < -1 || col >= M )
 		{
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-			drawWindow( title, x, y, 60, 4 );
-
-			x+=2;
-			y++;
-				
-			msg = "Invalid column, must be a value 1-";
-			msg += intToString(M);
-			
-			printStringAt( x, y, msg, "LEFT" );
-			y+=2;
-			printStringAt( x, y, "Press any key to continue...", "LEFT" );
-			refresh();	
-
-			waitForInput( FIXED_WAIT );
-
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-			drawWindow( title, x, y, 60, 4 );
-			x+=2;
-			y++;
-			msg = "Enter pixel row(-1 to cancel): ";
-			msg += intToString(row+1);
-			printStringAt( x, y, msg, "LEFT" );
-			y+=2;
-			col = promptForIntAt( x, y, "Enter pixel column(-1 to cancel): " );
+			for ( int i = 1; i < screenWidth()/2-4; i++ )
+				mvwaddch( pixWin, 2, i, ' ' );
+			col = promptForInt( pixWin, 2, 2, "Enter pixel column(-1 to cancel): " );
 		}
-
-		// adjust for actual value
-		if ( col != -1 )
-			col--;
 	}
-} */
+
+	delwin( pixWin );
+}
 
 int findLocalPGM( char **&filenames )
 {
