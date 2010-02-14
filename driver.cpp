@@ -639,10 +639,10 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		
 		if ( ULr != -1 && ULc != -1 && LRr != -1 && LRc != -1 )
 		{
+			// extract sub image
 			temp.getSubImage( ULr, ULc, LRr, LRc, img[index] );
 
-			writeImage( "OUTPUT.pgm", temp );
-
+			// set old image equal to subimage
 			img[index] = temp;
 
 			// adds modified to register name

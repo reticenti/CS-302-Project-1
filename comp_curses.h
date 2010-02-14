@@ -93,7 +93,7 @@ void showCursor()
 
 int promptForInt( WINDOW *somewin, int y, int x, const char promptString[] )
 {
-	int input, length = 0, retVal = 0, count = -1;
+	int input, length = 0, retVal = 0;
 	int intAry[MAX_INT_LEN];
 
 	for ( int i = 0; i < MAX_INT_LEN; i++ )
@@ -143,13 +143,10 @@ int promptForInt( WINDOW *somewin, int y, int x, const char promptString[] )
 
 
 	// turn values into integer
-	for ( int i = MAX_INT_LEN-1; i >= 0; i-- )
+	for ( int i = length-1; i >= 0; i-- )
 	{
-		if ( (count == -1 && intAry[i] != 0) || count != -1 )
-			count++;
-
-		if ( count != -1 && intAry[i] != 10 )
-			retVal += intAry[i]*pow(10,count);
+		if ( ( i == 0 && intAry[i] != 10 || i != 0 ) )
+			retVal += intAry[i] * pow(10,length-1-i);
 	}
 
 	// make it negative if nessessary
@@ -239,12 +236,10 @@ double promptForDouble( WINDOW *somewin, int y, int x, const char promptString[]
 
 	// no decimal point is same as integer
 	if ( decimal < 0 )
-		for ( int i = MAX_DBL_LEN-1; i >= 0; i-- )
+		for ( int i = length-1; i >= 0; i-- )
 		{
-			if ( (count == -1 && intAry[i] != 0) || count != -1 )
-				count++;	
-			if ( count != -1 && intAry[i] != 10 )
-				retVal += intAry[i]*pow(10,count);
+			if ( ( i == 0 && intAry[i] != 10 || i != 0 ) )
+				retVal += intAry[i] * pow(10,length-1-i);
 		}
 	
 	// if negative return value
