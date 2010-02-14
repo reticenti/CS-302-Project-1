@@ -49,6 +49,9 @@ using namespace std;
 	int promptForFilename( const char[], const char[], char*& );
 	void promptForLoc( const char[], ImageType&, int&, int& );
 	int promptForPixValue( const char[], const char[], int );
+	int promptForScaleValue( const char[], const char[], int );
+	char promptForMirror( const char[], const char[] );
+	int promptForAngle( const char[], const char[] );
 
 	// fills registers based on parameters
 	void fillRegs( ImageType[], bool[], char[][NAME_LEN], int, char** );
@@ -100,7 +103,7 @@ int main( int argc, char **argv )
 		"  Get image info",
 		"  Set the value of a pixel",
 		"  Get the value of a pixel",
-		"  Extract a subimage from an imagei",
+		"  Extract a subimage from an image",
 		"  Enlarge image",
 		"  Shrink image",
 		"  Reflect image",
@@ -350,28 +353,28 @@ void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN], int ch
 			extractSub( img, loaded, name );
 			break;
 		case 6:	// enlarge
-//			enlargeImg( img, loaded, name );
+			enlargeImg( img, loaded, name );
 			break;
 		case 7:	// shrink
-//			shrinkImg( img, loaded, name );
+			shrinkImg( img, loaded, name );
 			break;
 		case 8:	// reflect
-//			reflectImg( img, loaded, name );
+			reflectImg( img, loaded, name );
 			break;
 		case 9:	// translate
-//			translateImg( img, loaded, name );
+			translateImg( img, loaded, name );
 			break;
 		case 10:	// rotate
-//			rotateImg( img, loaded, name );
+			rotateImg( img, loaded, name );
 			break;
 		case 11:	// sum
-//			sumImg( img, loaded, name );
+			sumImg( img, loaded, name );
 			break;
 		case 12:	// difference
-//			subtractImg( img, loaded, name );
+			subtractImg( img, loaded, name );
 			break;
 		case 13:	// negative
-//			negateImg( img, loaded, name );
+			negateImg( img, loaded, name );
 			break;
 		case 14:	// clear register
 			clearRegister( img, loaded, name );
@@ -651,67 +654,34 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		}
 	}
 }
-/*
+
 void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index, x, y;
+	int index;
 	int N, M, Q;
 	int maxS;
-	string msg;
-	double s;
+	int s;
 
 	ImageType temp;
 
-	index = promptForReg( "Enlarge Image", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
 		img[index].getImageInfo( N, M, Q );
 
 		maxS = (N > M ? MAX_IMG/N : MAX_IMG/M);
 
-		x = screenWidth() / 2 - 30;
-		y = screenHeight() / 2 - 3;
+		// prompt for enlarge factor
+		s = promptForScaleValue( "Enlarge Image By Factor", "Enter enlargement multiplier(-1 to cancel): ", maxS );
 
-		drawWindow( "Enlarge Image by factor", x, y, 60, 4 );
-		x+=2;
-		y+=2;
-
-		s = promptForDoubleAt( x, y, "Enter enlargement multiplier(-1 to cancel): " );
-
-		while ( ( s <= 0 || s > maxS ) && s != -1 )
+		if ( s != -1 )
 		{
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
+			mvprintw( screenHeight()-5, 0, "s = %i", s );
 
-			drawWindow( "Enlarge Image by factor", x, y, 60, 4 );
-			x+=2;
-			y++;
-			
-			msg = "Invalid size, factor must be 2-";
-			msg += intToString(maxS);
-			msg += " for this image";
-
-			printStringAt( x, y, msg, "LEFT" );
-			y+=2;
-			printStringAt( x, y, "Press any key to continue...", "LEFT" );
-			refresh();	
-
-			waitForInput( FIXED_WAIT );
-
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-
-			drawWindow( "Enlarge Image by factor", x, y, 60, 4 );
-			x+=2;
-			y+=2;
-
-			s = promptForDoubleAt( x, y, "Enter enlargement multiplier(-1 to cancel): " );
-		}
-
-		if ( s > -1 )
-		{
 			temp.enlargeImage( s, img[index], CUBIC_INTER );
+
+			getch();
 
 			img[index] = temp;
 
@@ -720,66 +690,27 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
-	refresh();	
 }
 
 void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index;
 	int N, M, Q, s;
-	int maxS, x, y;
-	string msg;
+	int maxS;
 
 	ImageType temp;
 
-	index = promptForReg( "Shrink Image", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
 		img[index].getImageInfo( N, M, Q );
 
 		maxS = (N > M ? N/MIN_IMG : M/MIN_IMG);
 
-		x = screenWidth() / 2 - 30;
-		y = screenHeight() / 2 - 3;
-
-		drawWindow( "Reduce Image by factor", x, y, 60, 4 );
-		x+=2;
-		y+=2;
-
-		s = promptForIntAt( x, y, "Enter reduction factor(-1 to cancel): " );
+		s = promptForScaleValue( "Shrink Image By Factor", "Enter reduction factor(-1 to cancel): ", maxS );
 		
-		while ( ( s < 2 || s > maxS ) && s != -1 )
-		{
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-
-			drawWindow( "Shrink Image by factor", x, y, 60, 4 );
-			x+=2;
-			y++;
-			
-			msg = "Invalid size, factor must be 2-";
-			msg += intToString(maxS);
-			msg += " for this image";
-
-			printStringAt( x, y, msg, "LEFT" );
-			y+=2;
-			printStringAt( x, y, "Press any key to continue...", "LEFT" );
-
-			refresh();	
-			waitForInput( FIXED_WAIT );
-
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-
-			drawWindow( "Shrink Image by factor", x, y, 60, 4 );
-			x+=2;
-			y+=2;
-
-			s = promptForIntAt( x, y, "Enter reduction factor(-1 to cancel): " );
-		}
-
-		if ( s > -1 )
+		if ( s != -1 )
 		{
 			temp.shrinkImage( s, img[index] );
 
@@ -790,34 +721,23 @@ void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
-	refresh();	
 }
 
 void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index, x, y;
+	int index;
 	char dir;
 	ImageType temp;
 
-	index = promptForReg( "Reflect Image", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
-		x = screenWidth() / 2 - 30;
-		y = screenHeight() / 2 - 3;
-
-		drawWindow( "Reflect Image", x, y, 60, 4 );
-		x+=2;
-		y+=2;
-
-		printStringAt(x, y, "Enter mirror direction (H(oriz), V(ert), C(ancel)): ", "LEFT");
+		dir = promptForMirror("Reflect Image", "Enter mirror direction (H(oriz), V(ert), C(ancel)): ");
 		
-		do {
-			refresh();	
-			dir = waitForInput( FIXED_WAIT );
-		} while ( dir != 'h' && dir != 'H' &&
+		/*} while ( dir != 'h' && dir != 'H' &&
 		          dir != 'v' && dir != 'V' &&
-		          dir != 'c' && dir != 'C' );
+		          dir != 'c' && dir != 'C' ); */
 
 		if ( dir != 'c' && dir != 'C' )
 		{
@@ -832,7 +752,6 @@ void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
-	refresh();	
 }
 
 void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -840,59 +759,20 @@ void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	int index, x, y;
 	int N, M, Q, t;
 	int maxT;
-	string msg;
 
 	ImageType temp;
 
-	index = promptForReg( "Translate Image", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
 		img[index].getImageInfo( N, M, Q );
 
 		maxT = (N > M ? N-1 : M-1);
 
-		x = screenWidth() / 2 - 30;
-		y = screenHeight() / 2 - 3;
-
-		drawWindow( "Translate Image", x, y, 60, 4 );
-		x+=2;
-		y+=2;
-
-		t = promptForIntAt( x, y, "Enter translation factor(-1 to cancel): " );
+		t = promptForPixValue( "Translate Image", "Enter translation factor(-1 to cancel): ", maxT );
 		
-		while ( ( t < 1 || t > maxT ) && t != -1 )
-		{
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-
-			drawWindow( "Translate Image", x, y, 60, 4 );
-			x+=2;
-			y++;
-
-			msg = "Invalid size, factor must be 1-";
-			msg += intToString(maxT);
-			msg += " for this image";
-
-			printStringAt( x, y, msg, "LEFT" );
-			y+=2;
-
-			printStringAt( x, y, "Press any key to continue...", "LEFT" );
-			refresh();	
-
-			waitForInput( FIXED_WAIT );
-
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-
-			drawWindow( "Translate Image", x, y, 60, 4 );
-			x+=2;
-			y+=2;
-
-			t = promptForIntAt( x, y, "Enter translation factor(-1 to cancel): " );
-		}
-
-		if ( t > -1 )
+		if ( t != -1 )
 		{
 			temp.translateImage( t, img[index] );
 
@@ -903,47 +783,22 @@ void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
-	refresh();	
 }
 
 void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index, x, y;
 	int theta;
-	string msg;
-
+	
 	ImageType temp;
 
-	index = promptForReg( "Rotate Image", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
-		x = screenWidth() / 2 - 30;
-		y = screenHeight() / 2 - 3;
+		theta = promptForAngle( "Rotate Image", "Rotate clockwise by angle theta(-1 to cancel):" );
 
-		drawWindow( "Translate Image", x, y, 60, 4 );
-		x+=2;
-		y+=2;
-
-		theta = promptForIntAt( x, y, 
-			"Rotate clockwise by angle theta(-1 to cancel):" );
-
-		while ( ( theta < 1 || theta > 360 ) && theta != -1 )
-		{
-			x = screenWidth() / 2 - 30;
-			y = screenHeight() / 2 - 3;
-
-			drawWindow( "Translate Image", x, y, 60, 4 );
-			x+=2;
-			y++;
-
-			printStringAt( x, y, "Invalid angle, factor must be an angle 1-360", "LEFT" );
-			y+=2;
-
-			printStringAt( x, y, "Press any key to continue...", "LEFT" );
-		}
-
-		if ( theta > -1 )
+		if ( theta != -1 )
 		{
 			temp.rotateImage( theta, img[index] );
 
@@ -954,8 +809,6 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index], " (modified)" );
 		}
 	}
-	refresh();	
-
 }
 
 void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -963,15 +816,15 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	int index1, index2;
 	ImageType temp1, temp2;
 
-	index1 = promptForReg( "Sum Image", loaded );
+	index1 = promptForReg( loaded, name );
 	
-	if ( index1 > -1 )
+	if ( index1 != BAD_REG )
 	{
 		temp1 = img[index1];
 
-		index2 = promptForReg( "Choose Second Image", loaded );
+		index2 = promptForReg( loaded, name );
 		
-		if ( index2 > -1 )
+		if ( index2 != BAD_REG )
 		{
 			temp2 = img[index2];
 
@@ -982,7 +835,6 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index1], " (modified)" );
 		}
 	}
-	refresh();	
 }
 
 void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
@@ -990,15 +842,15 @@ void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	int index1, index2;
 	ImageType temp1, temp2;
 
-	index1 = promptForReg( "Subtract Image", loaded );
+	index1 = promptForReg( loaded, name );
 	
-	if ( index1 > -1 )
+	if ( index1 != BAD_REG )
 	{
 		temp1 = img[index1];
 
-		index2 = promptForReg( "Choose Second Image", loaded );
+		index2 = promptForReg( loaded, name );
 		
-		if ( index2 > -1 )
+		if ( index2 != BAD_REG )
 		{
 			temp2 = img[index2];
 
@@ -1009,16 +861,15 @@ void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				strcat( name[index1], " (modified)" );
 		}
 	}
-	refresh();	
 }
 
 void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index;
 
-	index = promptForReg( "Negate Image", loaded );
+	index = promptForReg( loaded, name );
 
-	if ( index > -1 )
+	if ( index != BAD_REG )
 	{
 		img[index].negateImage();
 
@@ -1026,9 +877,8 @@ void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		if ( name[index][strlen(name[index])-1] != ')' )
 			strcat( name[index], " (modified)" );
 	}
-	refresh();	
 }
-*/
+
 // first parameter is array of loaded flags for the register
 // if check == true, only allow registers that are loaded
 int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
@@ -1077,7 +927,30 @@ int promptForFilename( const char title[], const char prompt[], char *&str )
 	return strlen( str );
 }
 
-int promptForPixValue( const char title[], const char prompt[], int maxVal)
+int promptForAngle( const char title[], const char prompt[] )
+{
+	WINDOW *pixWin;
+	int val;
+
+	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	
+	val = promptForInt( pixWin, 1, 2, prompt );
+	while ( val < -1 || val > 360 )
+	{
+		// redraw window
+		delwin( pixWin );
+		drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+
+		// re-prompt user
+		val = promptForInt( pixWin, 1, 2, prompt );
+	}
+
+	delwin( pixWin );
+
+	return val;
+}
+
+int promptForPixValue( const char title[], const char prompt[], int maxVal )
 {
 	WINDOW *pixWin;
 	int val;
@@ -1096,6 +969,60 @@ int promptForPixValue( const char title[], const char prompt[], int maxVal)
 	}
 
 	delwin( pixWin );
+
+	return val;
+}
+
+char promptForMirror( const char title[], const char prompt[] )
+{
+	WINDOW *pixWin;
+	char val;
+
+	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	
+	// prompt user for character
+	mvwaddstr( pixWin, 1, 2, prompt );
+	val = wgetch( pixWin );
+
+	while ( val != 'h' && val != 'H' &&
+	        val != 'v' && val != 'V' &&
+	        val != 'c' && val != 'C' )
+	{
+		// redraw window
+		delwin( pixWin );
+		drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+
+		// re-prompt user
+		mvwaddstr( pixWin, 1, 2, prompt );
+		val = wgetch( pixWin );
+	}
+
+	delwin( pixWin );
+
+	return val;
+}
+
+int promptForScaleValue( const char title[], const char prompt[], int maxVal )
+{
+	WINDOW *pixWin;
+	int val;
+
+	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	
+	val = promptForInt( pixWin, 1, 2, prompt );
+	while ( val != -1 && ( val < 2 || val > maxVal ) )
+	{
+		// redraw window
+		delwin( pixWin );
+		drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+
+		// re-prompt user
+		val = promptForInt( pixWin, 1, 2, prompt );
+	}
+
+	delwin( pixWin );
+
+	return val;
 }
 
 void promptForLoc( const char title[], ImageType& img, int& row, int& col )
