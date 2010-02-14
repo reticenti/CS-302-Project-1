@@ -1,4 +1,4 @@
-main.out: driver.cpp image.o cubicSpline.o imageIO.o curses_io_V13.h
+main.out: driver.cpp image.o cubicSpline.o imageIO.o curses_io_V13.h comp_curses.h
 	g++ -lncurses -g -o main.out image.o imageIO.o cubicSpline.o driver.cpp
 
 cubicSpline.o: cubicSpline.cpp cubicSpline.h
