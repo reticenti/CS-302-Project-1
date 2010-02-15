@@ -236,6 +236,46 @@
 		\end{description}
 
 
+	\item{\textsc{setImageInfo}}
+		\begin{description}
+			\item{Purpose}
+			
+				Sets the image info, deleting and allocating memory
+				as required, also creates a background grid
+
+			\item{Input}
+
+				\begin{itemize}
+					\item{rows}
+
+						This parameter sets the number of rows
+						in the imageType object
+
+					\item{cols}
+
+						This parameter sets the number of cols
+						in the imageType object
+
+					\item{levels}
+
+						This paremeter sets the depth of the
+						image in the imageType object
+
+				\end{itemize}
+
+			\item{Output}
+
+				None
+
+			\item{Assumptions}
+
+				Assumes nothing
+
+		\end{description}
+
+
+
+
 	\item{\textsc{getpixelval}}
 		\begin{description}
 			\item{Purpose}
@@ -274,15 +314,29 @@
 		\begin{description}
 			\item{Purpose}
 
+				Sets the value of a pixel
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{i}
+
+						The row of the pixel to be changed
+
+					\item{j}
+
+						The column of the pixel to be changed
+
+				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes the image has been intialized
 
 		\end{description}
 
@@ -291,14 +345,49 @@
 		\begin{description}
 			\item{Purpose}
 
+ 				Obtain a sub-image from old.  Uses the coordinates
+				of the upper left corner
+				and lower right corner to obtain image.
 
 			\item{Input}
+
+				\begin{itemize}
+
+					\item{ULr}
+	
+						The upper left row of the pixel
+						to be x in (0,0) in the new image.
+
+					\item{ULc}
+
+						The upper left column of the pixel
+						to be y in (0,0) in the new image
+
+					\item{LRr}
+
+						The lower right row of the pixel
+						to be x in (max\_x, max\_y) in the
+						new image
+
+					\item{LRC}
+
+						The lower right row of the pixel
+						to be y in (max\_x, max\_y) in the
+						new image
+
+				\end{itemize}
 
 
 			\item{Output}
 
+				None
+
 
 			\item{Assumptions}
+
+				Assumes that the UL\{r,c\} and LR\{r,c\} have been
+				properly bounds and error checked before the function
+				call
 
 
 		\end{description}
@@ -308,14 +397,26 @@
 		\begin{description}
 			\item{Purpose}
 
+				
+				this calculates the average gray value in the
+				picture, this is done by adding
+				all of the pixels and dividing by the total
+				number of pixels
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				A double value that is the mean value of all
+				the pixels in pixelValue
+
 
 			\item{Assumptions}
+
+				Assumes nothing and returns 0 if the image 
+				has not been intialized
 
 
 		\end{description}
@@ -324,33 +425,92 @@
 	\item{\textsc{enlargeImage}}
 		\begin{description}
 			\item{Purpose}
-
+				
+				This function enlarges an image by a 
+				magnitude of s, so for example if the
+				original function was 100x100 and s is 
+				10, then the new image is 1000x1000
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{S}
+
+						This is the magnitude of the enlargement
+
+						The function is also overloaded 
+						to accept ints as well as doubles
+
+					\item{ImageType old}
+
+						This is the image to be enlarged
+
+					\item{cubic}
+
+						A bool value that decides which type of
+						interpolation to use.
+						If true, use cubic interpolation
+						If false, use linear interpolation
+				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
 
-		\end{description}
+				The method choosen to use was bicubic/linear
+				interpolation which creates
+				splines for each column(cubic or linear),
+				then using those splines create an
+				image which is a stretched version of the original 
+				image.  The way this was achieved
+				was to stretch the entire image only vertically,
+				and then stretch that
+				image horizontally.  Then the same thing was done except
+				reversed (stretched image
+				horizontally first) and then the two image summed 
+				together.  This gives an
+				average value between both methods.  Although it can
+				handle S values less
+				than 1, the shrinkImage function works better for this.
 
+
+
+		\end{description}
 
 	\item{\textsc{shrinkImage}}
 		\begin{description}
 			\item{Purpose}
 
+				Shrink image, average all the values
+				in the block to make the new pixel, this
+				makes the shrink much less jagged looking in the end
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{s}
+
+						The inteter value of the shrink factor
+
+					\item{ImageType old}
+
+						The image to be shrunk
+
+				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes the image has been intialized and that error
+				checking has been done.
 
 		\end{description}
 
@@ -359,15 +519,35 @@
 		\begin{description}
 			\item{Purpose}
 
+				reflects image by moving the pixel to N or M
+				minus the current row or column
+				depending on the value of the flag
+				(true being a horizontal reflection and
+				false being a vertical reflection)
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{flag}
+
+						The flag that sets either vertical or
+						horizontal reflection
+
+					\item{ImageType old}
+
+						The image to be reflected
+
+				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes nothing, but it makes sense to have an intialized
+				image to reflect
 
 		\end{description}
 
@@ -376,15 +556,35 @@
 		\begin{description}
 			\item{Purpose}
 
+				Translate the image down to the right,
+				any part that goes out of the screen is
+ 				not calculated.  Checkered background from
+				setImageInfo is retained.
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{t}
+
+						The integer value of the translation. The
+						translation will occur down and 
+						to the right 't' pixels
+
+					\item{ImageType old}
+
+						The image to be translated
+
+				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				No assumptions are made, but it makes sense to have
+				an intialized image
 
 		\end{description}
 
@@ -393,15 +593,43 @@
 		\begin{description}
 			\item{Purpose}
 
+				Rotate the image clockwise using bilinear
+				interpolation, basically traversing
+				the entire image going from the destination 
+				to the source by using the
+				in reverse (which is why its clockwise). 
+				Once a location is determined the
+				surrounding pixels are used to calculate 
+				intermediate values between the
+				pixels, this gives a pretty smooth rotate.
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{theta}
+
+						The degrees to rotate. This is converted
+						to radians inside the function
+
+					\item{ImnageType old}
+
+						The image to be rotated
+
+				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes that theta is in degrees because theta is
+				converted to radians from degrees inside the function
+				for the use of the trig functions.
+				It is also assumed that the image has been intialized
+				before the function call. It is also assumed that theta
+				is between 0 and 360.
 
 		\end{description}
 
@@ -410,15 +638,36 @@
 		\begin{description}
 			\item{Purpose}
 
+				
+				Sum two images together, basically just finding
+				the average pixel value of
+				every pixel between two images.  Throws an
+				exception if dimesions of both
+				images don't match
 
 			\item{Input}
 
+				\begin{itemize}
+						
+					\item{ImageType rhs}
+
+						This is the image to be added to
+						'this' image
+
+				\end{itemize}
 
 			\item{Output}
 
+				ImageType object to chain additions
 
 			\item{Assumptions}
 
+				It is assumed that each image have the same dimensions.
+				However, if the images do not have the same dimensions,
+				then a string is thrown stating that the images do
+				not have the same dimensions. It is not neccesary to have
+				each image initialized, but it makes senses
+				that they would each be initialized.
 
 		\end{description}
 
@@ -427,15 +676,36 @@
 		\begin{description}
 			\item{Purpose}
 
+				subtract two images from each other to see the 
+				differences, if the magnitude of
+				the difference is less then Q/6 then the pixel
+				is replaced with black,	otherwise white is used. 
+				This seems to help reduce 
+				the amount of noise in the pictures
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{ImageType rhs}
+
+						This is the image to be subtracted from
+						'this' image
+
+				\end{itemize}
 
 			\item{Output}
 
+				ImageType is returned to allow chaining of subtraction
 
 			\item{Assumptions}
 
+				It is assumed that each image have the same dimensions.
+				However, if the images do not have the same dimensions,
+				then a string is thrown stating that the images do
+				not have the same dimensions. It is not neccesary to have
+				each image initialized, but it makes senses
+				that they would each be initialized.
 
 		\end{description}
 
@@ -1229,15 +1499,20 @@
 		\begin{description}
 			\item{Purpose}
 
+				This initializes the curses screen and its functions
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				No assumptions are made besides have a terminal
+				capable of displaying curses correctly.
 
 		\end{description}
 
@@ -1246,14 +1521,20 @@
 		\begin{description}
 			\item{Purpose}
 
+				This ends the curses screen and its functions
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
+
+				This assumes that curses has ibeen initialized
+				with startCurses()
 
 
 		\end{description}
@@ -1263,15 +1544,36 @@
 		\begin{description}
 			\item{Purpose}
 
+				This sets the colors for stdscr
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{*somewin}
+
+						This is the window pointer to set
+						the colors to a specific window
+
+					\item{cf}
+
+						This is the first color (foreground)
+						for the color pair to set in the window
+
+					\item{cb}
+
+						This is the second colod (background)
+						for the color pair to set in the window
+						
+				\end{itemize}	
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes that screen has been initialized
 
 		\end{description}
 
@@ -1280,15 +1582,19 @@
 		\begin{description}
 			\item{Purpose}
 
+				Returns the max screen x value 
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				The int value of the max x value for the entire terminal
 
 			\item{Assumptions}
 
+				Assumes startCurses() has been run
 
 		\end{description}
 
@@ -1297,15 +1603,19 @@
 		\begin{description}
 			\item{Purpose}
 
+				Returns the max screen y value
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				The int value of the max y value for the entire terminal
 
 			\item{Assumptions}
 
+				Assumes startCurses() has been run
 
 		\end{description}
 
@@ -1314,15 +1624,42 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompts for an int at some int at some (x,y) cordinate
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{*somewin}
+
+						Some window to prompt for the int in
+
+					\item{y}
+
+						The y cordinate at which to prompt
+						for the int
+
+					\item{x} 
+
+						The x cordinate at which to prompt
+						for the int
+
+					\item{promptString[]}
+
+						The string to display when prompting for
+						the int
+						
+				\end{itemize}
 
 			\item{Output}
 
+				The integer value of the user's input
 
 			\item{Assumptions}
 
+				It is assumed that startCurses() has been run.
+				The function has built in error checking to prevent
+				bad data from being input
 
 		\end{description}
 
@@ -1331,15 +1668,44 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompts for a double at some int at some (x,y) cordinate
 
 			\item{Input}
+
+				\begin{itemize}
+
+					\item{*somewin}
+
+						Some window to prompt for the double in
+
+					\item{y}
+
+						The y cordinate at which to prompt
+						for the double
+
+					\item{x} 
+
+						The x cordinate at which to prompt
+						for the double
+
+					\item{promptString[]}
+
+						The string to display when prompting for
+						the double
+						
+				\end{itemize}
+
 
 
 			\item{Output}
 
+				The double value of the user's input
 
 			\item{Assumptions}
 
+				It is assumed that startCurses() has been run.
+				The function has built in error checking to prevent
+				bad data from being input (such as multiple periods)
 
 		\end{description}
 
@@ -1348,15 +1714,50 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompts for a string at some (x,y) cordinate
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{*somewin}
+
+						The window at which to prompt
+						for the string
+
+					\item{y}
+
+						The y cordinate at which to prompt
+
+					\item{x}
+
+						The rxy cordinate at which to prompt
+
+					\item{promptstring}
+
+						The string to display when prompting
+						for the string
+
+					\item{str[]}
+
+						The array for the string that is typed
+						in by the user
+
+					\item{len}
+
+						The length of the string stored
+
+				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				It is assumed that startCurses() has been run.
+				The function also accounts for backspaces and
+				makes sure that only valid input is entered.
 
 		\end{description}
 
