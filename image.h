@@ -3,19 +3,26 @@
 
 class ImageType {
  public:
-	// already done (slightly modified)
+
+ // CONSTRUCTORS AND DESTRUCTOR
+	// default construtor, sets everything to NULL and 0
 	ImageType();
+
+	// parameterized constructor sets up image to N, M and Q values
 	ImageType(int, int, int);
+
+	// copy constructor, de-allocates memory if needed then allocates just
+	// enough and copys values from the right hand side
+	ImageType( const ImageType& );
+	ImageType& operator= ( const ImageType& );
+
+	~ImageType();
+	
+	
 	void getImageInfo(int&, int&, int&) const;
 	void setImageInfo(int, int, int);
 	void setPixelVal(int, int, int);
 	int getPixelVal(int, int) const;
-
-	// other functions
-
-	~ImageType();
-	ImageType( const ImageType& );
-	ImageType& operator= ( const ImageType& );
 
 	// Josiah's functions
 
