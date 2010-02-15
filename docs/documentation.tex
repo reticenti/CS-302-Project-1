@@ -1499,15 +1499,24 @@
 
 					\item{fname[]}
 
+						The C-style string to hold the image 
+						file name
+
 					\item{ImageType image}
+
+						The image object that holds the
+						image data
 
 				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes there is a file to be read and that the
+				user has read access
 
 		\end{description}
 
@@ -1516,15 +1525,34 @@
 		\begin{description}
 			\item{Purpose}
 
+				Writes the image to disk
 
 			\item{Input}
+
+				\begin{itemize}
+
+					\item{fname[]}
+
+						The C-style string to hold the image 
+						file name
+
+					\item{ImageType image}
+
+						The image object that holds the
+						image data
+
+				\end{itemize}
+
 
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes the user has write access to the
+				destination folder
 
 		\end{description}
 
