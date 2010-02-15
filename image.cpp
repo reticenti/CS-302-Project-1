@@ -156,13 +156,14 @@ int ImageType::getPixelVal(int i, int j) const
 double ImageType::meanGray() const
 {
 	double gray = 0;
-
+	
+	// sum the gray values
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 			gray += pixelValue[i][j];
 
-	// return 0 if there are no pixels
-	return ( M*N != 0 ? gray/(M*N) : 0 );
+	// return 0 if there are no pixels, otherwise divide gray by total pixels
+	return ( M*N == 0 ? 0 : gray/(M*N) );
 }
 
 /******************************************************************************\
@@ -170,12 +171,6 @@ double ImageType::meanGray() const
 \******************************************************************************/
 void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
 {
-	if ( old.M < 4 || old.N < 4 && old.M != 0 && old.N != 0 )
-		// force linear if less than 4
-		enlargeImage( (double)S, old, false );
-	else if ( old.M == 0 || old.N == 0 )
-		throw (string)"Image file is empty!";
-	else
 		// call double version of enlarge
 		enlargeImage( (double)S, old, cubic );
 }
@@ -198,6 +193,13 @@ void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
 \******************************************************************************/
 void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 {
+	// check parameters
+	if ( old.M < 4 || old.N < 4 && old.M != 0 && old.N != 0 )
+		// force linear if less than 4 height or width
+		cubic = false;
+	else if ( old.M == 0 || old.N == 0 )
+		throw (string)"Image file is empty!";
+
 	// slightly modify S to make it a better value for spline
 	double Shoriz = (double)((int)(old.M*S))/old.M;
 	double Svert = (double)((int)(old.N*S))/old.N;
@@ -368,6 +370,7 @@ void ImageType::enlargeImage( double S, const ImageType& old, bool cubic )
 \******************************************************************************/
 void ImageType::reflectImage( bool flag, const ImageType& old )
 {
+	// set image info same as old's
 	setImageInfo( old.N, old.M, old.Q );
 
 	// if flag is set copy opposite row, if not copy opposite column
@@ -381,8 +384,9 @@ void ImageType::reflectImage( bool flag, const ImageType& old )
 
 /******************************************************************************\
  subtract two images from eachother to see the differences, if the magnitude of
- the difference is less then Q/9 then the pixel is replaced with black,
- otherwise white is used.
+ the difference is less then Q/6 then the pixel is replaced with black,
+ otherwise white is used.  This seems to help reduce the amount of noise in the
+ pictures
 \******************************************************************************/
 ImageType& ImageType::operator- ( const ImageType& rhs )
 {
@@ -396,7 +400,8 @@ ImageType& ImageType::operator- ( const ImageType& rhs )
 			// calculate subtracted value
 			pixelValue[i][j] = abs(pixelValue[i][j] - rhs.pixelValue[i][j]);
 
-			// if pixels are less than Q/7 different then make them black
+			// if pixels are less than Q/6 different then make them black
+			// this helps prevent noise
 			if ( pixelValue[i][j] < Q/6 )
 				pixelValue[i][j] = 0;
 			else
@@ -411,6 +416,7 @@ ImageType& ImageType::operator- ( const ImageType& rhs )
 \******************************************************************************/
 void ImageType::negateImage()
 {
+	// calculate the negative of each pixel
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 			pixelValue[i][j] = Q - pixelValue[i][j];
@@ -418,36 +424,42 @@ void ImageType::negateImage()
 
 /*****************************Josiah's functions*******************************/
 
-void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc, const ImageType& old )
+/******************************************************************************\
+ Obtain a sub-image from old.  Uses the coordinates of the upper left corner
+ and lower right corner to obtain image.
+\******************************************************************************/
+void ImageType::getSubImage( int ULr, int ULc, int LRr, int LRc,
+    const ImageType& old )
 {
 	int width, height;
-	//get x width
+	// get sub image height
 	height = abs(ULr - LRr);
  
-	//get y height
+	// get sub image width
 	width = abs(ULc - LRc);
  
-	//make a new array for the exact size of the new subimage
+	// make a new array for the exact size of the new subimage
 	setImageInfo(height, width, old.Q);
- 
- 
-	//copy over the old stuff into the new subimage array
-	for(int i = 0; i < N; i++){
-		for(int j = 0; j < M; j++){
-			pixelValue[i][j] = old.pixelValue[ULr + i][ULc + j];
-		}
-	}
+  
+	// copy over the old stuff into the new subimage array
+	for(int i = 0; i < N; i++)
+		for(int j = 0; j < M; j++)
+			pixelValue[i][j] = old.pixelValue[ULr+i][ULc+j];
 }
 
+/******************************************************************************\
+ Shrink image, average all the values in the block to make the new pixel, this
+ makes the shrink much less jagged looking in the end
+\******************************************************************************/
 void ImageType::shrinkImage( int s, const ImageType& old )
 {
 	// used to find average pixel value
 	int total, num;
 
-    //make new array with correct size
+    // make new array with correct size
 	setImageInfo(old.N / s, old.M / s, old.Q);
 
-	//copy over every s pixel
+	// copy over every s pixel
 	for(int i = 0; i < N; i++)
 		for(int j = 0; j < M; j++) {
 			// reset values for averaging
@@ -465,24 +477,34 @@ void ImageType::shrinkImage( int s, const ImageType& old )
 		}
 }
 
+/******************************************************************************\
+ Translate the image down to the right, any part that goes out of the screen is
+ not calculated.  Checkered background from setImageInfo is retained.
+\******************************************************************************/
 void ImageType::translateImage( int t, const ImageType& old )
 {
-
 	//make this image's image array
 	setImageInfo(old.N, old.M, old.Q);
 
-	//find the bottom corner
-	//go up s pixels
-	//go left s pixels
-	//cp current to i+t, j+t
+	// count backwards through to the newly defined upper left corner copying
+	// from everywhere before
 	for(int i = N - 1; i >= 0 + t; i--)
 		for(int j = M - 1; j >= 0 + t; j--)
 			pixelValue[i][j] = old.pixelValue[i-t][j-t];
-		
 }
 
+/******************************************************************************\
+ Rotate the image clockwise using bilinear interpolation, basically traversing
+ the entire image going from the destination to the source by using the
+ in reverse (which is why its clockwise).  Once a location is determined the
+ surrounding pixels are used to calculate intermediate values between the
+ pixels, this gives a pretty smooth rotate.
+
+ - Originally written by Josiah, modified with Josh's help
+\******************************************************************************/
 void ImageType::rotateImage( int theta, const ImageType& old )
 {
+	// set image to correct size
 	setImageInfo(old.N, old.M, old.Q);
 	int final;	// holds final color value for given location
 	
@@ -511,6 +533,7 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 
 			// only draw a pixel if source value is in range
 			if ( r > 0 && ceil(r) < N && c > 0 && ceil(c) < M ) {
+
 				// get four pixel value which surround the desired value
 				UL = old.pixelValue[(int)r][(int)c];
 				UR = old.pixelValue[(int)r][(int)ceil(c)];
@@ -581,25 +604,28 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 
 }
 
+/******************************************************************************\
+ Sum two images together, basically just finding the average pixel value of
+ every pixel between two images.  Throws an exception if dimesions of both
+ images don't match
+\******************************************************************************/
 ImageType& ImageType::operator+ ( const ImageType& rhs )
 {
 	// throw error if images don't match
 	if ( N != rhs.N || M != rhs.M || Q != rhs.Q )
 		throw (string)"Images do not have the same dimensions!";
 
-	//this is the value that determines the weight of each image
-	//large a gives more weight to first image
-	//small a gives more weight to second image
-	//a must be 0 >= a <= 1
+	// this is the value that determines the weight of each image
+	// large a gives more weight to first image
+	// small a gives more weight to second image
+	// a must be 0 >= a <= 1
 	float a = 0.5;
 
 	//the general formula is aI1(r,c)+(1-a)I2(r,c)
-	for(int i = 0; i < N; i++){
-		for(int j = 0; j < M; j++){
+	for(int i = 0; i < N; i++)
+		for(int j = 0; j < M; j++)
 			// set new pixel value
-			pixelValue[i][j] = pixelValue[i][j]*a + (1.0 - a)*rhs.pixelValue[i][j];
-		}
-	}
+			pixelValue[i][j] = pixelValue[i][j]*a+(1.0-a)*rhs.pixelValue[i][j];
 
 	return *this;	// return current object
 }
