@@ -848,7 +848,6 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index1, index2;
 	ImageType temp1, temp2;
-	WINDOW *msgWin;
 
 	index1 = promptForReg( loaded, name );
 	
@@ -856,17 +855,7 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	{
 		temp1 = img[index1];
 
-		// show window over register window
-		drawWindow( msgWin, "Great!", REGWIN_HEIGHT, REGWIN_WIDTH, 1, MENU_WIDTH+3 );
-
-		// display message
-		mvwprintw( msgWin, 2, 2, "Please choose an image to sum with" );
-		mvwprintw( msgWin, 4, 2, "Press Return to continue..." );
-
-		// wait for return to be pressed
-		while ( wgetch( msgWin ) != KEY_RETURN );
-
-		index2 = promptForReg( loaded, name );
+		index2 = promptForReg( loaded, name, true, 3, MENU_WIDTH+5 );
 		
 		if ( index2 != BAD_REG )
 		{
@@ -878,7 +867,6 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			if ( name[index1][strlen(name[index1])-1] != ')' )
 				strcat( name[index1], " (modified)" );
 		}
-		delwin( msgWin );
 	}
 }
 
