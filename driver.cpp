@@ -1247,7 +1247,7 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	{
 		// prompt for valid angle
 		theta = promptForAngle( "Rotate Image",
-		    "Rotate counter-clockwise by angle theta(-1 to cancel):" );
+		    "Rotate counter-clockwise by angle(-1 to cancel):" );
 
 		// if cancel isn't choosen
 		if ( theta != -1 )
