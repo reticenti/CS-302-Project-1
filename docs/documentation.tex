@@ -37,12 +37,12 @@
 
 
 \begin{document}
-
 %import the title page
 \input{./title.tex}
 
 %headers, footers, and table of contents
 \pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markright{\thesection}}
 \rhead{Page \thepage\ of \pageref{LastPage}}
 \lhead{}
 \lfoot{CS 302 | Spring 2010}
@@ -54,7 +54,8 @@
 
 \lhead{Joshua Gleason \& Josiah Humphrey}
 \rhead{Page \thepage\ of \pageref{LastPage}}
-\rfoot{Section\ \thesection}
+\rfoot{Section\ \rightmark}
+%\rfoot{Section\ \if\relax\thesubsection\relax \rightmark \else \thesection\fi}
 \cfoot{}
 \lfoot{CS 302 | Spring 2010}
 \renewcommand{\footrulewidth}{0.4pt}
@@ -71,42 +72,294 @@
 \begin{description}
 
 	\item{\textsc{constructor}}
+		\begin{description}
+			\item{Purpose}
 
-		oh yeah
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{constructor with parameters}}
+		\begin{description}
+			\item{Purpose}
 
-		ok stuff here
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
+
 
 	\item{\textsc{desctructor}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{copy\_constructor}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{operator=}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{getimageInfo}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{getpixelval}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{setpixelval}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{getsubimage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{meangray}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{enlargeImage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{shrinkImage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{reflectImage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{translateImage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{rotateImage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{operator+}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{operator-}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{negateImage}}
 
@@ -118,99 +371,578 @@
 
 	\item{\textsc{showmenu}}
 
-		stuff
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{showregs}}
+
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
 
 
 	\item{\textsc{drawwindow}}
 
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{deletemenu}}
+
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
 
 
 	\item{\textsc{deletewindow}}
 
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{process entry}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{stdwindow}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{promptforreg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{promptforfilename}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{promptforloc}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{promptforpixvalue}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{promptforscalevalue}}
 
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{promptformirrow}}
+
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
 
 
 	\item{\textsc{promptforangle}}
 
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{messagebox}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{fillregs}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{clearregisters}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{laodimage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{saveimage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{getimage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{setpixel}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{getpixel}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{extractsub}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{enlargeimg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{shrinkimg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{reflectimg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{translateimg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{rotateimg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{sumimg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{subtractimg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{negateimg}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 
 	\item{\textsc{findlocalpgm}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 \end{description}
 
@@ -218,20 +950,140 @@
 
 \begin{description}
 	\item{\textsc{constructor}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{copy constructor}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{constructor with parameters}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{destructor}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{create}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{createcubic}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{getval}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{getcubicval}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 \end{description}
 
@@ -239,10 +1091,55 @@
 
 \begin{description}
 	\item{\textsc{readimageheader}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{readimage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{writeimage}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 \end{description}
 
@@ -250,30 +1147,153 @@
 \begin{description}
 
 	\item{\textsc{startcurses}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{endcurses}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{setcolor}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{screenwidth}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{screenheigth}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{promptforint}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{promptfordouble}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 	\item{\textsc{promptforstring}}
+		\begin{description}
+			\item{Purpose}
+
+
+			\item{Input}
+
+
+			\item{Output}
+
+
+			\item{Assumptions}
+
+
+		\end{description}
+
 
 \end{description}
 
 \section{Bugs and Errors}
 
+hmm what goes here
 
 \section{What was Learned}
 
+lol
 
 \section{Division of Labor}
 
+ok!
 
 \end{document}
