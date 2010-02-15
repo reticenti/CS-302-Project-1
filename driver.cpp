@@ -1227,9 +1227,9 @@ void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
- This prompts the user for an angle theta which will rotate the image clockwise
- by theta degrees.  The input is only valid from 0-360 which should cover all
- possibilities.
+ This prompts the user for an angle theta which will rotate the image counter 
+ clockwise by theta degrees.  The input is only valid from 0 to 360 which
+ should cover all possibilities.
 \******************************************************************************/
 void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1247,7 +1247,7 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	{
 		// prompt for valid angle
 		theta = promptForAngle( "Rotate Image",
-		    "Rotate clockwise by angle theta(-1 to cancel):" );
+		    "Rotate counter-clockwise by angle theta(-1 to cancel):" );
 
 		// if cancel isn't choosen
 		if ( theta != -1 )
