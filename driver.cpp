@@ -1011,7 +1011,8 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			 ULr != -1 && ULc != -1 && LRr != -1 && LRc != -1 )
 		{	
 			// display message
-			messageBox( "Bad Coordinates", "Lower Right Corner is Left or Above Upper Left" );
+			messageBox( "Bad Coordinates",
+			    "Lower Right Corner is Left or Above Upper Left" );
 
 			promptForLoc( "Upper Left Corner", img[index], ULr, ULc );
 
@@ -1245,7 +1246,8 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	if ( index != BAD_REG )
 	{
 		// prompt for valid angle
-		theta = promptForAngle( "Rotate Image", "Rotate clockwise by angle theta(-1 to cancel):" );
+		theta = promptForAngle( "Rotate Image",
+		    "Rotate clockwise by angle theta(-1 to cancel):" );
 
 		// if cancel isn't choosen
 		if ( theta != -1 )
