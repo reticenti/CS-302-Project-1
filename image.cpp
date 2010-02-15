@@ -380,6 +380,10 @@ void ImageType::reflectImage( bool flag, const ImageType& old )
 \******************************************************************************/
 ImageType& ImageType::operator- ( const ImageType& rhs )
 {
+	// throw exception if images don't match
+	if ( N != rhs.N || M != rhs.M || Q != rhs.Q )
+		throw (string)"Images do not have the same dimensions!";
+
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 		{
@@ -573,6 +577,9 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 
 ImageType& ImageType::operator+ ( const ImageType& rhs )
 {
+	// throw error if images don't match
+	if ( N != rhs.N || M != rhs.M || Q != rhs.Q )
+		throw (string)"Images do not have the same dimensions!";
 
 	//this is the value that determines the weight of each image
 	//large a gives more weight to first image
