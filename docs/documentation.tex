@@ -1443,15 +1443,46 @@
 		\begin{description}
 			\item{Purpose}
 
+				Reads the iamge header amd puts them into values that
+				are passed by reference
 
 			\item{Input}
 
+				\begin{itemize}
 
+					\item{fname[]}
+
+						This is the name of the file stored
+						as a C-style string
+
+					\item{N}
+
+						This is the number of rows in the image
+
+					\item{M}
+
+						This is the number of columns in
+						the image
+
+					\item{Q}
+
+						This is the depth of the image
+
+					\item{type}
+
+						This makes sure that the file type is
+						.pgm and not some other format
+						
+				\end{itemize}
+						
+						
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes that a file exists and is in pgm format
 
 		\end{description}
 
@@ -1460,9 +1491,17 @@
 		\begin{description}
 			\item{Purpose}
 
+				Reads the image into the image object from a file
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{fname[]}
+
+					\item{ImageType image}
+
+				\end{itemize}
 
 			\item{Output}
 
