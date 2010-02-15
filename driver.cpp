@@ -1,4 +1,4 @@
-#include <iostream>
+#include <string>
 #include <cstdlib>
 #include <cstdio>
 #include <dirent.h>
@@ -10,12 +10,14 @@
 using namespace std;
 
 // CONSTANTS
-	const bool CUBIC_INTER = true;
+	const bool CUBIC_INTER = true;	// sets cubic or linear interpolation for enlarge
 
-	const int REGS = 5;	   		// values 1-9
+	// last / is important!!!
+	const char IMAGELOC[] = "./images/";
+
+	const int REGS = 5;	   	// values 1-9
 	const int BAD_REG = REGS;	// dont change this
 	const int NAME_LEN = 50;   	// the max string length of names
-	const int MSG_LEN = 100;   	// the max string length of messages
 
 	const int MSGBOX_WIDTH = 60;
 	const int MSGBOX_HEIGHT = 4;
@@ -23,15 +25,13 @@ using namespace std;
 	const int MAX_IMG = 10000; 	// the max size you can enlarge to
 	const int MIN_IMG = 4;     	// the min size you can reduce to
 
-	const short BG_COLOR = COLOR_BLACK;
-	const short WINDOW_COLOR = COLOR_BLUE;
-	const short FG_COLOR = COLOR_RED;
+	const short BG_COLOR = COLOR_BLUE;	// doesnt matter
+	const short FG_COLOR = COLOR_BLACK;	// background color
 
-	const short MENU_BACKGROUND = COLOR_BLUE;
-	const short MENU_FOREGROUND = COLOR_RED;
+	const short MENU_BACKGROUND = COLOR_CYAN;	// window backgrounds
+	const short MENU_FOREGROUND = COLOR_BLACK;	// window foregrounds
 
-	const bool BRIGHT = true;
-	const int MENU_OPTIONS = 16;
+	const int MENU_OPTIONS = 16;	// number of main menu choices
 
 // FUNCTION PROTOTYPES
 	// shows menu, parameters in order, height, width, locY, locX
@@ -39,6 +39,7 @@ using namespace std;
 	int showMenu( WINDOW *&, const char[], int, int, int, int, char[][NAME_LEN], int );
 	int showMenu( WINDOW *&, const char[], int, int, int, int, char*[], int );
 	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );
+	void drawWindow( WINDOW *&, const char[], int, int, int, int, short=MENU_BACKGROUND, short=MENU_FOREGROUND );
 
 	// this function clears all windows, redraw any you want after this is called
 	void deleteMenu( WINDOW *& );
@@ -49,7 +50,7 @@ using namespace std;
 
 	// verify input for common prompts
 	int promptForReg( bool[], char[][NAME_LEN], const bool = true );
-	int promptForFilename( const char[], const char[], char*& );
+	int promptForFilename( const char[], const char[], char[] );
 	void promptForLoc( const char[], ImageType&, int&, int& );
 	int promptForPixValue( const char[], const char[], int );
 	int promptForScaleValue( const char[], const char[], int );
@@ -79,7 +80,7 @@ using namespace std;
 	void subtractImg( ImageType[], bool[], char[][NAME_LEN] );
 	void negateImg( ImageType[], bool[], char[][NAME_LEN] );
 
-	void drawWindow( WINDOW *&, const char[], int, int, int, int, short=WINDOW_COLOR, short=FG_COLOR );
+	// get local .pgm files to a string list
 	int findLocalPGM( char **&filenames );
 
 // MAIN PROGRAM
@@ -125,6 +126,11 @@ int main( int argc, char **argv )
 	hideCursor();
 
 	setColor( FG_COLOR, BG_COLOR );
+
+	for ( int i = 0; i < screenWidth(); i++ )
+		for ( int j = 0; j < screenHeight(); j++ )
+			mvaddch(j, i, ' ');
+	refresh();
 
 	// initialize the bool array
 	for ( int i = 0; i < REGS; i++ )
@@ -290,11 +296,11 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 
 void showRegs( WINDOW *& regWin, const bool loaded[], const char names[][NAME_LEN] )
 {
-	drawWindow( regWin, "Registers", REGS+4, 40, 1, 43 );
+	drawWindow( regWin, "Registers", REGS*2+5, 36, 1, 43 );
 
 	// add the register names to the window
 	for ( int i = 0; i < REGS; i++ )
-		mvwprintw( regWin, i+2, 2, "%.38s", names[i] );
+		mvwprintw( regWin, i*2+2, 2, "%.38s", names[i] );
 	
 	wrefresh( regWin );
 }
@@ -454,7 +460,6 @@ void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc, 
 
 void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	char strInput[NAME_LEN];
 	char **fileNames, **menuChoices;
 	WINDOW *fileMenu;
 	int i, j, k, files, index, imageVal;
@@ -498,7 +503,7 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	
 			loaded[index] = true;
 
-			sprintf( name[index], "Register %i: %s", index+1, menuChoices[imageVal] );
+			sprintf( name[index], "Register %i: %s", index+1, &(menuChoices[imageVal][strlen(IMAGELOC)]) );
 		}
 
 		// de-allocate fileMenu
@@ -514,7 +519,8 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 
 void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	char *strInput;
+	char strInput[NAME_LEN];
+	char imageLoc[NAME_LEN];
 	int index, x, y;
 
 	index = promptForReg( loaded, name );
@@ -523,11 +529,11 @@ void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	{
 		promptForFilename( "Save Image", "Enter filename: ", strInput );
 
-		writeImage( strInput, img[index] );
+		sprintf( imageLoc, "%s%s", IMAGELOC, strInput );
+
+		writeImage( imageLoc, img[index] );
 
 		sprintf( name[index], "Register %i: %s", index+1, strInput );
-
-		delete [] strInput;
 	}
 }
 
@@ -905,7 +911,7 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
 
 
 	do {
-		val = showMenu( regMenu, "Registers", 15, 36, 1, 43, menuVals, REGS+1 );
+		val = showMenu( regMenu, "Registers", REGS*2+5, 36, 1, 43, menuVals, REGS+1 );
 		if ( val == BAD_REG )
 			loop = false;
 		else if ( ! loaded[val] && check )
@@ -919,16 +925,15 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
 	return val;
 }
 
-int promptForFilename( const char title[], const char prompt[], char *&str )
+int promptForFilename( const char title[], const char prompt[], char str[] )
 {
 	WINDOW *fileWin;
 
 	int len = 16;	// max length of filename
-	str = new char[len-1];
 
-	drawWindow( fileWin, title, 5, strlen(prompt)+len+4, 2, 20 );
+	drawWindow( fileWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, screenHeight()/2-MSGBOX_HEIGHT/2, screenWidth()/2-MSGBOX_WIDTH/2 );
 
-	promptForString( fileWin, 2, 2, prompt, str, len );
+	promptForString( fileWin, 1, 2, prompt, str, len );
 
 	delwin( fileWin );
 
@@ -1101,7 +1106,7 @@ int findLocalPGM( char **&filenames )
 	int n;
 	int count = 0;
 
-	n = scandir( ".", &namelist, 0, alphasort );
+	n = scandir( IMAGELOC, &namelist, 0, alphasort );
 
 	if ( n > 0 )
 	{
@@ -1126,8 +1131,8 @@ int findLocalPGM( char **&filenames )
 				if ( len > 5 )
 					if ( strcmp( ".pgm", &(namelist[i]->d_name[len-4]) ) == 0 )
 					{
-						filenames[j] = new char[strlen(namelist[i]->d_name)+1];
-						strcpy( filenames[j], namelist[i]->d_name );
+						filenames[j] = new char[strlen(namelist[i]->d_name)+1+strlen(IMAGELOC)];
+						sprintf( filenames[j], "%s%s", IMAGELOC, namelist[i]->d_name );
 						j++;
 					}
 				delete [] namelist[i];
