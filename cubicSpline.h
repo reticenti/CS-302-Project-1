@@ -1,5 +1,5 @@
 /******************************************************************************\
- cubicSpline by Joshua Gleason
+ Author: Joshua Gleason
 
  This object is used to create cubic spline functions for the purpose of
  intermediate pixel approximation, this object is also capable of creating
