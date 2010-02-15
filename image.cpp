@@ -170,8 +170,14 @@ double ImageType::meanGray() const
 \******************************************************************************/
 void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
 {
-	// call double version of enlarge
-	enlargeImage( (double)S, old, cubic );
+	if ( old.M < 4 || old.N < 4 && old.M != 0 && old.N != 0 )
+		// force linear if less than 4
+		enlargeImage( (double)S, old, false );
+	else if ( old.M == 0 || old.N == 0 )
+		throw (string)"Image file is empty!";
+	else
+		// call double version of enlarge
+		enlargeImage( (double)S, old, cubic );
 }
 
 /******************************************************************************\
