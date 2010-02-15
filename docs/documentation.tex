@@ -75,15 +75,20 @@
 		\begin{description}
 			\item{Purpose}
 
+				default constructor allocates no memory and sets the size to zero 
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Sets everything to zero and 
+				sets the pixelValue array to NULL
 
 		\end{description}
 
@@ -92,15 +97,21 @@
 		\begin{description}
 			\item{Purpose}
 
+				change the dimenstions of the image, delete,
+				and re-allocate memory if required
 
 			\item{Input}
 
+				An N, M, and Q value to set the new image to
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Sets the image to a certain size and intializes the
+				image as a grid
 
 		\end{description}
 
@@ -110,15 +121,20 @@
 		\begin{description}
 			\item{Purpose}
 
+				Deletes and memory that has been dynamically allocated
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Checks to see if the pixelValue array has been set
+				if so, deletes
 
 		\end{description}
 
@@ -126,15 +142,25 @@
 	\item{\textsc{copy\_constructor}}
 		\begin{description}
 			\item{Purpose}
-
+		
+				Creates a new array absed on the thing to be copied
+				then sets the pixelValue of the new object the same as
+				the old image
 
 			\item{Input}
+
+				ImageType rhs is the old image to be copied over into
+				the new array
 
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
+
+				The old image must be passed as reference to prevent
+				an infinate loop
 
 
 		\end{description}
@@ -144,14 +170,27 @@
 		\begin{description}
 			\item{Purpose}
 
+				equal operator overload, this is basically
+				the same as the copy constructor
+				except it will likely have to 
+				de-allocate memory before copying values, all
+				this is decided in setImageInfo however
 
 			\item{Input}
 
+				imageType rhs which is the old iamge to be 
+				copied over to the new image
 
 			\item{Output}
 
+				Returns the imageType obejct so that
+				equal chaining can be implemented
+
 
 			\item{Assumptions}
+
+				Assumes that the user is not trying to copy the same
+				object into itself
 
 
 		\end{description}
@@ -160,15 +199,38 @@
 	\item{\textsc{getimageInfo}}
 		\begin{description}
 			\item{Purpose}
-
+			
+ 				returns the width height and color depth 
+				to reference variables
 
 			\item{Input}
 
+				\begin{itemize}
+					\item{rows}
+
+						This parameter grabs the number of rows
+						in the imageType object
+
+					\item{cols}
+
+						This parameter grabs the number of cols
+						in the imageType object
+
+					\item{levels}
+
+						This paremeter grabs the depth of the
+						image in the imageType object
+
+				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
+
+				Assumes nothing but it makes sense that the object being
+				queried has been loaded with some image
 
 
 		\end{description}
@@ -178,14 +240,31 @@
 		\begin{description}
 			\item{Purpose}
 
+				Returns the value of a pixel
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{i}
+					
+						The row of the pixel
+
+					\item{j} 
+
+						The column of the pixel
+
+				\end{itemize}
 
 			\item{Output}
 
+				The integer value of the pixel at 
+				pixelValue[i][j]
+
 
 			\item{Assumptions}
+
+				It is assumed that the image has been intialized
 
 
 		\end{description}

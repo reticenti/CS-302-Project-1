@@ -65,12 +65,14 @@ ImageType::ImageType( const ImageType& rhs )
 \*****************************************************************************/
 ImageType& ImageType::operator= ( const ImageType& rhs )
 {
-	setImageInfo( rhs.N, rhs.M, rhs.Q );
+	if(this != &rhs){
+		setImageInfo( rhs.N, rhs.M, rhs.Q );
 
-	// copy pixel values
-	for ( int i = 0; i < N; i++ )
-		for ( int j = 0; j < M; j++ )
-			pixelValue[i][j] = rhs.pixelValue[i][j];
+		// copy pixel values
+		for ( int i = 0; i < N; i++ )
+			for ( int j = 0; j < M; j++ )
+				pixelValue[i][j] = rhs.pixelValue[i][j];
+	}
 
 	return *this;
 }
