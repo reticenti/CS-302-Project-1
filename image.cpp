@@ -170,8 +170,14 @@ double ImageType::meanGray() const
 \******************************************************************************/
 void ImageType::enlargeImage( int S, const ImageType& old, bool cubic )
 {
-	// call double version of enlarge
-	enlargeImage( (double)S, old, cubic );
+	if ( old.M < 4 || old.N < 4 && old.M != 0 && old.N != 0 )
+		// force linear if less than 4
+		enlargeImage( (double)S, old, false );
+	else if ( old.M == 0 || old.N == 0 )
+		throw (string)"Image file is empty!";
+	else
+		// call double version of enlarge
+		enlargeImage( (double)S, old, cubic );
 }
 
 /******************************************************************************\
@@ -380,6 +386,10 @@ void ImageType::reflectImage( bool flag, const ImageType& old )
 \******************************************************************************/
 ImageType& ImageType::operator- ( const ImageType& rhs )
 {
+	// throw exception if images don't match
+	if ( N != rhs.N || M != rhs.M || Q != rhs.Q )
+		throw (string)"Images do not have the same dimensions!";
+
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 		{
@@ -573,6 +583,9 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 
 ImageType& ImageType::operator+ ( const ImageType& rhs )
 {
+	// throw error if images don't match
+	if ( N != rhs.N || M != rhs.M || Q != rhs.Q )
+		throw (string)"Images do not have the same dimensions!";
 
 	//this is the value that determines the weight of each image
 	//large a gives more weight to first image
