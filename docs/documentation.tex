@@ -1,0 +1,279 @@
+\documentclass[pdftex, 11pt]{article}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{fullpage}
+\usepackage{color}
+\usepackage[pdftex,bookmarks=true,colorlinks=true,linkcolor=blue]{hyperref}
+
+%this sets the line at the header
+\setlength{\headheight}{15.2pt}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+% This is all for formatting and making the Table of Contents according to 
+% spec. Don't play with it.
+\makeatletter
+\renewcommand\l@section[2]{%
+  \ifnum \c@tocdepth >\z@
+    \addpenalty\@secpenalty
+    \addvspace{1.0em \@plus\p@}%
+    \setlength\@tempdima{1.5em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\ 
+      \leaders\hbox{$\m@th\mkern \@dotsep mu\hbox{.}\mkern \@dotsep mu$}
+     \hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
+    \endgroup
+  \fi}
+\makeatother
+
+
+
+\begin{document}
+
+%import the title page
+\input{./title.tex}
+
+%headers, footers, and table of contents
+\pagestyle{fancy}
+\rhead{Page \thepage\ of \pageref{LastPage}}
+\lhead{}
+\lfoot{CS 302 | Spring 2010}
+\cfoot{}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\tableofcontents
+\newpage
+
+\lhead{Joshua Gleason \& Josiah Humphrey}
+\rhead{Page \thepage\ of \pageref{LastPage}}
+\rfoot{Section\ \thesection}
+\cfoot{}
+\lfoot{CS 302 | Spring 2010}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\section{Introduction}
+
+
+\section{Use of Code}
+
+
+\section{Functions}
+
+\subsection{Image.h}
+\begin{description}
+
+	\item{\textsc{constructor}}
+
+		oh yeah
+
+	\item{\textsc{constructor with parameters}}
+
+		ok stuff here
+
+	\item{\textsc{desctructor}}
+
+	\item{\textsc{copy\_constructor}}
+
+	\item{\textsc{operator=}}
+
+	\item{\textsc{getimageInfo}}
+
+	\item{\textsc{getpixelval}}
+
+	\item{\textsc{setpixelval}}
+
+	\item{\textsc{getsubimage}}
+
+	\item{\textsc{meangray}}
+
+	\item{\textsc{enlargeImage}}
+
+	\item{\textsc{shrinkImage}}
+
+	\item{\textsc{reflectImage}}
+
+	\item{\textsc{translateImage}}
+
+	\item{\textsc{rotateImage}}
+
+	\item{\textsc{operator+}}
+
+	\item{\textsc{operator-}}
+
+	\item{\textsc{negateImage}}
+
+\end{description}
+
+\subsection{driver.cpp}
+
+\begin{description}
+
+	\item{\textsc{showmenu}}
+
+		stuff
+
+	\item{\textsc{showregs}}
+
+
+	\item{\textsc{drawwindow}}
+
+
+	\item{\textsc{deletemenu}}
+
+
+	\item{\textsc{deletewindow}}
+
+
+	\item{\textsc{process entry}}
+
+
+	\item{\textsc{stdwindow}}
+
+
+	\item{\textsc{promptforreg}}
+
+
+	\item{\textsc{promptforfilename}}
+
+
+	\item{\textsc{promptforloc}}
+
+
+	\item{\textsc{promptforpixvalue}}
+
+
+	\item{\textsc{promptforscalevalue}}
+
+
+	\item{\textsc{promptformirrow}}
+
+
+	\item{\textsc{promptforangle}}
+
+
+	\item{\textsc{messagebox}}
+
+
+	\item{\textsc{fillregs}}
+
+
+	\item{\textsc{clearregisters}}
+
+
+	\item{\textsc{laodimage}}
+
+
+	\item{\textsc{saveimage}}
+
+
+	\item{\textsc{getimage}}
+
+
+	\item{\textsc{setpixel}}
+
+
+	\item{\textsc{getpixel}}
+
+
+	\item{\textsc{extractsub}}
+
+
+	\item{\textsc{enlargeimg}}
+
+
+	\item{\textsc{shrinkimg}}
+
+
+	\item{\textsc{reflectimg}}
+
+
+	\item{\textsc{translateimg}}
+
+
+	\item{\textsc{rotateimg}}
+
+
+	\item{\textsc{sumimg}}
+
+
+	\item{\textsc{subtractimg}}
+
+
+	\item{\textsc{negateimg}}
+
+
+	\item{\textsc{findlocalpgm}}
+
+\end{description}
+
+\subsection{cubicspline.h}
+
+\begin{description}
+	\item{\textsc{constructor}}
+
+	\item{\textsc{copy constructor}}
+
+	\item{\textsc{constructor with parameters}}
+
+	\item{\textsc{destructor}}
+
+	\item{\textsc{create}}
+
+	\item{\textsc{createcubic}}
+
+	\item{\textsc{getval}}
+
+	\item{\textsc{getcubicval}}
+
+\end{description}
+
+\subsection{imageIO.h}
+
+\begin{description}
+	\item{\textsc{readimageheader}}
+
+	\item{\textsc{readimage}}
+
+	\item{\textsc{writeimage}}
+
+\end{description}
+
+\subsection{comp\_curses.h}
+\begin{description}
+
+	\item{\textsc{startcurses}}
+
+	\item{\textsc{endcurses}}
+
+	\item{\textsc{setcolor}}
+
+	\item{\textsc{screenwidth}}
+
+	\item{\textsc{screenheigth}}
+
+	\item{\textsc{promptforint}}
+
+	\item{\textsc{promptfordouble}}
+
+	\item{\textsc{promptforstring}}
+
+\end{description}
+
+\section{Bugs and Errors}
+
+
+\section{What was Learned}
+
+
+\section{Division of Labor}
+
+
+\end{document}
