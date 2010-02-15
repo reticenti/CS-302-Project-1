@@ -1,16 +1,45 @@
+/******************************************************************************\
+ Authors: Josiah Humphrey and Joshua Gleason
+
+ Date Due For Review  : 02/16/2010
+
+ 	This program is designed to be a driver for the ImageType objects.  The
+ user interface attempts to allow the objects to be throughly tested in a
+ robust, simple environment.
+
+ 	The ImageType object (defined in image.h) is for manipulating grayscale
+ images, it allows the user to easly enlarge, rotate, negate, etc... an image.
+ The functions in imageIO.h are used to load and save images of type .pgm.
+
+ 	We choose to use curses library to make a more visually pleasing main
+ driver, it implements our scrolling menu system.
+
+ 	The dirent.h library is used to scan for files in the appropriate location,
+ in our case we only list .pgm files located in the local images folder.  This
+ is better understood by examining the findLocalPGM function.
+
+ 	comp_curses.h was written to make initializing curses easier, it also has
+ some functions for obtaining user input as integers, doubles, and strings.
+ Many ncurses library functions however are used directly in this program.
+\******************************************************************************/
+
 #include <string>
 #include <cstdlib>
 #include <cstdio>
 #include <dirent.h>
 #include <cstring>
 #include "comp_curses.h"
-#include "image.h"
 #include "imageIO.h"
+
+#include "image.h"
 
 using namespace std;
 
-// CONSTANTS
-	const bool CUBIC_INTER = true;	// sets cubic or linear interpolation for enlarge
+/******************************************************************************\
+                                   CONSTANTS
+\******************************************************************************/
+	// sets cubic or linear interpolation for enlarge
+	const bool CUBIC_INTER = true;	
 
 	// the folder with the images in it, (make it ./ for local) 
 	const char IMAGELOC[] = "./images/";
@@ -42,58 +71,208 @@ using namespace std;
 	const short MENU_FOREGROUND = COLOR_BLACK;	// window foregrounds
 
 
-// FUNCTION PROTOTYPES
+/******************************************************************************\
+                              FUNCTION PROTOTYPES
+\******************************************************************************/
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
+	int showMenu( WINDOW *&, const char[], int, int, int, int, 
+	    char[][NAME_LEN], int, bool=false );
+
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
+	int showMenu( WINDOW *&, const char[], int, int, int, int, 
+	    char*[], int, bool=false );
 	
-	// make height an odd number for more ballanced windows
-	int showMenu( WINDOW *&, const char[], int, int, int, int, char[][NAME_LEN], int, bool=false );
-	int showMenu( WINDOW *&, const char[], int, int, int, int, char*[], int, bool=false );
-	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );
-	void drawWindow( WINDOW *&, const char[], int, int, int, int, short=MENU_BACKGROUND, short=MENU_FOREGROUND );
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
+	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );	
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
+	void drawWindow( WINDOW *&, const char[], int, int, int, int, 
+	    short=MENU_BACKGROUND, short=MENU_FOREGROUND );
 
-	// this function clears all windows, redraw any you want after this is called
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void deleteMenu( WINDOW *& );
-	void deleteWindow( WINDOW *& );
 
-	// processes the choice returned by showMenu
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void processEntry( ImageType[], bool[], char[][NAME_LEN], int );
 
-	// verify input for common prompts
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void stdWindow( WINDOW *&, const char[] );
-	int promptForReg( bool[], char[][NAME_LEN], const bool = true, int=1, int=MENU_WIDTH+3 );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
+	int promptForReg( bool[], char[][NAME_LEN], const bool = true, 
+	    int=1, int=MENU_WIDTH+3 );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	int promptForFilename( const char[], const char[], char[] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void promptForLoc( const char[], ImageType&, int&, int& );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	int promptForPixValue( const char[], const char[], int );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	int promptForScaleValue( const char[], const char[], int );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	char promptForMirror( const char[], const char[] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	int promptForAngle( const char[], const char[] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void messageBox( const char[], const char[] );
 
-	// fills registers based on parameters
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void fillRegs( ImageType[], bool[], char[][NAME_LEN], int, char** );
 
-	// prompts user for a register to clear
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void clearRegister( ImageType[], bool[], char[][NAME_LEN] );
 
-	// image manip drivers 
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void loadImage( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void saveImage( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void getImageInfo( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void setPixel( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void getPixel( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void extractSub( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void enlargeImg( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void shrinkImg( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void reflectImg( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void translateImg( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void rotateImg( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void sumImg( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void subtractImg( ImageType[], bool[], char[][NAME_LEN] );
+	
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	void negateImg( ImageType[], bool[], char[][NAME_LEN] );
 
-	// get local .pgm files to a string list
+	// name        :
+	// input       :
+	// output      :
+	// assumptions :
 	int findLocalPGM( char **&filenames );
 
-// MAIN PROGRAM
+/******************************************************************************\
+                                     MAIN
+\******************************************************************************/
 
 int main( int argc, char **argv )
 {
@@ -154,7 +333,8 @@ int main( int argc, char **argv )
 		showRegs( regWin, imgLoaded, imgName );
 
 		// show and get input from menu
-		choice = showMenu( menu, "Main Menu", MENU_HEIGHT, MENU_WIDTH, 1, 1, choices, MENU_OPTIONS );
+		choice = showMenu( menu, "Main Menu", MENU_HEIGHT, MENU_WIDTH, 1, 1,
+		    choices, MENU_OPTIONS );
 
 		try
 		{
@@ -174,7 +354,7 @@ int main( int argc, char **argv )
 
 		// makes sure everything is reset
 		deleteMenu( menu );
-		deleteWindow( regWin );
+		deleteMenu( regWin );
 	} while ( choice != MENU_OPTIONS-1 );
 
 	// end curses
@@ -183,32 +363,58 @@ int main( int argc, char **argv )
 	return 0;
 }
 
-// Supporting functions
+/******************************************************************************\
+|                           FUNCTION IMPLEMENTATION                            |
+\******************************************************************************/
 
-// this makes it possible to pass static and dynamic 2d arrays to the menu
-int showMenu( WINDOW *& menu, const char title[], int height, int width, int locY, int locX, char menuStr[][NAME_LEN],
-int choices, bool eraseHighlight )
+/******************************************************************************\
+ Overloaded showMenu that accepts static arrays of strings (length NAME_LEN)
+ and then creates a dynamic version and passes it to the other showMenu,
+ afterwards the memory is de-allocated
+\******************************************************************************/
+int showMenu( WINDOW *& menu, const char title[], int height, int width,
+    int locY, int locX, char menuStr[][NAME_LEN], int choices, bool erase )
 {
+	// holds the new dynamic array of strings
 	char **menuStrPtr = new char*[choices];
+
+	// will hold the return value from other menu call
 	int retVal;
 
+	// count through the static array, allocating memory for the dynamic one
 	for ( int i = 0; i < choices; i++ )
 	{
 		menuStrPtr[i] = new char[NAME_LEN];
+
+		// this is where the string value is copied
 		strcpy( menuStrPtr[i], menuStr[i] );
 	}
-	retVal = showMenu( menu, title, height, width, locY, locX, menuStrPtr, choices, eraseHighlight );
 
+	// call the other menu function
+	retVal = showMenu( menu, title, height, width, locY, locX, 
+	    menuStrPtr, choices, erase );
+
+	// de-allocate memory for temporary string array
 	for ( int i = 0; i < choices; i++ )
 		delete [] menuStrPtr[i];
 	delete [] menuStrPtr;
 
+	// return value obtained by other menu
 	return retVal;
 }
 
+/******************************************************************************\
+ This is the function which builds the scrolling menu system, this simply
+ creates a curses window and puts all the options stores in menuStr onto the
+ window, it then waits for the user to press UP, DOWN, or RETURN before
+ reacting.  The parameters allow menus to be different widths, heights, and
+ locations.  A few constants can be changed to change the colors of the window.
 
-int showMenu( WINDOW *& menu, const char title[], int height, int width, int locY, int locX, char *menuStr[], int
-choices, bool eraseHighlight )
+ !!!Beware the WINDOW pointer 'menu' is intialized here but is NOT deleted.
+ It is up to the calling function to take care of this object.
+\******************************************************************************/
+int showMenu( WINDOW *& menu, const char title[], int height, int width,
+    int locY, int locX, char *menuStr[], int choices, bool eraseHighlight )
 {
 	/* x, y variables hold location of cursor, choiceLoc is the current choice
 	   thats selected, menuLoc is the location on the menu, and input is the
@@ -241,7 +447,7 @@ choices, bool eraseHighlight )
 		for ( int i = 0; i < perScreen && i < choices; i++ )
 		{
 			y = 2+i*2;
-			mvwprintw( menu, y, x, formatStr, menuStr[choiceLoc - menuLoc + i] );
+			mvwprintw( menu, y, x, formatStr, menuStr[choiceLoc-menuLoc+i] );
 		}
 
 		// set mode to highlight
@@ -308,34 +514,49 @@ choices, bool eraseHighlight )
 	return choiceLoc;
 }
 
-void showRegs( WINDOW *& regWin, const bool loaded[], const char names[][NAME_LEN] )
+/******************************************************************************\
+ Display a window of registers next to the main menu (or wherever the constants
+ dictate)
+
+ !!!Beware the WINDOW pointer 'regWin' is intialized here but is NOT deleted.
+ It is up to the calling function to take care of this object.
+\******************************************************************************/
+void showRegs( WINDOW *& regWin, const bool loaded[], 
+    const char names[][NAME_LEN] )
 {
-	drawWindow( regWin, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, 1, MENU_WIDTH+3 );
+	// draw/initialize the window to display the 
+	drawWindow( regWin, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, 1, 
+	    MENU_WIDTH+3 );
 
 	// add the register names to the window
 	for ( int i = 0; i < REGS; i++ )
 		mvwprintw( regWin, i*2+2, 2, "%-32.32s", names[i] );
-	
+
+	// make sure the new characters are printed!
 	wrefresh( regWin );
 }
 
+/******************************************************************************\
+ This basically clears the entire screen after deleting the window that is
+ passed.
+\******************************************************************************/
 void deleteMenu( WINDOW *& menu )
 {
+	// delete the menu object
 	delwin( menu );
 
+	// touch the screen to make sure it knows things have changed then refresh
 	touchwin( stdscr );
 	refresh();
 }
 
-void deleteWindow( WINDOW *& win )
-{
-	delwin( win );
-
-	touchwin( stdscr );
-	refresh();
-}
-
-void drawWindow( WINDOW *& win, const char title[], int height, int width, int y, int x, short bgColor, short fgColor )
+/******************************************************************************\
+ This function simply draws an empty window with a given title, height, width,
+ x, and y locations.  The colors have default values but can be changed if
+ oddly colored windows are wanted.
+\******************************************************************************/
+void drawWindow( WINDOW *& win, const char title[], int height, int width,
+    int y, int x, short bgColor, short fgColor )
 {
 	// intialize window
 	win = newwin( height, width, y, x );
@@ -358,8 +579,15 @@ void drawWindow( WINDOW *& win, const char title[], int height, int width, int y
 	mvwaddstr( win, 0, 2, title );
 }
 
-void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN], int choice )
+/******************************************************************************\
+ This is the function that decides where to go depending on the choice in the
+ main menu.  The reason it has all the parameters is for passing to the
+ subsequent functions that will be using them.
+\******************************************************************************/
+void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN], 
+    int choice )
 {
+	// enter switch statement evaluating choice
 	switch ( choice )
 	{
 		case 0:	// read image
@@ -413,18 +641,35 @@ void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN], int ch
 	}
 }
 
+/******************************************************************************\
+ Prompt for a register that is filled and then clear it.
+\******************************************************************************/
 void clearRegister( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index;
+
+	// prompt for register to reset
 	index = promptForReg( loaded, name );
+
+	// if back wasn't selected...
 	if ( index != BAD_REG )
 	{
+		// set the register to empty
 		loaded[index] = false;
+
+		// reset the register name
 		sprintf( name[index], "Register %i: Empty", index+1 );
 	}
 }
 
-void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc, char **argv )
+/******************************************************************************\
+ This is the function that reads the arguments passed to main by the terminal.
+ It compiles an error message for every read/write exception that throws a
+ string object.  It stores the values into the registers sequentially, if there
+ are no arguments relating to the register it is set to empty
+\******************************************************************************/
+void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc,
+    char **argv )
 {
 	char *msg = new char[1+(argc-1)*40];
 	int i, j, k;
@@ -433,35 +678,54 @@ void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc, 
 	// initalize string
 	msg[0] = '\0';
 
+	// set empty values
 	for ( int index = 0; index < REGS; index++ )
+	{
 		sprintf( name[index], "Register %i: Empty", index+1 );
+		loaded[index] = false;
+	}
 
+	// read arguments from main and attempt to load registers
 	for ( int index = 1; index < argc && index <= REGS; index++ )
 	{
 		try
 		{
+			// read image header
 			readImageHeader( argv[index], i, j, k, f );
+
+			// set image info to header value
 			img[index-1].setImageInfo( i, j, k );
 
+			// read the rest of the image
 			readImage( argv[index], img[index-1] );
 
+			// set the name of the register to the file path
 			sprintf( name[index-1], "Register %i: %s", index, argv[index] );
 
+			// make sure the program knows the register is in use
 			loaded[index-1] = true;
 		}
 		catch ( string s )
 		{
+			// for every exception string caught compile a list of errors
 			strcat( msg, s.c_str() );
 			strcat( msg, "\n" );
 		}
 	}
 
+	// display the message to the back screen (will be behind any windows)
 	if ( strlen(msg) > 0 )
 	{
+		// just white on black
 		setColor( COLOR_WHITE, COLOR_BLACK );
 
+		// display the message
 		mvaddstr( 0, 0, msg );
+
+		// wait for input
 		getch();
+
+		// clear screen
 		for ( int x = 0; x < screenWidth(); x++ )
 			for ( int y = 0; y < screenHeight(); y++ )
 				mvaddch( y, x, ' ' );
@@ -472,11 +736,23 @@ void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc, 
 	delete [] msg;
 }
 
+/******************************************************************************\
+ Prompt the user for a register to load to, then let them choose from a list
+ of the .pgm files in the local images directory (defined as a constant)
+\******************************************************************************/
 void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
+	// holds the file names, menuChoices is a copy with "Back" added at the end
 	char **fileNames, **menuChoices;
+
+	// the window that will hold the file menu
 	WINDOW *fileMenu;
+
+	// holds the image values N, M, and Q, the number of local image files, the
+	// index of index of the register choosen and index of the file choosen
 	int i, j, k, files, index, imageVal;
+
+	// format of file (unused for now) but required for readImageHeader param
 	bool f;
 	
 	// get a list of local files dynamically allocated
@@ -505,19 +781,29 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	if ( index != BAD_REG )
 	{	
 		// prompt for file
-		imageVal = showMenu( fileMenu, "Load Image", FILEWIN_HEIGHT, FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 , menuChoices, files+1 );
+		imageVal = showMenu( fileMenu, "Load Image", FILEWIN_HEIGHT,
+		    FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 , menuChoices,
+			files+1 );
 
 		// if exit isn't choosen attempt to load image
 		if ( imageVal != files )
 		{
+			// read the image that was choosen
 			readImageHeader( menuChoices[imageVal], i, j, k, f );
+
+			// set up the image to store the correct data
 			img[index].setImageInfo( i, j, k );
 	
+			// read and store image data
 			readImage( menuChoices[imageVal], img[index] );
 	
+			// make sure that the register is read as full
 			loaded[index] = true;
-
-			sprintf( name[index], "Register %i: %s", index+1, &(menuChoices[imageVal][strlen(IMAGELOC)]) );
+			
+			// remove the file path from the front of the filename
+			// exampe: ./images/img.pgm -> img.pgm
+			sprintf( name[index], "Register %i: %s", index+1,
+			    &(menuChoices[imageVal][strlen(IMAGELOC)]) );
 		}
 
 		// de-allocate fileMenu
@@ -531,89 +817,138 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 
 }
 
+/******************************************************************************\
+ Save image from a register to the local images directory, prompting user for
+ register and file name
+\******************************************************************************/
 void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
+	// holds the file name
 	char strInput[NAME_LEN];
-	char imageLoc[NAME_LEN];
-	int index, x, y;
 
+	// used to remove the file path from the front of the filename
+	char imageLoc[NAME_LEN];
+
+	// holds the register that the user chooss
+	int index;
+
+	// prompt for register
 	index = promptForReg( loaded, name );
 	
+	// if user doesn't choose 'Back'
 	if ( index != BAD_REG )
 	{
+		// prompt the user for a file name
 		promptForFilename( "Save Image", "Enter filename: ", strInput );
-
+		
+		// add .pgm to the filename if it wasnt already
 		if ( strlen( strInput ) < 4 )
 			strcat( strInput, ".pgm" );
 		else if ( strcmp( (strInput+strlen(strInput)-4), ".pgm" ) != 0 )
 			strcat( strInput, ".pgm" );
-
+		
+		// add the file path to the filename
 		sprintf( imageLoc, "%s%s", IMAGELOC, strInput );
-
+		
+		// save the image to the given filename
 		writeImage( imageLoc, img[index] );
 
+		// set register name to match file name
 		sprintf( name[index], "Register %i: %s", index+1, strInput );
 	}
 }
 
+/******************************************************************************\
+ Simply retrieve image information and display to a window below the registers
+ The data being displayed is the Register number, Image Height, Width, Q value,
+ and average gray value.
+\******************************************************************************/
 void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int N, M, Q, index, x, y;
+	// hold image info
+	int N, M, Q, index, y, x;
+
+	// the window that holds all the info
 	WINDOW *infoWin;
 
+	// prompt for a register
 	index = promptForReg( loaded, name );
 	
+	// if back isn't choosen
 	if ( index != BAD_REG )
 	{
+		// retrieve image height, width, and color depth
 		img[index].getImageInfo( N, M, Q );
 
-		drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 );
-
+		// draw/intialize the info window
+		drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, REGWIN_HEIGHT+2,
+		    MENU_WIDTH+3 );
+		
+		// set the starting x/y values
 		x = 2;
 		y = 2;
 		
-		mvwprintw( infoWin, y, x, "%-20s%c %i", "Saved in Register", ':', index+1 );
+		// print all the information to the window with formating
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Saved in Register",':',
+		    index+1 );
 		y+=2;
-		mvwprintw( infoWin, y, x, "%-20s%c %i", "Image Width(pixels)", ':', M );
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Image Width(pixels)",':',M );
 		y+=2;
-		mvwprintw( infoWin, y, x, "%-20s%c %i", "Image Height(pixels)", ':', N );
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Image Height(pixels)",':',N );
 		y+=2;
-		mvwprintw( infoWin, y, x, "%-20s%c %i", "Color Depth", ':', Q );
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Color Depth",':',Q );
 		y+=2;
-		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Gray Value", ':', img[index].meanGray() );
+		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Gray Value",':',
+		    img[index].meanGray() );
 		y+=2;
-		mvwprintw( infoWin, y, x, "Press any key to continue..." );
+		mvwprintw( infoWin, y, x, "Press Enter to continue..." );
 
 		wrefresh( infoWin );
 		
 		// wait for input
-		wgetch( infoWin );
+		while ( wgetch( infoWin ) != KEY_RETURN );
 
+		// de-allocate the window
 		delwin( infoWin );
 	}
 }
 
+/******************************************************************************\
+ Prompt user for a register then a pixel location (row, col) and then the pixel
+ value to change that pixel to.
+\******************************************************************************/
 void setPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index, row, col, val, x, y;
+	// holds various information about image
+	int index, row, col, val;
 	int N, M, Q;
-	string msg;
 
+	// prompt for register
 	index = promptForReg( loaded, name );
 
+	// if back isn't choosen
 	if ( index != BAD_REG )
 	{
+		// prompt for a pixel location
 		promptForLoc( "Set Pixel Value", img[index], row, col );
 
+		// if back isn't choosen
 		if ( row != -1 && col != -1 )
 		{
+			// get image info (just for the Q)
 			img[index].getImageInfo( N, M, Q );
 			
-			promptForPixValue( "Set Pixel Value", "Enter new pixel value(-1 to cancel): ", Q );
+			// prompt for the pixel with Q as the max value
+			promptForPixValue( "Set Pixel Value",
+			    "Enter new pixel value(-1 to cancel): ", Q );
 
+			// if back isn't choosen
 			if ( val != -1 )
 			{
+				// change pixel value
 				img[index].setPixelVal( row, col, val );
+
+				// add modified to end of register name
 				if ( name[index][strlen(name[index])-1] != ')' )
 					strcat( name[index], " (modified)" );
 			}
@@ -621,50 +956,72 @@ void setPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+/******************************************************************************\
+ Return the value of a pixel in a selected image to the user.
+\******************************************************************************/
 void getPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index, row = -1, col = -1, val, x, y;
-	int N, M, Q;
+	// self describing variables
+	int index, row = -1, col = -1, val;
 	WINDOW *infoWin;
 
+	// prompt for the register
 	index = promptForReg( loaded, name );
 
+	// if back isn't choosen
 	if ( index != BAD_REG )
 	{
+		// prompt for pixel location
 		promptForLoc( "Get Pixel Value", img[index], row, col );
 
+		// if back isn't choosen
 		if ( row != -1 && col != -1 )
 		{
-			img[index].getImageInfo( N, M, Q );
-			
+			// create a message box window
 			stdWindow( infoWin, "Get Pixel Value" );
 			
+			// put the pixel value message in the window
 			mvwprintw( infoWin, 1, 2, "The pixel Value at (%i,%i) is %i", 
 				col, row, img[index].getPixelVal(row, col) );
 
-			wgetch( infoWin );
+			// wait for input
+			while ( wgetch( infoWin ) != KEY_RETURN );
 			
+			// de-allocate the message window
 			delwin( infoWin );
 			
 		}
 	}
 }
 
+/******************************************************************************\
+ After getting the image to manipulate, prompt for two corners to make a
+ subimage out of, if the lower right corner is above or left of the upper
+ right corner re-prompt for valid points
+\******************************************************************************/
 void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index, x, y;
+	// self documenting variables
+	int index;
 	int ULr, ULc, LRr = -1, LRc = -1;
+
+	// temporary image to hold the subimage
 	ImageType temp;
 
+	// prompt for image register
 	index = promptForReg( loaded, name );
 
+	// if back isn't choosen
 	if ( index != BAD_REG )
 	{
+		// prompt for the upper left corner
 		promptForLoc( "Upper Left Corner", img[index], ULr, ULc );
 
+		// if back isn't choosen prompt for lower right corner
 		if ( ULr != -1 && ULc != -1 )
 			promptForLoc( "Lower Right Corner", img[index], LRr, LRc );
 
+		// if invalid re-prompt for corners
 		while ( ( LRr <= ULr || LRc <= ULc ) &&
 			 ULr != -1 && ULc != -1 && LRr != -1 && LRc != -1 )
 		{	
@@ -677,6 +1034,7 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 				promptForLoc( "Lower Right Corner", img[index], LRr, LRc );
 		}
 		
+		// if corners are good and back wasn't choosen
 		if ( ULr != -1 && ULc != -1 && LRr != -1 && LRc != -1 )
 		{
 			// extract sub image
@@ -692,30 +1050,45 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+/******************************************************************************\
+ This function prompts the user for a scale value to enlarge an image by, it
+ makes sure the scale value does not make the image larger than MAX_IMG value
+ because it may cause a stack overflow.
+\******************************************************************************/
 void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index;
-	int N, M, Q;
-	int maxS;
+	// holds image info and maxS value
+	int index, N, M, Q, maxS;
+
+	// scale value to be choosen by user
 	int s;
 
+	// temporary image used to store enlarged image
 	ImageType temp;
 
+	// prompt user for register value
 	index = promptForReg( loaded, name );
 
+	// if back isn't choosen
 	if ( index != BAD_REG )
 	{
+		// get the basic image info used to determine maxS
 		img[index].getImageInfo( N, M, Q );
 
+		// calculate maxS
 		maxS = (N > M ? MAX_IMG/N : MAX_IMG/M);
 
 		// prompt for enlarge factor
-		s = promptForScaleValue( "Enlarge Image By Factor", "Enter enlargement multiplier(-1 to cancel): ", maxS );
+		s = promptForScaleValue( "Enlarge Image By Factor", 
+		    "Enter enlargement multiplier(-1 to cancel): ", maxS );
 
+		// if back isn't choosen
 		if ( s != -1 )
 		{
+			// enlarge image by factor s
 			temp.enlargeImage( s, img[index], CUBIC_INTER );
 
+			// set register image to the values of temp
 			img[index] = temp;
 
 			// adds modified to register name
@@ -725,28 +1098,45 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+/******************************************************************************\
+ The same as enlarge except it shrinks the image making sure it never gets
+ smaller than MIN_IMG.  This is because some image viewers won't open images
+ as small as 2x2 (xv for example)
+\******************************************************************************/
 void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index;
-	int N, M, Q, s;
-	int maxS;
+	// image info and max s value
+	int index, N, M, Q, maxS;
 
+	// scale factor to be reduced by
+	int s;
+
+	// holds the reduced image before transfering it to img[index]
 	ImageType temp;
 
+	// prompt for the register to be used
 	index = promptForReg( loaded, name );
 
+	// if quit isn't choosen
 	if ( index != BAD_REG )
 	{
+		// get image info for calculating maxS
 		img[index].getImageInfo( N, M, Q );
 
+		// calculate maxS
 		maxS = (N > M ? N/MIN_IMG : M/MIN_IMG);
 
-		s = promptForScaleValue( "Shrink Image By Factor", "Enter reduction factor(-1 to cancel): ", maxS );
+		// prompt for the scale value
+		s = promptForScaleValue( "Shrink Image By Factor",
+		    "Enter reduction factor(-1 to cancel): ", maxS );
 		
+		// if quit isn't choosen
 		if ( s != -1 )
 		{
+			// shrink the image
 			temp.shrinkImage( s, img[index] );
-
+			
+			// store back in the register image
 			img[index] = temp;
 
 			// adds modified to register name
@@ -756,59 +1146,91 @@ void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+/******************************************************************************\
+ Prompt user for a direction to reflect an image then reflect the image and
+ store it back in the original register image
+\******************************************************************************/
 void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
+	// holds the index of the register
 	int index;
+
+	// users direction choice
 	char dir;
+
+	// used to reflect the image before saving to image
 	ImageType temp;
 
+	// prompt for which image to use
 	index = promptForReg( loaded, name );
 
+	// if quit isn't choosen
 	if ( index != BAD_REG )
 	{
-		dir = promptForMirror("Reflect Image", "Enter mirror direction (H(oriz), V(ert), C(ancel)): ");
+		// prompt for a valid reflect direction
+		dir = promptForMirror("Reflect Image", 
+		    "Enter mirror direction (H(oriz), V(ert), C(ancel)): ");
 		
-		/*} while ( dir != 'h' && dir != 'H' &&
-		          dir != 'v' && dir != 'V' &&
-		          dir != 'c' && dir != 'C' ); */
-
+		// if cancel isn't choosen
 		if ( dir != 'c' && dir != 'C' )
 		{
+			// reflect horizontally
 			if ( dir == 'h' || dir == 'H' ) // horizontal
 				temp.reflectImage( false, img[index] );
 			else                            // vertical
 				temp.reflectImage( true, img[index] );
 
+			// copy temp back to the register image
 			img[index] = temp;
 
+			// adds modified to register name
 			if ( name[index][strlen(name[index])-1] != ')' )
 				strcat( name[index], " (modified)" );
 		}
 	}
 }
 
+/******************************************************************************\
+ This prompts the user for how far to translate the image, then calls the
+ translate function which moves the image down to the right 't' number of
+ pixels.  Also Won't let user choose t value that would move image totaly off
+ the screen.
+\******************************************************************************/
 void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index, x, y;
-	int N, M, Q, t;
-	int maxT;
+	// holds the image info and maximum t value
+	int index, N, M, Q, maxT;
 
+	// the translate value to be choosen by user
+	int t;
+
+	// temporary image used as a buffer to the register image
 	ImageType temp;
 
+	// get a valid image register
 	index = promptForReg( loaded, name );
 
+	// if back isn't choosen
 	if ( index != BAD_REG )
 	{
+		// get the image info used to calculate maxT
 		img[index].getImageInfo( N, M, Q );
 
+		// calculate maxT value
 		maxT = (N > M ? N-1 : M-1);
 
-		t = promptForPixValue( "Translate Image", "Enter translation factor(-1 to cancel): ", maxT );
+		// prompt for a valid T value (uses Pix because both pix or t can
+		// be (0-max$)
+		t = promptForPixValue( "Translate Image",
+		    "Enter translation factor(-1 to cancel): ", maxT );
 		
+		// if cancel isn't choosen
 		if ( t != -1 )
 		{
+			// translate the image
 			temp.translateImage( t, img[index] );
 
+			// copy back to the image register
 			img[index] = temp;
 
 			// adds modified to register name
@@ -818,23 +1240,35 @@ void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+/******************************************************************************\
+ This prompts the user for an angle theta which will rotate the image clockwise
+ by theta degrees.  The input is only valid from 0-360 which should cover all
+ possibilities.
+\******************************************************************************/
 void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
-	int index, x, y;
-	int theta;
+	// holds the register index and angle theta
+	int index, theta;
 	
+	// temporary image used as a kind of buffer for register image
 	ImageType temp;
 
+	// prompt for a regiseter that is used
 	index = promptForReg( loaded, name );
 
+	// if quit isn't choosen
 	if ( index != BAD_REG )
 	{
+		// prompt for valid angle
 		theta = promptForAngle( "Rotate Image", "Rotate clockwise by angle theta(-1 to cancel):" );
 
+		// if cancel isn't choosen
 		if ( theta != -1 )
 		{
+			// rotate the image by theta degrees clockwise
 			temp.rotateImage( theta, img[index] );
 
+			// set image register equal to buffer temporary image
 			img[index] = temp;
 
 			// adds modified to register name
@@ -844,23 +1278,38 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+/******************************************************************************\
+ Prompt for 2 images and attempt to sum them, there is no size checking because
+ operator+ will throw a string which will be handeled by main if sizes of the
+ two images are different.
+\******************************************************************************/
 void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
+	// index of image 1 and 2
 	int index1, index2;
+
+	// 2 temporary images used to sum the images
 	ImageType temp1, temp2;
 
+	// prompt for first image
 	index1 = promptForReg( loaded, name );
 	
+	// if quit isn't choosen
 	if ( index1 != BAD_REG )
 	{
+		// set temp1 equal to the first image
 		temp1 = img[index1];
 
+		// prompt for second image but offset a little
 		index2 = promptForReg( loaded, name, true, 3, MENU_WIDTH+5 );
 		
+		// if quit isn't choosen
 		if ( index2 != BAD_REG )
 		{
+			// set temp2 equal to the second image
 			temp2 = img[index2];
 
+			// sum the images
 			img[index1] = temp1 + temp2;
 
 			// adds modified to register name
@@ -870,23 +1319,37 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+/******************************************************************************\
+ Prompt for 2 images and attempt to calculate the difference, there's no size
+ checking here for the same reason sumImg doesn't do size checking
+\******************************************************************************/
 void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
+	// index of image 1 and 2
 	int index1, index2;
+
+	// 2 temporary images used to subtract the images
 	ImageType temp1, temp2;
 
+	// prompt for first image
 	index1 = promptForReg( loaded, name );
 	
+	// if quit isn't choosen
 	if ( index1 != BAD_REG )
 	{
+		// set temp1 equal to the first image
 		temp1 = img[index1];
 		
+		// prompt for second image but offset a little
 		index2 = promptForReg( loaded, name, true, 3, MENU_WIDTH+5 );
 		
+		// if quit isn't choosen
 		if ( index2 != BAD_REG )
 		{
+			// set temp2 equal to the second image
 			temp2 = img[index2];
 
+			// subtract the images
 			img[index1] = temp1 - temp2;
 
 			// adds modified to register name
@@ -896,14 +1359,21 @@ void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+/******************************************************************************\
+ Prompt user for which image to negate and negate it, pretty simple function
+\******************************************************************************/
 void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
+	// index of register to use
 	int index;
 
+	// prompt for register number
 	index = promptForReg( loaded, name );
 
+	// if quit isn't choosen
 	if ( index != BAD_REG )
 	{
+		// negate image
 		img[index].negateImage();
 
 		// adds modified to register name
@@ -912,24 +1382,49 @@ void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
-// first parameter is array of loaded flags for the register
-// if check == true, only allow registers that are loaded
-int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check, int y, int x )
+/******************************************************************************\
+ This is the function that calls the menu for the register prompt, it can be
+ called in different locations (like in addImg and subImg) but has a default
+ defined by some global constants.  The function creates a list of registers
+ and adds the "Back" option as the final option, this way the user has the
+ option to cancel choosing a register.  Although in the program it looks like
+ the register display and register choosing window are the same, this menu
+ overlaps the other menu to make it seem like control is transfering to another
+ window.
+
+ The value check is true by default, if it is false it can return registers
+ that have not been loaded.  This feature is needed in functions like
+ loadImage.
+\******************************************************************************/
+int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check,
+    int y, int x )
 {
+	// this is the WINDOW that the menu is stored in
 	WINDOW *regMenu;
 
+	// val is the index choice for the menu
 	int val;
+
+	// set the flag to continue looping until BAD_REG is true or a register
+	// that is not set is choosen which check if true
 	bool loop = true;
+
+	// this is the array that will hold all the menu choices including "Back"
 	char menuVals[REGS+1][NAME_LEN];
 
+	// copy all the register names to the menu array
 	for ( int i = 0; i < REGS; i++ )
 		strcpy( menuVals[i], name[i] );
 
 	// add exit to the list of commands
 	strcpy( menuVals[REGS], "Back" );
 
+	// prompt for the register
 	do {
-	val = showMenu( regMenu, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, y, x, menuVals, REGS+1 );
+		val = showMenu( regMenu, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, y, x,
+		    menuVals, REGS+1 );
+
+		// set the loop flag depending on val
 		if ( val == BAD_REG )
 			loop = false;
 		else if ( ! loaded[val] && check )
@@ -938,11 +1433,17 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check, int y,
 			loop = false;
 	} while ( loop );
 
+	// delete the register menu window
 	delwin( regMenu );
 
+	// return the users choice
 	return val;
 }
 
+/******************************************************************************\
+ This just builds the window used for message box, this function is just to
+ simplify the plethora of other functions that use this.
+\******************************************************************************/
 void stdWindow( WINDOW *&newWin, const char title[] )
 {
 	// simply draw the standard msg box window
@@ -950,31 +1451,49 @@ void stdWindow( WINDOW *&newWin, const char title[] )
 			screenHeight()/2-MSGBOX_HEIGHT/2, screenWidth()/2-MSGBOX_WIDTH/2 );
 }
 
+/******************************************************************************\
+ Create a message box and prompt the user for a string value with given prompt
+\******************************************************************************/
 int promptForFilename( const char title[], const char prompt[], char str[] )
 {
+	// holds the prompting window
 	WINDOW *fileWin;
 
-	int len = 16;	// max length of filename
+	// this is how long the filename can be (some arbitrary value right?...no)
+	int len = 16;
 
-	drawWindow( fileWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, 
-	        screenHeight()/2-MSGBOX_HEIGHT/2, screenWidth()/2-MSGBOX_WIDTH/2 );
+	// draw the window
+	stdWindow( fileWin, title );
 
+	// prompt for the string
 	promptForString( fileWin, 1, 2, prompt, str, len );
 
+	// delete the window
 	delwin( fileWin );
 
+	// return the length of the string (not really used in this program)
 	return strlen( str );
 }
 
+/******************************************************************************\
+ Prompt user for a valid angle using a message box, make sure input is between
+ 0 and 360, if not display a message box and then re-prompt
+\******************************************************************************/
 int promptForAngle( const char title[], const char prompt[] )
 {
+	// holds message box window
 	WINDOW *pixWin;
+
+	// user input value
 	int val;
 
 	// draw message window
 	stdWindow( pixWin, title );
 	
+	// get user input
 	val = promptForInt( pixWin, 1, 2, prompt );
+
+	// check for valid input
 	while ( val < -1 || val > 360 )
 	{
 		// display error
@@ -991,19 +1510,32 @@ int promptForAngle( const char title[], const char prompt[] )
 	// de-allocate window object
 	delwin( pixWin );
 
+	// return users choice
 	return val;
 }
 
+/******************************************************************************\
+ Prompt for a pixel value which is from 0 to maxVal, if not display message
+ box and re-prompt user until valid choice is made
+\******************************************************************************/
 int promptForPixValue( const char title[], const char prompt[], int maxVal )
 {
+	// message box window
 	WINDOW *pixWin;
+
+	// used in the error message
 	char msg[NAME_LEN];
+
+	// user input value
 	int val;
 
 	// draw message window
 	stdWindow( pixWin, title );
 	
+	// get user input
 	val = promptForInt( pixWin, 1, 2, prompt );
+
+	// check for valid input
 	while ( val < -1 || val > maxVal )
 	{
 		// display error
@@ -1018,51 +1550,69 @@ int promptForPixValue( const char title[], const char prompt[], int maxVal )
 		val = promptForInt( pixWin, 1, 2, prompt );
 	}
 
+	// delete this dynamic memory
 	delwin( pixWin );
 
+	// return value to calling function
 	return val;
 }
 
+/******************************************************************************\
+ Prompt the user for the characters h, v, or c (not case sensitive) and return
+ the value as soon as one of the 3 is pressed
+\******************************************************************************/
 char promptForMirror( const char title[], const char prompt[] )
 {
+	// holds the prompting window
 	WINDOW *pixWin;
+
+	// holds user input
 	char val;
 
 	// draw message window
 	stdWindow( pixWin, title );
 	
-	// prompt user for character
+	// display prompt message
 	mvwaddstr( pixWin, 1, 2, prompt );
-	val = wgetch( pixWin );
-
-	while ( val != 'h' && val != 'H' &&
-	        val != 'v' && val != 'V' &&
-	        val != 'c' && val != 'C' )
-	{
-		// redraw window
-		delwin( pixWin );
-		stdWindow( pixWin, title );
-
-		// re-prompt user
-		mvwaddstr( pixWin, 1, 2, prompt );
+	
+	//dont continue untill valid key is pressed
+	do {
+		// prompt user for character
 		val = wgetch( pixWin );
-	}
+	} while ( val != 'h' && val != 'H' &&
+	          val != 'v' && val != 'V' &&
+	          val != 'c' && val != 'C' );
 
+	// delete dynamically allocated window
 	delwin( pixWin );
 
+	// return the users input
 	return val;
 }
 
+/******************************************************************************\
+ This function prompts the user for a scale value and checks to make sure it
+ is not greater than maxVal and not less than 2.  This is used in the enlarge
+ and shrink functions.
+\******************************************************************************/
 int promptForScaleValue( const char title[], const char prompt[], int maxVal )
 {
+	// points to the WINDOW that is our prompting window
 	WINDOW *pixWin;
+
+	// holds the error message (which needs some formating)
 	char msg[NAME_LEN];
+
+	// the users input value
 	int val;
 
 	// draw message window
 	stdWindow( pixWin, title );
 	
+	// prompt user for an integer value
 	val = promptForInt( pixWin, 1, 2, prompt );
+
+	// if value is not valid display error message and re-prompt
 	while ( val != -1 && ( val < 2 || val > maxVal ) )
 	{
 		// display error
@@ -1077,24 +1627,45 @@ int promptForScaleValue( const char title[], const char prompt[], int maxVal )
 		val = promptForInt( pixWin, 1, 2, prompt );
 	}
 
+	// delete dynamically allocated window
 	delwin( pixWin );
 
+	// return the user's input value
 	return val;
 }
 
+/******************************************************************************\
+ This function prompts the user for a location (both row and column) and sets
+ the valid points equal to row or col.  If -1 is returned in either location
+ it means user choose to cancel the prompt.  The validity of the points is
+ calculated by the image object it is passed.  The image properties are
+ calculated and then used to determine the bounds of row and column.
+\******************************************************************************/
 void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 {
-	int N, M, Q, x, y;
+	// holds various image info
+	int N, M, Q;
+
+	// holds the error messages
 	char msg[NAME_LEN];
+
+	// this is the WINDOW pointer that points to the prompting window
 	WINDOW *pixWin;
+
+	// set default values for row and column it exits early
 	row = -1;
 	col = -1;
+
+	// retrieve image info
 	img.getImageInfo( N, M, Q );
 
 	// draw message window
 	stdWindow( pixWin, title );
 
+	// gets user input for row
 	row = promptForInt( pixWin, 1, 2, "Enter pixel row(-1 to cancel): " );
+
+	// if row input is not valid display error and re-prompt
 	while ( row < -1 || row >= N )
 	{
 		// show message box
@@ -1109,9 +1680,14 @@ void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 		row = promptForInt( pixWin, 1, 2, "Enter pixel row(-1 to cancel): " );
 	}
 
+	// if user didn't choose to cancel
 	if ( row != -1 )
 	{
-		col = promptForInt( pixWin, 2, 2, "Enter pixel column(-1 to cancel): " );
+		// prompt for column
+		col = promptForInt( pixWin, 2, 2,
+		    "Enter pixel column(-1 to cancel): " );
+
+		// if column input is not valid, display error and re-prompt
 		while ( col < -1 || col >= M )
 		{
 			// show message box warning
@@ -1123,74 +1699,124 @@ void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 			stdWindow( pixWin, title );
 
 			// reprint the upper line
-			mvwprintw( pixWin, 1, 2, "Enter pixel row(-1 to cancel): %i", row );
+			mvwprintw( pixWin, 1, 2, "Enter pixel row(-1 to cancel): %i",
+			    row );
 
 			// re-prompt user
-			col = promptForInt( pixWin, 2, 2, "Enter pixel column(-1 to cancel): " );
+			col = promptForInt( pixWin, 2, 2,
+			    "Enter pixel column(-1 to cancel): " );
 		}
 	}
+
+	// at this point row and column should be set or should be -1 (cancel)
 
 	// de-allocate memory for WINDOW object
 	delwin( pixWin );
 }
 
+/******************************************************************************\
+ This displays a simple message box to the screen with the given title and msg
+ inside of it, it waits for the user to press RETURN before returning to
+ calling function
+\******************************************************************************/
 void messageBox( const char title[], const char msg[] )
 {
+	// message box window
 	WINDOW *msgBox;
+
+	// user
 	int input;
 
+	// draw/initialize window
 	stdWindow( msgBox, title );
 
+	// add msg value to window
 	mvwaddstr( msgBox, 1, 2, msg );
 
-	do {
-		input = wgetch( msgBox );
-	} while ( input != KEY_RETURN );
+	// wait for return to be pressed
+	while ( wgetch( msgBox ) != KEY_RETURN );
 
+	// delete message box window
 	delwin( msgBox );
 }
 
+/******************************************************************************\
+ Couldn't find a good place to put this function, its a not so robust function
+ that reads all the .pgm files from a local directory (defined as a constant)
+ and places them into a dynamically allocated c style string array.
+
+ !!!Note this function allocates memory for a 2D array and returns the number
+ of rows.  This information is REQUIRED to properly de-allocate the memory in
+ the calling function.
+\******************************************************************************/
 int findLocalPGM( char **&filenames )
 {
+	// namelist holds a list of file names
 	struct dirent **namelist;
+
+	// n is the number of files total in the local directory
 	int n;
+
+	// holds the length of various strings
+	int len;
+
+	// count keeps track of the number of .pgm files found
 	int count = 0;
 
+	// store the string values of the local files into namelist in alpha order
 	n = scandir( IMAGELOC, &namelist, 0, alphasort );
 
+	// if there are files...
 	if ( n > 0 )
 	{
+		// go through checking for files ending in ".pgm"
 		for ( int i = 0; i < n; i++ )
 		{
-			static int len;
 			len = strlen( namelist[i]->d_name );
 			if ( len > 5 )
+				// compare the last four characters to ".pgm"
 				if ( strcmp( ".pgm", &(namelist[i]->d_name[len-4]) ) == 0 )
+					// increase count
 					count++;
 		}
-
+		
+		// if any .pgm files are found
 		if ( count > 0 )
 		{
+			// allocate space for each one
 			filenames = new char*[count];
 
+			// j is used as a counter for the filenames
 			int j = 0;
+
+			// this loop does the same as the previous except it allocates
+			// memory and copies names of .pgm files to filenames
 			for ( int i = 0; i < n; i++ )
 			{
-				static int len;
+				// get the length of the filename
 				len = strlen( namelist[i]->d_name );
+				// compare the suffix to ".pgm" again
 				if ( len > 5 )
 					if ( strcmp( ".pgm", &(namelist[i]->d_name[len-4]) ) == 0 )
 					{
-						filenames[j] = new char[strlen(namelist[i]->d_name)+1+strlen(IMAGELOC)];
-						sprintf( filenames[j], "%s%s", IMAGELOC, namelist[i]->d_name );
+						// this time allocate memory to store the name
+						filenames[j] = new char[strlen(namelist[i]->d_name) +
+						    1 + strlen(IMAGELOC)];
+						// store the name with the file path added
+						sprintf( filenames[j], "%s%s", IMAGELOC,
+						    namelist[i]->d_name );
+						// increase counter
 						j++;
 					}
+				// de-allocate name list
 				delete [] namelist[i];
 			}
+			// finish de-allocating name list
 			delete [] namelist;
 		}
 	}
 
+	// return the number of rows in filenames
 	return count;
 }
 
