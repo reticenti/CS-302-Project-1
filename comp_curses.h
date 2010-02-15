@@ -1,3 +1,6 @@
+#ifndef COMP_CURSES
+#define COMP_CURSES
+
 #include <curses.h>
 #include <cstring>
 #include <cmath>
@@ -293,4 +296,6 @@ void promptForString( WINDOW *somewin, int y, int x, const char promptString[], 
 
 	str[length] = '\0';
 }
+
+#endif
 
