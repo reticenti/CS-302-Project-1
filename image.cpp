@@ -496,16 +496,19 @@ void ImageType::translateImage( int t, const ImageType& old )
 }
 
 /******************************************************************************\
- Rotate the image clockwise using bilinear interpolation, basically traversing
- the entire image going from the destination to the source by using the
- in reverse (which is why its clockwise).  Once a location is determined the
- surrounding pixels are used to calculate intermediate values between the
- pixels, this gives a pretty smooth rotate.
+ Rotate the image counter-clockwise using bilinear interpolation, basically
+ traversing the entire image going from the destination to the source by using
+ the equation in reverse (which is why the angle is reversed).  Once a location
+ is determined the surrounding pixels are used to calculate intermediate values
+ between the pixels, this gives a pretty smooth rotate.
 
- - Originally written by Josiah, modified with Josh's help
+ - Originally written by Josiah, modified with Joshua's help
 \******************************************************************************/
 void ImageType::rotateImage( int theta, const ImageType& old )
 {
+	// reverse theta to make a counter-clockwise rotation
+	theta *= -1;
+
 	// set image to correct size
 	setImageInfo(old.N, old.M, old.Q);
 	int final;	// holds final color value for given location
