@@ -13,7 +13,7 @@ using namespace std;
 	const bool CUBIC_INTER = true;	// sets cubic or linear interpolation for enlarge
 
 	// the folder with the images in it, (make it ./ for local) 
-	const char IMAGELOC[] = "images/";
+	const char IMAGELOC[] = "./images/";
 
 	const int REGS = 5;				// values 1-9
 	const int MENU_OPTIONS = 16;	// number of main menu choices
@@ -45,8 +45,8 @@ using namespace std;
 // FUNCTION PROTOTYPES
 	
 	// make height an odd number for more ballanced windows
-	int showMenu( WINDOW *&, const char[], int, int, int, int, char[][NAME_LEN], int );
-	int showMenu( WINDOW *&, const char[], int, int, int, int, char*[], int );
+	int showMenu( WINDOW *&, const char[], int, int, int, int, char[][NAME_LEN], int, bool=false );
+	int showMenu( WINDOW *&, const char[], int, int, int, int, char*[], int, bool=false );
 	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );
 	void drawWindow( WINDOW *&, const char[], int, int, int, int, short=MENU_BACKGROUND, short=MENU_FOREGROUND );
 
@@ -59,7 +59,7 @@ using namespace std;
 
 	// verify input for common prompts
 	void stdWindow( WINDOW *&, const char[] );
-	int promptForReg( bool[], char[][NAME_LEN], const bool = true );
+	int promptForReg( bool[], char[][NAME_LEN], const bool = true, int=1, int=MENU_WIDTH+3 );
 	int promptForFilename( const char[], const char[], char[] );
 	void promptForLoc( const char[], ImageType&, int&, int& );
 	int promptForPixValue( const char[], const char[], int );
@@ -186,7 +186,8 @@ int main( int argc, char **argv )
 // Supporting functions
 
 // this makes it possible to pass static and dynamic 2d arrays to the menu
-int showMenu( WINDOW *& menu, const char title[], int height, int width, int locY, int locX, char menuStr[][NAME_LEN], int choices )
+int showMenu( WINDOW *& menu, const char title[], int height, int width, int locY, int locX, char menuStr[][NAME_LEN],
+int choices, bool eraseHighlight )
 {
 	char **menuStrPtr = new char*[choices];
 	int retVal;
@@ -196,7 +197,7 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 		menuStrPtr[i] = new char[NAME_LEN];
 		strcpy( menuStrPtr[i], menuStr[i] );
 	}
-	retVal = showMenu( menu, title, height, width, locY, locX, menuStrPtr, choices );
+	retVal = showMenu( menu, title, height, width, locY, locX, menuStrPtr, choices, eraseHighlight );
 
 	for ( int i = 0; i < choices; i++ )
 		delete [] menuStrPtr[i];
@@ -206,7 +207,8 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 }
 
 
-int showMenu( WINDOW *& menu, const char title[], int height, int width, int locY, int locX, char *menuStr[], int choices )
+int showMenu( WINDOW *& menu, const char title[], int height, int width, int locY, int locX, char *menuStr[], int
+choices, bool eraseHighlight )
 {
 	/* x, y variables hold location of cursor, choiceLoc is the current choice
 	   thats selected, menuLoc is the location on the menu, and input is the
@@ -261,7 +263,8 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 		setColor( menu, MENU_FOREGROUND, MENU_BACKGROUND );
 
 		// unhighlight current option
-		mvwprintw( menu, y, x, formatStr, menuStr[choiceLoc] );
+		if ( eraseHighlight )
+			mvwprintw( menu, y, x, formatStr, menuStr[choiceLoc] );
 
 		// redrawn menu with highlight off in case this is final loop
 		wrefresh( menu );
@@ -493,7 +496,7 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	menuChoices[files] = new char[5];
 
 	// make the final choice "Exit"
-	strcpy( menuChoices[files], "Exit" );
+	strcpy( menuChoices[files], "Back" );
 
 	// prompt for a register (false indicated it doesn't need to be full)
 	index = promptForReg( loaded, name, false );
@@ -665,6 +668,9 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		while ( ( LRr <= ULr || LRc <= ULc ) &&
 			 ULr != -1 && ULc != -1 && LRr != -1 && LRc != -1 )
 		{	
+			// display message
+			messageBox( "Bad Coordinates", "Lower Right Corner is Left or Above Upper Left" );
+
 			promptForLoc( "Upper Left Corner", img[index], ULr, ULc );
 
 			if ( ULr != -1 && ULc != -1 )
@@ -842,12 +848,23 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index1, index2;
 	ImageType temp1, temp2;
+	WINDOW *msgWin;
 
 	index1 = promptForReg( loaded, name );
 	
 	if ( index1 != BAD_REG )
 	{
 		temp1 = img[index1];
+
+		// show window over register window
+		drawWindow( msgWin, "Great!", REGWIN_HEIGHT, REGWIN_WIDTH, 1, MENU_WIDTH+3 );
+
+		// display message
+		mvwprintw( msgWin, 2, 2, "Please choose an image to sum with" );
+		mvwprintw( msgWin, 4, 2, "Press Return to continue..." );
+
+		// wait for return to be pressed
+		while ( wgetch( msgWin ) != KEY_RETURN );
 
 		index2 = promptForReg( loaded, name );
 		
@@ -861,6 +878,7 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 			if ( name[index1][strlen(name[index1])-1] != ')' )
 				strcat( name[index1], " (modified)" );
 		}
+		delwin( msgWin );
 	}
 }
 
@@ -874,8 +892,8 @@ void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	if ( index1 != BAD_REG )
 	{
 		temp1 = img[index1];
-
-		index2 = promptForReg( loaded, name );
+		
+		index2 = promptForReg( loaded, name, true, 3, MENU_WIDTH+5 );
 		
 		if ( index2 != BAD_REG )
 		{
@@ -906,16 +924,9 @@ void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
-void stdWindow( WINDOW *&newWin, const char title[] )
-{
-	// simply draw the standard msg box window
-	drawWindow( newWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, 
-	        screenHeight()/2-MSGBOX_HEIGHT/2, screenWidth()/2-MSGBOX_WIDTH/2 );
-}
-
 // first parameter is array of loaded flags for the register
 // if check == true, only allow registers that are loaded
-int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
+int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check, int y, int x )
 {
 	WINDOW *regMenu;
 
@@ -927,10 +938,10 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
 		strcpy( menuVals[i], name[i] );
 
 	// add exit to the list of commands
-	strcpy( menuVals[REGS], "Exit" );
+	strcpy( menuVals[REGS], "Back" );
 
 	do {
-		val = showMenu( regMenu, "Registers", REGS*2+5, 36, 1, 43, menuVals, REGS+1 );
+	val = showMenu( regMenu, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, y, x, menuVals, REGS+1 );
 		if ( val == BAD_REG )
 			loop = false;
 		else if ( ! loaded[val] && check )
@@ -942,6 +953,13 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
 	delwin( regMenu );
 
 	return val;
+}
+
+void stdWindow( WINDOW *&newWin, const char title[] )
+{
+	// simply draw the standard msg box window
+	drawWindow( newWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, 
+			screenHeight()/2-MSGBOX_HEIGHT/2, screenWidth()/2-MSGBOX_WIDTH/2 );
 }
 
 int promptForFilename( const char title[], const char prompt[], char str[] )
@@ -971,6 +989,9 @@ int promptForAngle( const char title[], const char prompt[] )
 	val = promptForInt( pixWin, 1, 2, prompt );
 	while ( val < -1 || val > 360 )
 	{
+		// display error
+		messageBox( "Invalid Angle", "Please input an angle (0-360)" );
+
 		// redraw window
 		delwin( pixWin );
 		stdWindow( pixWin, title );
@@ -988,6 +1009,7 @@ int promptForAngle( const char title[], const char prompt[] )
 int promptForPixValue( const char title[], const char prompt[], int maxVal )
 {
 	WINDOW *pixWin;
+	char msg[NAME_LEN];
 	int val;
 
 	// draw message window
@@ -996,6 +1018,10 @@ int promptForPixValue( const char title[], const char prompt[], int maxVal )
 	val = promptForInt( pixWin, 1, 2, prompt );
 	while ( val < -1 || val > maxVal )
 	{
+		// display error
+		sprintf( msg, "Please input a value (0-%i)", maxVal );
+		messageBox( "Invalid Value", msg );
+
 		// redraw window
 		delwin( pixWin );
 		stdWindow( pixWin, title );
@@ -1042,6 +1068,7 @@ char promptForMirror( const char title[], const char prompt[] )
 int promptForScaleValue( const char title[], const char prompt[], int maxVal )
 {
 	WINDOW *pixWin;
+	char msg[NAME_LEN];
 	int val;
 
 	// draw message window
@@ -1050,6 +1077,10 @@ int promptForScaleValue( const char title[], const char prompt[], int maxVal )
 	val = promptForInt( pixWin, 1, 2, prompt );
 	while ( val != -1 && ( val < 2 || val > maxVal ) )
 	{
+		// display error
+		sprintf( msg, "Please input a value (2-%i)", maxVal );
+		messageBox( "Invalid Value", msg );
+
 		// redraw window
 		delwin( pixWin );
 		stdWindow( pixWin, title );
@@ -1088,7 +1119,7 @@ void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 
 		// re-prompt user
 		row = promptForInt( pixWin, 1, 2, "Enter pixel row(-1 to cancel): " );
-	};
+	}
 
 	if ( row != -1 )
 	{
