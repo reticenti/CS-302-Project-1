@@ -32,33 +32,56 @@
                                FUNCTION PROTOTYPES
 \******************************************************************************/
 
-	// intialize curses
+	// name        : startCurses
+	// input       : none
+	// output      : starts curses and also sets all possible color pairs
+	// assumptions : assumes curses hasn't been initialized
 	void startCurses();
 
-	// finish curses
+	// name        : endCurses
+	// input       : none
+	// output      : ends curses mode
+	// assumptions : assumes that curses has been initialized
 	void endCurses();
 
-	// set color of given window
+	// name        : setColor 
+	// input       : (optional WINDOW), foreground color and background colors
+	// output      : changes the colors to be used at the given window
+	// assumptions : if no WINDOW is passed then stdscr is assumed
 	void setColor( WINDOW*, int, int );
-
-	// set color of stdscr
 	void setColor( int, int );
 
+	// name        : screen<Width/Height>
+	// input       : none 
+	// output      : returns the terminal width or height
+	// assumptions : curses is started
 	int screenWidth();
-
 	int screenHeight();
 
+	// name        : <hide/show>Cursor
+	// input       : none
+	// output      : set the cursor to visible or invisible
+	// assumptions : curses is started
 	void hideCursor();
-
 	void showCursor();
 
-	// prompt user for an integer at the location
+	// name        : promptForInt
+	// input       : a WINDOW, yLoc and xLoc and prompt string
+	// output      : prompts user for an integer and returns that value
+	// assumptions : curses is started and the prompt is a valid c string
 	int promptForInt( WINDOW*, int, int, const char [] );
 
-	// prompt user for a double at that location
+	// name        : promptForDouble
+	// input       : a WINDOW, yLoc and xLoc and prompt string
+	// output      : prompts user for a double and returns that value 
+	// assumptions : curses is started and the prompt is a valid c string
 	double promptForDouble( WINDOW*, int, int, const char[] );
 
-	// prompt user for a string at the location
+	// name        : promptForString
+	// input       : a WINDOW, yLoc and xLoc, a prompt string, a string to store
+	//               obtained value and the max length of the string
+	// output      : prompt user for a string and return that value
+	// assumptions : curses is started and the prompt is a valid c string
 	void promptForString( WINDOW *, int, int, const char[], char[], int );
 
 #endif
