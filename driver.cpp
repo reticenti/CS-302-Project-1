@@ -74,200 +74,178 @@ using namespace std;
 /******************************************************************************\
                               FUNCTION PROTOTYPES
 \******************************************************************************/
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : showMenu
+	// input       : an un-initialized window pointer, a string to be the title,
+	//               height, width, xLoc, yLoc of the window, list of c-style
+	//               strings to be used in the menu, the number of menu options,
+	//               and a bool value which says weather the last choice is
+	//               left highlighted
+	// output      : Display a window with menu options, let user choose and
+	//               return the index of that choice
+	// assumptions : assumes that window is un-intialized and will be destructed
+	//               by calling function
 	int showMenu( WINDOW *&, const char[], int, int, int, int, 
 	    char[][NAME_LEN], int, bool=false );
 
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : showMenu
+	// input       : same as above function except with dynamic string list
+	// output      : same as above function
+	// assumptions : assumes the same about window as above, also assums the
+	//               dynamic list of strings has been initialized to at least
+	//               the number of window options.  The list of strings is not
+	//               de-allocated by this function
 	int showMenu( WINDOW *&, const char[], int, int, int, int, 
 	    char*[], int, bool=false );
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : showRegs
+	// input       : an un-initialized window pointer, a title string, and a
+	//               list of register names
+	// output      : displays a window next to main of all the registers
+	// assumptions : allocates but doesn't delete the WINDOW object
 	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );	
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : drawWindow
+	// input       : an un-intialized window pointer, a title string, and then
+	//               the window height, width, yLoc, and xLoc, plus the colors
+	//               for the background and foreground which are defaulted
+	// output      : displays a empty window with a border and title using the
+	//               given parameters
+	// assumptions : allocates but doesn't delete the WINDOW object
 	void drawWindow( WINDOW *&, const char[], int, int, int, int, 
 	    short=MENU_BACKGROUND, short=MENU_FOREGROUND );
 
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : deleteMenu
+	// input       : a WINDOW pointer that is allocated
+	// output      : de-allocate memory for the window pointer and refresh the
+	//               main screen
+	// assumptions : assumes WINDOW object is intialized before calling
 	void deleteMenu( WINDOW *& );
 
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : processEntry
+	// input       : List of register images, list of register bools, list of
+	//               register names, and a value assumed to be choosen by user
+	// output      : depending on the value, call a function to do some image
+	//               manipulation
+	// assumptions : assumes value >= 0 and < MENU_OPTIONS, not that anything
+	//               will crash if its not true, but nothing will happen, also
+	//               assumes that names contain valid c strings
 	void processEntry( ImageType[], bool[], char[][NAME_LEN], int );
 
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : stdWindow
+	// input       : an un-initalized window and a title string
+	// output      : displays a window in the standard text box location with
+	//               the title and a border
+	// assumptions : the window object is initalized here but not deleted, this
+	//               is left up to the calling function
 	void stdWindow( WINDOW *&, const char[] );
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : promptForReg
+	// input       : list of register bools, list of regist names, a flag that
+	//               indicates if registers that have not been loaded can be
+	//               choosen, the yLoc, and xLoc of the menu
+	// output      : Display a menu with the registers in it, allowing user to
+	//               choose a register
+	// assumptions : assumes that names are already set to valid c strings
 	int promptForReg( bool[], char[][NAME_LEN], const bool = true, 
 	    int=1, int=MENU_WIDTH+3 );
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : promptForFilename
+	// input       : title string, prompt string and char used to store user
+	//               input
+	// output      : sets the final parameter equal to the filename the user
+	//               chooses and returns the length
+	// assumptions : assumes first 2 parameters are valid c strings and that
+	//               the final parameter is a string of at least length 16 +
+	//               the length of the file path declared as a constant
 	int promptForFilename( const char[], const char[], char[] );
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : promptForLoc
+	// input       : prompt string, image object, and 2 integers passed by ref
+	// output      : sets two reference parameters equal to row and column of
+	//               users choice
+	// assumptions : assumes image is intialized and has a valid height/width
+	//               also that first parameter is a valid c string
 	void promptForLoc( const char[], ImageType&, int&, int& );
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : promptFor<Pix/Scale>Value
+	// input       : title string, prompt string and max input value
+	// output      : prompts user in message window and returns the value when
+	//               the user inputs a valid value.  -1 indicates cancel
+	// assumptions : for Pix the minimum value is 0 and for Scale its 2, thats
+	//               the only difference.  Also assumes that first 2 parameters
+	//               are valid c strings
 	int promptForPixValue( const char[], const char[], int );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	int promptForScaleValue( const char[], const char[], int );
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : promptForMirror
+	// input       : title string, prompt string
+	// output      : prompts user for a H, V, or C and doesn't let them cont
+	//               until one is choosen, then returns input value to calling
+	//               function
+	// assumptions : both parameters are valid c strings
 	char promptForMirror( const char[], const char[] );
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : promptForAngle
+	// input       : title string, prompt string
+	// output      : prompts user for an angle 0-360 and returns the value when
+	//               a valid number is sent.  -1 indicates cancel
+	// assumptions : both parameters are valid c strings
 	int promptForAngle( const char[], const char[] );
 	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : messageBox
+	// input       : title string and message string
+	// output      : displays a message box in the center of the screen with
+	//               the message displayed in it.  Waits for user to press
+	//               return before continueing
+	// assumptions : assumes both parameters are valid c strings
 	void messageBox( const char[], const char[] );
 
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : fillRegs
+	// input       : list of images, bools, and c strings all of length REGS
+	//               also the number of arguments passed to main and the array
+	//               of strings passed to main
+	// output      : sets valid arguments to registers (loading images) and
+	//               clears the rest of the registers
+	// assumptions : assumes that char** is a valid list of strings with int
+	//               rows
 	void fillRegs( ImageType[], bool[], char[][NAME_LEN], int, char** );
 
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : Register manipulation functions
+	// input       : List of images of length REGS, list of bools of length
+	//               REGS, and list of c strings of length REGS.
+	// output      : Each function prompts user for information pertaining
+	//               to its manipulation function, these should be pretty
+	//               obvious looking at each functions name.  All input is
+	//               bounds checked to make sure no bad input is passed to an
+	//               ImageType object
+	// assumptions : assumes all names int the c string list are valid c
+	//               c strings and bools coincide with wether image types are
+	//               loaded of the same index
 	void clearRegister( ImageType[], bool[], char[][NAME_LEN] );
-
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void loadImage( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void saveImage( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void getImageInfo( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void setPixel( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void getPixel( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void extractSub( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void enlargeImg( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void shrinkImg( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void reflectImg( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void translateImg( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void rotateImg( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void sumImg( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void subtractImg( ImageType[], bool[], char[][NAME_LEN] );
-	
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
 	void negateImg( ImageType[], bool[], char[][NAME_LEN] );
 
-	// name        :
-	// input       :
-	// output      :
-	// assumptions :
+	// name        : findLocalPGM
+	// input       : one un-intialized double pointer of chars
+	// output      : allocates enough memory for a list of all the .pgm files
+	//               in the local path specified by the FILELOC constant.  It
+	//               then copys the file names to the array and returns the
+	//               number of rows in the array.
+	// assumptions : filenames is not initialized, but will be in the function
+	//               this means it needs to be de-allocated before it goes out
+	//               of scope
 	int findLocalPGM( char **&filenames );
 
 /******************************************************************************\
@@ -276,9 +254,13 @@ using namespace std;
 
 int main( int argc, char **argv )
 {
-	// main menu object
+	// main menu object pointer
 	WINDOW *menu;
+
+	// register window object pointer
 	WINDOW *regWin;
+
+	// users menu choice
 	int choice;
 
 	// holds the name of the image stored in the register
@@ -312,14 +294,8 @@ int main( int argc, char **argv )
 	// start
 	startCurses();
 
+	// hide that pesky cursor
 	hideCursor();
-
-	setColor( FG_COLOR, BG_COLOR );
-
-	for ( int i = 0; i < screenWidth(); i++ )
-		for ( int j = 0; j < screenHeight(); j++ )
-			mvaddch(j, i, ' ');
-	refresh();
 
 	// initialize the bool array
 	for ( int i = 0; i < REGS; i++ )
@@ -327,6 +303,15 @@ int main( int argc, char **argv )
 
 	// read argument parameters
 	fillRegs( image, imgLoaded, imgName, argc, argv );
+
+	// set the colors
+	setColor( FG_COLOR, BG_COLOR );
+
+	// clear the screen
+	for ( int i = 0; i < screenWidth(); i++ )
+		for ( int j = 0; j < screenHeight(); j++ )
+			mvaddch(j, i, ' ');
+	refresh();
 
 	do {
 		// display register window
@@ -353,8 +338,8 @@ int main( int argc, char **argv )
 		}
 
 		// makes sure everything is reset
+		delwin( regWin );
 		deleteMenu( menu );
-		deleteMenu( regWin );
 	} while ( choice != MENU_OPTIONS-1 );
 
 	// end curses
