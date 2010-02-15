@@ -564,8 +564,8 @@ void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	{
 		img[index].getImageInfo( N, M, Q );
 
-		drawWindow( infoWin, name[index], 14, 40, screenHeight()/2-7, screenWidth()/2-20 );
-	
+		drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 );
+
 		x = 2;
 		y = 2;
 		
