@@ -387,7 +387,7 @@ ImageType& ImageType::operator- ( const ImageType& rhs )
 			pixelValue[i][j] = abs(pixelValue[i][j] - rhs.pixelValue[i][j]);
 
 			// if pixels are less than Q/9 different then make them black
-			if ( pixelValue[i][j] < Q/3 )
+			if ( pixelValue[i][j] < Q/9 )
 				pixelValue[i][j] = 0;
 			else
 				pixelValue[i][j] = Q;

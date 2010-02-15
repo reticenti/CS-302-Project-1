@@ -12,18 +12,28 @@ using namespace std;
 // CONSTANTS
 	const bool CUBIC_INTER = true;	// sets cubic or linear interpolation for enlarge
 
-	// last / is important!!!
-	const char IMAGELOC[] = "./images/";
+	// the folder with the images in it, (make it ./ for local) 
+	const char IMAGELOC[] = "images/";
 
-	const int REGS = 5;	   	// values 1-9
-	const int BAD_REG = REGS;	// dont change this
-	const int NAME_LEN = 50;   	// the max string length of names
+	const int REGS = 5;				// values 1-9
+	const int MENU_OPTIONS = 16;	// number of main menu choices
+	const int BAD_REG = REGS;		// dont change this
+	const int NAME_LEN = 50;		// the max string length of names
 
-	const int MSGBOX_WIDTH = 60;
-	const int MSGBOX_HEIGHT = 4;
+	const int MSGBOX_WIDTH = 60;	// message box width (also input box)
+	const int MSGBOX_HEIGHT = 4;	// message box height
 
-	const int MAX_IMG = 10000; 	// the max size you can enlarge to
-	const int MIN_IMG = 4;     	// the min size you can reduce to
+	const int MENU_WIDTH = 40;		// holds the menu width and height
+	const int MENU_HEIGHT = MENU_OPTIONS*2+3;
+
+	const int REGWIN_WIDTH = 36;	// holds the register window width
+	const int REGWIN_HEIGHT = REGS*2+5;
+
+	const int FILEWIN_WIDTH = 36;	// file window width and height
+	const int FILEWIN_HEIGHT = MENU_HEIGHT-REGWIN_HEIGHT-1;
+
+	const int MAX_IMG = 10000;		// the max size you can enlarge to
+	const int MIN_IMG = 4;			// the min size you can reduce to
 
 	const short BG_COLOR = COLOR_BLUE;	// doesnt matter
 	const short FG_COLOR = COLOR_BLACK;	// background color
@@ -31,10 +41,9 @@ using namespace std;
 	const short MENU_BACKGROUND = COLOR_CYAN;	// window backgrounds
 	const short MENU_FOREGROUND = COLOR_BLACK;	// window foregrounds
 
-	const int MENU_OPTIONS = 16;	// number of main menu choices
 
 // FUNCTION PROTOTYPES
-	// shows menu, parameters in order, height, width, locY, locX
+	
 	// make height an odd number for more ballanced windows
 	int showMenu( WINDOW *&, const char[], int, int, int, int, char[][NAME_LEN], int );
 	int showMenu( WINDOW *&, const char[], int, int, int, int, char*[], int );
@@ -49,6 +58,7 @@ using namespace std;
 	void processEntry( ImageType[], bool[], char[][NAME_LEN], int );
 
 	// verify input for common prompts
+	void stdWindow( WINDOW *&, const char[] );
 	int promptForReg( bool[], char[][NAME_LEN], const bool = true );
 	int promptForFilename( const char[], const char[], char[] );
 	void promptForLoc( const char[], ImageType&, int&, int& );
@@ -144,7 +154,7 @@ int main( int argc, char **argv )
 		showRegs( regWin, imgLoaded, imgName );
 
 		// show and get input from menu
-		choice = showMenu( menu, "Main Menu", 3+2*MENU_OPTIONS, 40, 1, 1, choices, MENU_OPTIONS );
+		choice = showMenu( menu, "Main Menu", MENU_HEIGHT, MENU_WIDTH, 1, 1, choices, MENU_OPTIONS );
 
 		try
 		{
@@ -153,6 +163,7 @@ int main( int argc, char **argv )
 		}
 		catch( string err )
 		{
+			// display the message string to user
 			messageBox( "Error!", err.c_str() );
 		}
 		catch( ... )
@@ -296,11 +307,11 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width, int loc
 
 void showRegs( WINDOW *& regWin, const bool loaded[], const char names[][NAME_LEN] )
 {
-	drawWindow( regWin, "Registers", REGS*2+5, 36, 1, 43 );
+	drawWindow( regWin, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, 1, MENU_WIDTH+3 );
 
 	// add the register names to the window
 	for ( int i = 0; i < REGS; i++ )
-		mvwprintw( regWin, i*2+2, 2, "%.38s", names[i] );
+		mvwprintw( regWin, i*2+2, 2, "%-32.32s", names[i] );
 	
 	wrefresh( regWin );
 }
@@ -491,7 +502,7 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	if ( index != BAD_REG )
 	{	
 		// prompt for file
-		imageVal = showMenu( fileMenu, "Load Image", 15, 30, 17, 43, menuChoices, files+1 );
+		imageVal = showMenu( fileMenu, "Load Image", FILEWIN_HEIGHT, FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 , menuChoices, files+1 );
 
 		// if exit isn't choosen attempt to load image
 		if ( imageVal != files )
@@ -528,6 +539,11 @@ void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	if ( index != BAD_REG )
 	{
 		promptForFilename( "Save Image", "Enter filename: ", strInput );
+
+		if ( strlen( strInput ) < 4 )
+			strcat( strInput, ".pgm" );
+		else if ( strcmp( (strInput+strlen(strInput)-4), ".pgm" ) != 0 )
+			strcat( strInput, ".pgm" );
 
 		sprintf( imageLoc, "%s%s", IMAGELOC, strInput );
 
@@ -618,7 +634,8 @@ void getPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		{
 			img[index].getImageInfo( N, M, Q );
 			
-			drawWindow( infoWin, "Get Pixel Value", 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+			stdWindow( infoWin, "Get Pixel Value" );
+			
 			mvwprintw( infoWin, 1, 2, "The pixel Value at (%i,%i) is %i", 
 				col, row, img[index].getPixelVal(row, col) );
 
@@ -691,11 +708,7 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 
 		if ( s != -1 )
 		{
-			mvprintw( screenHeight()-5, 0, "s = %i", s );
-
 			temp.enlargeImage( s, img[index], CUBIC_INTER );
-
-			getch();
 
 			img[index] = temp;
 
@@ -893,6 +906,13 @@ void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+void stdWindow( WINDOW *&newWin, const char title[] )
+{
+	// simply draw the standard msg box window
+	drawWindow( newWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, 
+	        screenHeight()/2-MSGBOX_HEIGHT/2, screenWidth()/2-MSGBOX_WIDTH/2 );
+}
+
 // first parameter is array of loaded flags for the register
 // if check == true, only allow registers that are loaded
 int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
@@ -908,7 +928,6 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check )
 
 	// add exit to the list of commands
 	strcpy( menuVals[REGS], "Exit" );
-
 
 	do {
 		val = showMenu( regMenu, "Registers", REGS*2+5, 36, 1, 43, menuVals, REGS+1 );
@@ -931,7 +950,8 @@ int promptForFilename( const char title[], const char prompt[], char str[] )
 
 	int len = 16;	// max length of filename
 
-	drawWindow( fileWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, screenHeight()/2-MSGBOX_HEIGHT/2, screenWidth()/2-MSGBOX_WIDTH/2 );
+	drawWindow( fileWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, 
+	        screenHeight()/2-MSGBOX_HEIGHT/2, screenWidth()/2-MSGBOX_WIDTH/2 );
 
 	promptForString( fileWin, 1, 2, prompt, str, len );
 
@@ -945,19 +965,21 @@ int promptForAngle( const char title[], const char prompt[] )
 	WINDOW *pixWin;
 	int val;
 
-	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	// draw message window
+	stdWindow( pixWin, title );
 	
 	val = promptForInt( pixWin, 1, 2, prompt );
 	while ( val < -1 || val > 360 )
 	{
 		// redraw window
 		delwin( pixWin );
-		drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+		stdWindow( pixWin, title );
 
 		// re-prompt user
 		val = promptForInt( pixWin, 1, 2, prompt );
 	}
-
+	
+	// de-allocate window object
 	delwin( pixWin );
 
 	return val;
@@ -968,14 +990,15 @@ int promptForPixValue( const char title[], const char prompt[], int maxVal )
 	WINDOW *pixWin;
 	int val;
 
-	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	// draw message window
+	stdWindow( pixWin, title );
 	
 	val = promptForInt( pixWin, 1, 2, prompt );
 	while ( val < -1 || val > maxVal )
 	{
 		// redraw window
 		delwin( pixWin );
-		drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+		stdWindow( pixWin, title );
 
 		// re-prompt user
 		val = promptForInt( pixWin, 1, 2, prompt );
@@ -991,7 +1014,8 @@ char promptForMirror( const char title[], const char prompt[] )
 	WINDOW *pixWin;
 	char val;
 
-	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	// draw message window
+	stdWindow( pixWin, title );
 	
 	// prompt user for character
 	mvwaddstr( pixWin, 1, 2, prompt );
@@ -1003,7 +1027,7 @@ char promptForMirror( const char title[], const char prompt[] )
 	{
 		// redraw window
 		delwin( pixWin );
-		drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+		stdWindow( pixWin, title );
 
 		// re-prompt user
 		mvwaddstr( pixWin, 1, 2, prompt );
@@ -1020,14 +1044,15 @@ int promptForScaleValue( const char title[], const char prompt[], int maxVal )
 	WINDOW *pixWin;
 	int val;
 
-	drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	// draw message window
+	stdWindow( pixWin, title );
 	
 	val = promptForInt( pixWin, 1, 2, prompt );
 	while ( val != -1 && ( val < 2 || val > maxVal ) )
 	{
 		// redraw window
 		delwin( pixWin );
-		drawWindow( pixWin, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+		stdWindow( pixWin, title );
 
 		// re-prompt user
 		val = promptForInt( pixWin, 1, 2, prompt );
@@ -1047,17 +1072,19 @@ void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 	col = -1;
 	img.getImageInfo( N, M, Q );
 
-	drawWindow( pixWin, title, MSGBOX_HEIGHT, MSGBOX_WIDTH, screenHeight()/2-3, screenWidth()/2-30 );
+	// draw message window
+	stdWindow( pixWin, title );
 
 	row = promptForInt( pixWin, 1, 2, "Enter pixel row(-1 to cancel): " );
 	while ( row < -1 || row >= N )
 	{
-		sprintf( msg, "Invalid Row, must be (0-%i)", N );
+		// show message box
+		sprintf( msg, "Invalid Row, must be (0-%i)", N-1 );
 		messageBox( "Invalid Row", msg );
 
-		// clear the line
-		for ( int i = 1; i < MSGBOX_WIDTH-1; i++ )
-			mvwaddch( pixWin, 1, i, ' ' );
+		// redraw the window
+		delwin( pixWin );
+		stdWindow( pixWin, title );
 
 		// re-prompt user
 		row = promptForInt( pixWin, 1, 2, "Enter pixel row(-1 to cancel): " );
@@ -1069,18 +1096,22 @@ void promptForLoc( const char title[], ImageType& img, int& row, int& col )
 		while ( col < -1 || col >= M )
 		{
 			// show message box warning
-			sprintf( msg, "Invalid Column, must be (0-%i)", M );
+			sprintf( msg, "Invalid Column, must be (0-%i)", M-1 );
 			messageBox( "Invalid Column", msg );
+
+			// redraw the window
+			delwin( pixWin );
+			stdWindow( pixWin, title );
 
 			// reprint the upper line
 			mvwprintw( pixWin, 1, 2, "Enter pixel row(-1 to cancel): %i", row );
 
-			for ( int i = 1; i < MSGBOX_WIDTH-1; i++ )
-				mvwaddch( pixWin, 2, i, ' ' );
+			// re-prompt user
 			col = promptForInt( pixWin, 2, 2, "Enter pixel column(-1 to cancel): " );
 		}
 	}
 
+	// de-allocate memory for WINDOW object
 	delwin( pixWin );
 }
 
@@ -1089,7 +1120,7 @@ void messageBox( const char title[], const char msg[] )
 	WINDOW *msgBox;
 	int input;
 
-	drawWindow( msgBox, title, 4, 60, screenHeight()/2-3, screenWidth()/2-30 );
+	stdWindow( msgBox, title );
 
 	mvwaddstr( msgBox, 1, 2, msg );
 
