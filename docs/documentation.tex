@@ -128,7 +128,6 @@ be between 0 and 1.
 	\item{\textsc{constructor}}
 		\begin{description}
 
-ImageType();
 \begin{lstlisting}
 ImageType();
 \end{lstlisting}
@@ -954,6 +953,12 @@ void negateImage();
 
 	\item{\textsc{showmenu}}
 
+		\begin{lstlisting}
+
+	int showMenu( WINDOW *&, const char[], int, int, int, int, 
+	    char[][NAME_LEN], int, bool=false );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 				
@@ -1013,6 +1018,11 @@ void negateImage();
 
 	\item{\textsc{showregs}}
 
+		\begin{lstlisting}
+
+	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );	
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1049,6 +1059,12 @@ void negateImage();
 
 
 	\item{\textsc{drawwindow}}
+
+		\begin{lstlisting}
+
+	void drawWindow( WINDOW *&, const char[], int, int, int, int, 
+	    short=MENU_BACKGROUND, short=MENU_FOREGROUND );
+		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
@@ -1098,6 +1114,11 @@ void negateImage();
 
 	\item{\textsc{deletemenu}}
 
+		\begin{lstlisting}
+
+	void deleteMenu( WINDOW *& );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1128,6 +1149,12 @@ void negateImage();
 
 
 	\item{\textsc{processentry}}
+
+		\begin{lstlisting}
+
+	void processEntry( ImageType[], bool[], char[][NAME_LEN], int );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1173,6 +1200,12 @@ void negateImage();
 
 
 	\item{\textsc{stdwindow}}
+
+		\begin{lstlisting}
+
+	void stdWindow( WINDOW *&, const char[] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1208,6 +1241,13 @@ void negateImage();
 
 
 	\item{\textsc{promptforreg}}
+
+		\begin{lstlisting}
+
+	int promptForReg( bool[], char[][NAME_LEN], const bool = true, 
+	    int=1, int=MENU_WIDTH+3 );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 				
@@ -1256,6 +1296,12 @@ void negateImage();
 
 
 	\item{\textsc{promptforfilename}}
+
+		\begin{lstlisting}
+
+	int promptForFilename( const char[], const char[], char[] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1295,6 +1341,12 @@ void negateImage();
 
 
 	\item{\textsc{promptforloc}}
+
+		\begin{lstlisting}
+
+	void promptForLoc( const char[], ImageType&, int&, int& );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1337,6 +1389,12 @@ void negateImage();
 
 
 	\item{\textsc{promptforpixvalue}}
+
+		\begin{lstlisting}
+
+	int promptForPixValue( const char[], const char[], int );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1376,6 +1434,11 @@ void negateImage();
 
 	\item{\textsc{promptforscalevalue}}
 
+		\begin{lstlisting}
+
+	int promptForScaleValue( const char[], const char[], int );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1413,7 +1476,12 @@ void negateImage();
 		\end{description}
 
 
-	\item{\textsc{promptformirrow}}
+	\item{\textsc{promptformirror}}
+
+		\begin{lstlisting}
+
+	char promptForMirror( const char[], const char[] );
+		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
@@ -1448,6 +1516,11 @@ void negateImage();
 
 	\item{\textsc{promptforangle}}
 
+		\begin{lstlisting}
+
+	int promptForAngle( const char[], const char[] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1480,6 +1553,12 @@ void negateImage();
 
 
 	\item{\textsc{messagebox}}
+
+		\begin{lstlisting}
+
+	void messageBox( const char[], const char[] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1516,6 +1595,12 @@ void negateImage();
 
 
 	\item{\textsc{fillregs}}
+
+		\begin{lstlisting}
+
+	void fillRegs( ImageType[], bool[], char[][NAME_LEN], int, char** );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1564,6 +1649,12 @@ void negateImage();
 
 
 	\item{\textsc{clearregisters}}
+
+		\begin{lstlisting}
+
+	void clearRegister( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1605,6 +1696,12 @@ void negateImage();
 
 
 	\item{\textsc{loadimage}}
+
+		\begin{lstlisting}
+
+	void loadImage( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1647,6 +1744,12 @@ void negateImage();
 
 
 	\item{\textsc{saveimage}}
+
+		\begin{lstlisting}
+
+	void saveImage( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1689,6 +1792,12 @@ void negateImage();
 
 
 	\item{\textsc{getimageinfo}}
+
+		\begin{lstlisting}
+
+	void getImageInfo( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1732,6 +1841,12 @@ void negateImage();
 
 
 	\item{\textsc{setpixel}}
+
+		\begin{lstlisting}
+
+	void setPixel( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1774,6 +1889,12 @@ void negateImage();
 
 
 	\item{\textsc{getpixel}}
+
+		\begin{lstlisting}
+
+	void getPixel( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1815,6 +1936,12 @@ void negateImage();
 
 
 	\item{\textsc{extractsub}}
+
+		\begin{lstlisting}
+
+	void extractSub( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1858,6 +1985,12 @@ void negateImage();
 
 
 	\item{\textsc{enlargeimg}}
+
+		\begin{lstlisting}
+
+	void enlargeImg( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1901,6 +2034,12 @@ void negateImage();
 
 
 	\item{\textsc{shrinkimg}}
+
+		\begin{lstlisting}
+
+	void shrinkImg( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1944,6 +2083,12 @@ void negateImage();
 
 
 	\item{\textsc{reflectimg}}
+
+		\begin{lstlisting}
+
+	void reflectImg( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -1986,6 +2131,12 @@ void negateImage();
 
 
 	\item{\textsc{translateimg}}
+
+		\begin{lstlisting}
+
+	void translateImg( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 			
@@ -2030,6 +2181,12 @@ void negateImage();
 
 
 	\item{\textsc{rotateimg}}
+
+		\begin{lstlisting}
+
+	void rotateImg( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2073,6 +2230,12 @@ void negateImage();
 
 
 	\item{\textsc{sumimg}}
+
+		\begin{lstlisting}
+
+	void sumImg( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2116,6 +2279,12 @@ void negateImage();
 
 
 	\item{\textsc{subtractimg}}
+
+		\begin{lstlisting}
+
+	void subtractImg( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2158,6 +2327,12 @@ void negateImage();
 
 
 	\item{\textsc{negateimg}}
+
+		\begin{lstlisting}
+
+	void negateImg( ImageType[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2199,6 +2374,12 @@ void negateImage();
 
 
 	\item{\textsc{findlocalpgm}}
+
+		\begin{lstlisting}
+
+	int findLocalPGM( char **&filenames );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2237,6 +2418,12 @@ void negateImage();
 
 \begin{description}
 	\item{\textsc{constructor}}
+
+		\begin{lstlisting}
+
+	cubicSpline();
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2258,6 +2445,12 @@ void negateImage();
 
 
 	\item{\textsc{constructor with parameters}}
+
+		\begin{lstlisting}
+
+	cubicSpline( int[], int );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2291,6 +2484,12 @@ void negateImage();
 
 
 	\item{\textsc{destructor}}
+
+		\begin{lstlisting}
+
+	~cubicSpline();
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2312,6 +2511,12 @@ void negateImage();
 
 
 	\item{\textsc{create}}
+
+		\begin{lstlisting}
+
+	void create( int[], int );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2345,6 +2550,12 @@ void negateImage();
 
 
 	\item{\textsc{createcubic}}
+
+		\begin{lstlisting}
+
+	void createCubic(int[], int);
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2378,6 +2589,12 @@ void negateImage();
 
 
 	\item{\textsc{getval}}
+
+		\begin{lstlisting}
+
+	double getVal( double );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2408,6 +2625,12 @@ void negateImage();
 
 
 	\item{\textsc{getcubicval}}
+
+		\begin{lstlisting}
+
+	double getCubicVal( double );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2443,6 +2666,12 @@ void negateImage();
 
 \begin{description}
 	\item{\textsc{readimageheader}}
+
+		\begin{lstlisting}
+
+	void readImageHeader( const char[], int&, int&, int&, bool& );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2491,6 +2720,12 @@ void negateImage();
 
 
 	\item{\textsc{readimage}}
+
+		\begin{lstlisting}
+
+	void readImage( const char[], ImageType& );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2525,6 +2760,12 @@ void negateImage();
 
 
 	\item{\textsc{writeimage}}
+
+		\begin{lstlisting}
+
+	void writeImage( const char[], ImageType& );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2566,6 +2807,12 @@ void negateImage();
 \begin{description}
 
 	\item{\textsc{startcurses}}
+
+		\begin{lstlisting}
+
+	void startCurses();
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2588,6 +2835,12 @@ void negateImage();
 
 
 	\item{\textsc{endcurses}}
+
+		\begin{lstlisting}
+
+	void endCurses();
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2611,6 +2864,12 @@ void negateImage();
 
 
 	\item{\textsc{setcolor}}
+
+		\begin{lstlisting}
+
+	void setColor( WINDOW*, int, int );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2649,6 +2908,12 @@ void negateImage();
 
 
 	\item{\textsc{screenwidth}}
+
+		\begin{lstlisting}
+
+	int screenWidth();
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2670,6 +2935,12 @@ void negateImage();
 
 
 	\item{\textsc{screenheigth}}
+
+		\begin{lstlisting}
+
+	int screenHeight();
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2691,6 +2962,12 @@ void negateImage();
 
 
 	\item{\textsc{promptforint}}
+
+		\begin{lstlisting}
+
+	int promptForInt( WINDOW*, int, int, const char [] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2735,6 +3012,12 @@ void negateImage();
 
 
 	\item{\textsc{promptfordouble}}
+
+		\begin{lstlisting}
+
+	double promptForDouble( WINDOW*, int, int, const char[] );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
@@ -2781,6 +3064,12 @@ void negateImage();
 
 
 	\item{\textsc{promptforstring}}
+
+		\begin{lstlisting}
+
+	void promptForString( WINDOW *, int, int, const char[], char[], int );
+		\end{lstlisting}
+
 		\begin{description}
 			\item{Purpose}
 
