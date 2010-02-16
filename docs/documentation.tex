@@ -88,7 +88,37 @@ a powerful programmer.
 The use of the program should be very intuitive. The user must use the arrow keys to scroll in the menu and press enter
 to select some option. The menu will then pop up windows and message boxes depending on the user's selection and the
 user's input. This provides for a very effective setup and takes the burden out of trying to look at the keyboard and
-the menu for key choices in a simple menu. Our menu uses ncurses to accomplish
+the menu for key choices in a simple menu. Our menu uses ncurses to accomplish the scrolling menu. The students adapted
+a ncurses API written by Micheal Leverington from CS 135 to implement a simple curses menu at the beginning, but after
+all of the functions were completed, the students decided to make a more robust menu capable of scrolling. This was not
+required, but was done for aesthetic reasons and for the experience that it allowed the students.
+
+The image class that was implemented has all of the requirements for the functions. Each function is defined exactly
+like Dr. Bebis wanted them to be defined and the coders adapted their coding style to match what Dr. Bebis expected. The
+code is built fairly modular and most of the time expects the class user to bounds and error check before information is
+sent to the class. There is some rudimentary error checking in the class itself, but it only prevents the most foul and
+gross errors. The class is also setup to throw string objects in the case of an error. These thrown strings must be
+caught in the driver, so it is up to the class user to implement the catches for these thrown strings. Strings were used
+as the errors because of their ease of use and ease of manipulating them by the class user. 
+
+The file IO functions that were provided by Dr. Bebis have been combined into a single file pair (.cpp and .h) called
+imageIO. This allows a much more unified and modular approach to the use of the image IO features. It also makes
+including the functions much easier to include into multiple source files.
+
+Whenever a new image is needed by the user of the class, the user should always use the setImageInfo function that is
+included in the image class. This function takes the rows, columns, and levels and creates a blank image to manipulate.
+Another feature of this function is that it creates a checkered background of 25x25 squares that make it easy to see the
+dimensions of the iamge if it is saved without modification. It is also helpful for functions that take an image and
+move them somehow. For instance, if an image was translated by 55 pixels, the program user could see that there is 2.2
+squares that are uncovered, showing that the images has been translated 55 pixels. This was a design choice that came
+about as a result of how other image manipulation programs work and the students attempt at creating a robust iamge
+manipulation rescource.
+
+One last area that needs some mention to properly use is the function of operator+. This function includes a coefficient
+that determines the weight that each image has when adding them together. The students mimiced Dr. Bebis name for this
+coefficient and called it 'a'. When 'a' is large, the first image has more weight in the addition; when 'a' is small,
+the second image has more weight, and when 'a' is .5, the images have equal weight in the addition. The coefficient can
+be between 0 and 1.
 
 \section{Functions}
 
