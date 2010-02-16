@@ -395,7 +395,7 @@ int getPixelVal(int, int) const;
 			\item{Output}
 
 				The integer value of the pixel at 
-				pixelValue[i][j]
+				pixelValue[ht][ht]
 
 
 			\item{Assumptions}
@@ -497,7 +497,7 @@ void getSubImage( int, int, int, int, const ImageType& );
 
 			\item{Example}
 
-				\begin{figure}[h]
+				\begin{figure}[ht]
 					\centering
 					\caption{subImage Example}
 					\includegraphics{images/outsubimg.png}
@@ -639,7 +639,7 @@ void shrinkImage( int, const ImageType& );
 
 			\item{Example}
 
-				\begin{figure}[h]
+				\begin{figure}[ht]
 					\centering
 					\caption{shrinkImage Example}
 				\includegraphics{images/outshrink.png}
@@ -689,7 +689,7 @@ void reflectImage( bool, const ImageType& );
 
 			\item{Example}
 
-				\begin{figure}[h]
+				\begin{figure}[ht]
 					\centering
 					\caption{reflectImage Example}
 				\includegraphics{images/outreflect.png}
@@ -739,7 +739,7 @@ void translateImage( int, const ImageType& );
 
 			\item{Example}
 
-				\begin{figure}[h]
+				\begin{figure}[ht]
 					\centering
 					\caption{translateImage Example}
 				\includegraphics{images/outtrans.png}
@@ -797,7 +797,7 @@ void rotateImage( int, const ImageType& );
 
 			\item{Example}
 
-				\begin{figure}[h]
+				\begin{figure}[ht]
 					\centering
 					\caption{rotateImage Example}
 				\includegraphics{images/outrotate.png}
@@ -848,7 +848,7 @@ ImageType& operator+ ( const ImageType& );
 
 			\item{Example}
 
-				\begin{figure}[h]
+				\begin{figure}[ht]
 					\centering
 					\caption{operator+ Example}
 				\includegraphics{images/outasum.png}
@@ -900,10 +900,10 @@ ImageType& operator- ( const ImageType& );
 
 			\item{Example}
 
-				\begin{figure}[h]
+				\begin{figure}[ht]
 					\centering
 					\caption{operator- Example}
-				\includegraphics{images/outsubtract.png}
+				\includegraphics[scale=.75]{images/outsubtract.png}
 			\end{figure}
 
 		\end{description}
@@ -936,7 +936,7 @@ void negateImage();
 
 			\item{Example}
 
-				\begin{figure}[h]
+				\begin{figure}[ht]
 					\centering
 					\caption{negateImage Example}
 				\includegraphics{images/outnegative.png}
@@ -1020,7 +1020,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );	
+	void showRegs( WINDOW *&, const bool[], 
+	const char[][NAME_LEN] );	
 		\end{lstlisting}
 
 		\begin{description}
@@ -1062,8 +1063,9 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void drawWindow( WINDOW *&, const char[], int, int, int, int, 
-	    short=MENU_BACKGROUND, short=MENU_FOREGROUND );
+	void drawWindow( WINDOW *&, const char[], 
+		int, int, int, int, short=MENU_BACKGROUND, 
+		short=MENU_FOREGROUND );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1152,7 +1154,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void processEntry( ImageType[], bool[], char[][NAME_LEN], int );
+	void processEntry( ImageType[], bool[], 
+	char[][NAME_LEN], int );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1244,8 +1247,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	int promptForReg( bool[], char[][NAME_LEN], const bool = true, 
-	    int=1, int=MENU_WIDTH+3 );
+	int promptForReg( bool[], char[][NAME_LEN], 
+		const bool = true, int=1, int=MENU_WIDTH+3 );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1299,7 +1302,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	int promptForFilename( const char[], const char[], char[] );
+	int promptForFilename( const char[], 
+		const char[], char[] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1598,7 +1602,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void fillRegs( ImageType[], bool[], char[][NAME_LEN], int, char** );
+	void fillRegs( ImageType[], bool[], char[][NAME_LEN], 
+		int, char** );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1652,7 +1657,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void clearRegister( ImageType[], bool[], char[][NAME_LEN] );
+	void clearRegister( ImageType[], bool[], 
+		char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2669,7 +2675,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void readImageHeader( const char[], int&, int&, int&, bool& );
+	void readImageHeader( const char[], int&, 
+		int&, int&, bool& );
 		\end{lstlisting}
 
 		\begin{description}
@@ -3067,7 +3074,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void promptForString( WINDOW *, int, int, const char[], char[], int );
+	void promptForString( WINDOW *, int, int, 
+		const char[], char[], int );
 		\end{lstlisting}
 
 		\begin{description}
