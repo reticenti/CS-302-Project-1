@@ -1,0 +1,115 @@
+\documentclass[pdftex]{article}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{fullpage}
+\usepackage{color}
+\usepackage[pdftex,bookmarks=true,colorlinks=true,linkcolor=blue]{hyperref}
+\usepackage{listings}
+\lstset{language=C++}
+
+
+%this sets the line at the header
+\setlength{\headheight}{15.2pt}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+% This is all for formatting and making the Table of Contents according to 
+% spec. Don't play with it.
+\makeatletter
+\renewcommand\l@section[2]{%
+  \ifnum \c@tocdepth >\z@
+    \addpenalty\@secpenalty
+    \addvspace{1.0em \@plus\p@}%
+    \setlength\@tempdima{1.5em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\ 
+      \leaders\hbox{$\m@th\mkern \@dotsep mu\hbox{.}\mkern \@dotsep mu$}
+     \hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
+    \endgroup
+  \fi}
+\makeatother
+
+
+
+\begin{document}
+
+%import the title page
+\input{./title.tex}
+
+%headers, footers, and table of contents
+\pagestyle{fancy}
+%\renewcommand{\sectionmark}[1]{\markright{\thesection}}
+\rhead{Page \thepage\ of \pageref{LastPage}}
+\lhead{}
+\lfoot{CS 302 | Spring 2010}
+\cfoot{}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\tableofcontents
+
+\lhead{Joshua Gleason \& Josiah Humphrey}
+\rhead{Page \thepage\ of \pageref{LastPage}}
+\rfoot{Section\ \leftmark}
+\cfoot{}
+\lfoot{CS 302 | Spring 2010}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\section{Makefile}
+
+\small
+	\lstinputlisting{../Makefile}
+
+\section{comp\_curses.h}
+
+	\lstinputlisting{../comp_curses.h}
+
+\section{comp\_curses.cpp}
+
+\small
+	\lstinputlisting{../comp_curses.cpp}
+
+\section{cubicSpline.h}
+
+\small
+	\lstinputlisting{../cubicSpline.h}
+
+\section{cubicSpline.cpp}
+
+\small
+	\lstinputlisting{../cubicSpline.cpp}
+
+\section{driver.cpp}
+
+\small
+	\lstinputlisting{../driver.cpp}
+
+\section{image.h}
+
+\small
+	\lstinputlisting{../image.h}
+
+\section{image.cpp}
+
+\small
+	\lstinputlisting{../image.cpp}
+
+\section{imageIO.h}
+
+\small
+	\lstinputlisting{../imageIO.h}
+
+\section{imageIO.cpp}
+
+\small
+	\lstinputlisting{../imageIO.cpp}
+
+
+\end{document}

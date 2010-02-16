@@ -32,9 +32,6 @@ public:
 	// default constructor, intialize everything to 0 or NULL
 	cubicSpline();
 
-	// copy constructor, set all values equal to the other cubicSpline
-	cubicSpline( const cubicSpline& );
-
 	// initialize the cubic spline using createCubic with the parameters
 	cubicSpline( int[], int );
 
