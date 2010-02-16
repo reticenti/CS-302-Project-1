@@ -62,19 +62,19 @@
 
 \section{Introduction}
 
-In this assigment, the students were asked to make an image class that manipulated a Portable Gray Map (PGM) image
+In this assignment, the students were asked to make an image class that manipulated a Portable Gray Map (PGM) image
 in various ways. This was to be accomplished using dynamic 2D arrays and other tools that were learned in previous CS courses.
 
 One of the first problems faced was how to use the supplied read and write image files.
-These functions were provided to simplefy the build process as they allowed the students to concentrate 
+These functions were provided to simplify the build process as they allowed the students to concentrate 
 on the manipulation of the images.
 
 After reading and writing images was mastered, the students undertook the bulk of the assignment which was to
 manipulate the images that had been read in with the supplied read function. This required the knowledge of
-manipulating dynamic 2D arrays. Dynamic 2D arrays was a new tool for the students' C++ repatoire, but the
+manipulating dynamic 2D arrays. Dynamic 2D arrays was a new tool for the students' C++ repertoire, but the
 students soon came to understand the benefits of dynamic 2D arrays.
 
-The assignment also required the use of constructors, desctructors, copy contrusctors, and operator overloading,
+The assignment also required the use of constructors, destructors, copy constructors, and operator overloading,
 These topics were review from CS 202, but the use of them refreshed the students minds on how they work
 and to their purposes.
 
@@ -108,14 +108,14 @@ including the functions much easier to include into multiple source files.
 Whenever a new image is needed by the user of the class, the user should always use the setImageInfo function that is
 included in the image class. This function takes the rows, columns, and levels and creates a blank image to manipulate.
 Another feature of this function is that it creates a checkered background of 25x25 squares that make it easy to see the
-dimensions of the iamge if it is saved without modification. It is also helpful for functions that take an image and
+dimensions of the image if it is saved without modification. It is also helpful for functions that take an image and
 move them somehow. For instance, if an image was translated by 55 pixels, the program user could see that there is 2.2
 squares that are uncovered, showing that the images has been translated 55 pixels. This was a design choice that came
-about as a result of how other image manipulation programs work and the students attempt at creating a robust iamge
-manipulation rescource.
+about as a result of how other image manipulation programs work and the students attempt at creating a robust image
+manipulation resource.
 
 One last area that needs some mention to properly use is the function of operator+. This function includes a coefficient
-that determines the weight that each image has when adding them together. The students mimiced Dr. Bebis name for this
+that determines the weight that each image has when adding them together. The students mimicked Dr. Bebis name for this
 coefficient and called it 'a'. When 'a' is large, the first image has more weight in the addition; when 'a' is small,
 the second image has more weight, and when 'a' is .5, the images have equal weight in the addition. The coefficient can
 be between 0 and 1.
@@ -162,7 +162,7 @@ ImageType(int, int, int);
 
 			\item{Purpose}
 
-				change the dimenstions of the image, delete,
+				change the dimensions of the image, delete,
 				and re-allocate memory if required
 
 			\item{Input}
@@ -175,7 +175,7 @@ ImageType(int, int, int);
 
 			\item{Assumptions}
 
-				Sets the image to a certain size and intializes the
+				Sets the image to a certain size and initializes the
 				image as a grid
 
 		\end{description}
@@ -218,7 +218,7 @@ ImageType( const ImageType& );
 
 			\item{Purpose}
 		
-				Creates a new array absed on the thing to be copied
+				Creates a new array based on the thing to be copied
 				then sets the pixelValue of the new object the same as
 				the old image
 
@@ -235,7 +235,7 @@ ImageType( const ImageType& );
 			\item{Assumptions}
 
 				The old image must be passed as reference to prevent
-				an infinate loop
+				an infinite loop
 
 
 		\end{description}
@@ -258,7 +258,7 @@ ImageType& operator= ( const ImageType& );
 
 			\item{Input}
 
-				imageType rhs which is the old iamge to be 
+				imageType rhs which is the old image to be 
 				copied over to the new image
 
 			\item{Output}
@@ -303,7 +303,7 @@ void getImageInfo(int&, int&, int&) const;
 
 					\item{levels}
 
-						This paremeter grabs the depth of the
+						This parameter grabs the depth of the
 						image in the imageType object
 
 				\end{itemize}
@@ -349,7 +349,7 @@ void setImageInfo(int, int, int);
 
 					\item{levels}
 
-						This paremeter sets the depth of the
+						This parameter sets the depth of the
 						image in the imageType object
 
 				\end{itemize}
@@ -400,7 +400,7 @@ int getPixelVal(int, int) const;
 
 			\item{Assumptions}
 
-				It is assumed that the image has been intialized
+				It is assumed that the image has been initialized
 
 
 		\end{description}
@@ -437,7 +437,7 @@ void setPixelVal(int, int, int);
 
 			\item{Assumptions}
 
-				Assumes the image has been intialized
+				Assumes the image has been initialized
 
 		\end{description}
 
@@ -534,7 +534,7 @@ double meanGray() const;
 			\item{Assumptions}
 
 				Assumes nothing and returns 0 if the image 
-				has not been intialized
+				has not been initialized
 
 		\end{description}
 
@@ -583,7 +583,7 @@ void enlargeImage( int, const ImageType&, bool=true );
 			\item{Assumptions}
 
 
-				The method choosen to use was bicubic/linear
+				The method chosen to use was bi-cubic/linear
 				interpolation which creates
 				splines for each column(cubic or linear),
 				then using those splines create an
@@ -620,7 +620,7 @@ void shrinkImage( int, const ImageType& );
 
 					\item{s}
 
-						The inteter value of the shrink factor
+						The integer value of the shrink factor
 
 					\item{ImageType old}
 
@@ -634,7 +634,7 @@ void shrinkImage( int, const ImageType& );
 
 			\item{Assumptions}
 
-				Assumes the image has been intialized and that error
+				Assumes the image has been initialized and that error
 				checking has been done.
 
 			\item{Example}
@@ -684,7 +684,7 @@ void reflectImage( bool, const ImageType& );
 
 			\item{Assumptions}
 
-				Assumes nothing, but it makes sense to have an intialized
+				Assumes nothing, but it makes sense to have an initialized
 				image to reflect
 
 			\item{Example}
@@ -735,7 +735,7 @@ void translateImage( int, const ImageType& );
 			\item{Assumptions}
 
 				No assumptions are made, but it makes sense to have
-				an intialized image
+				an initialized image
 
 			\item{Example}
 
@@ -757,7 +757,7 @@ void rotateImage( int, const ImageType& );
 
 			\item{Purpose}
 
-				Rotate the image clockwise using bilinear
+				Rotate the image clockwise using bi-linear
 				interpolation, basically traversing
 				the entire image going from the destination 
 				to the source by using the
@@ -791,7 +791,7 @@ void rotateImage( int, const ImageType& );
 				Assumes that theta is in degrees because theta is
 				converted to radians from degrees inside the function
 				for the use of the trig functions.
-				It is also assumed that the image has been intialized
+				It is also assumed that the image has been initialized
 				before the function call. It is also assumed that theta
 				is between 0 and 360.
 
@@ -819,7 +819,7 @@ ImageType& operator+ ( const ImageType& );
 				Sum two images together, basically just finding
 				the average pixel value of
 				every pixel between two images.  Throws an
-				exception if dimesions of both
+				exception if dimensions of both
 				images don't match
 
 			\item{Input}
@@ -842,7 +842,7 @@ ImageType& operator+ ( const ImageType& );
 				It is assumed that each image have the same dimensions.
 				However, if the images do not have the same dimensions,
 				then a string is thrown stating that the images do
-				not have the same dimensions. It is not neccesary to have
+				not have the same dimensions. It is not necessary to have
 				each image initialized, but it makes senses
 				that they would each be initialized.
 
@@ -894,7 +894,7 @@ ImageType& operator- ( const ImageType& );
 				It is assumed that each image have the same dimensions.
 				However, if the images do not have the same dimensions,
 				then a string is thrown stating that the images do
-				not have the same dimensions. It is not neccesary to have
+				not have the same dimensions. It is not necessary to have
 				each image initialized, but it makes senses
 				that they would each be initialized.
 
@@ -1010,7 +1010,7 @@ void negateImage();
 
 			\item{Assumptions}
 
-				Assumes that window is un-intialized and will be destructed
+				Assumes that window is un-initialized and will be destructed
 				by calling function.
 
 			\item{Example}
@@ -1062,7 +1062,7 @@ void negateImage();
 
 			\item{Assumptions}
 
-				This allocates memeory for a WINDOW but it doesn't delete it.
+				This allocates memory for a WINDOW but it doesn't delete it.
 
 		\end{description}
 
@@ -1117,7 +1117,7 @@ void negateImage();
 
 			\item{Assumptions}
 
-				This allocates memeory for a WINDOW but it doesn't delete it.
+				This allocates memory for a WINDOW but it doesn't delete it.
 
 		\end{description}
 
@@ -1152,7 +1152,7 @@ void negateImage();
 
 			\item{Assumptions}
 
-				Assumes WINDOW object is intialized before calling.
+				Assumes WINDOW object is initialized before calling.
 
 
 		\end{description}
@@ -1229,7 +1229,7 @@ void negateImage();
 
 					\item{newWin}
 
-						An un-initalized window pointer.
+						An un-initialized window pointer.
 
 					\item{title[]}
 
@@ -1244,7 +1244,7 @@ void negateImage();
 
 			\item{Assumptions}
 
-				The window object is initalized here but not deleted, this
+				The window object is initialized here but not deleted, this
 				is left up to the calling function.
 
 		\end{description}
@@ -1268,7 +1268,7 @@ void negateImage();
 				and adds the "Back" option as the final option, this way the user has the
 				option to cancel choosing a register.  Although in the program it looks like
 				the register display and register choosing window are the same, this menu
-				overlaps the other menu to make it seem like control is transfering to another
+				overlaps the other menu to make it seem like control is transferring to another
 				window.
 
 			\item{Input}
@@ -1339,7 +1339,7 @@ void negateImage();
 
 			\item{Output}
 
-				Sets the final parameter equal to the filename the user
+				Sets the final parameter equal to the file name the user
 				chooses and returns the length.
 
 			\item{Assumptions}
@@ -1393,7 +1393,7 @@ void negateImage();
 
 			\item{Assumptions}
 
-				Assumes image is intialized and has a valid height and width
+				Assumes image is initialized and has a valid height and width
 				also that first parameter is a valid c string.
 
 		\end{description}
@@ -1694,7 +1694,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -1742,7 +1742,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -1790,7 +1790,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -1839,7 +1839,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -1887,7 +1887,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -1934,7 +1934,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -1983,7 +1983,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2032,7 +2032,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2081,7 +2081,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2129,7 +2129,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2156,7 +2156,7 @@ void negateImage();
 			
 				This prompts the user for how far to translate the image, then calls the
 				translate function which moves the image down to the right 't' number of
-				pixels.  Also Won't let user choose t value that would move image totaly off
+				pixels.  Also Won't let user choose t value that would move image totally off
 				the screen.
 
 			\item{Input}
@@ -2179,7 +2179,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2228,7 +2228,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2254,7 +2254,7 @@ void negateImage();
 			\item{Purpose}
 
 				Prompt for 2 images and attempt to sum them, there is no size checking because
-				operator+ will throw a string which will be handeled by main if sizes of the
+				operator+ will throw a string which will be handled by main if sizes of the
 				two images are different.
 
 			\item{Input}
@@ -2277,7 +2277,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2325,7 +2325,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2340,7 +2340,7 @@ void negateImage();
 
 
 
-	\item{\textsc{negateimg}}
+	\item{\textsc{negate img}}
 
 		\begin{lstlisting}
 
@@ -2372,7 +2372,7 @@ void negateImage();
 
 			\item{Output}
 
-				Prompt the user for which register to use, then if nessessary
+				Prompt the user for which register to use, then if necessary
 				prompt for additional information and call the function
 				in ImageType that will allow the image in that register to
 				be manipulated.
@@ -2415,7 +2415,7 @@ void negateImage();
 
 				Allocates enough memory for a list of all the ".pgm" files
 				in the local path specified by the FILELOC constant.  It
-				then copys the file names to the array and returns the
+				then copies the file names to the array and returns the
 				number of rows in the array.
 
 			\item{Assumptions}
@@ -2690,7 +2690,7 @@ void negateImage();
 		\begin{description}
 			\item{Purpose}
 
-				Reads the iamge header amd puts them into values that
+				Reads the image header and puts them into values that
 				are passed by reference
 
 			\item{Input}
@@ -2871,7 +2871,7 @@ void negateImage();
 
 			\item{Assumptions}
 
-				This assumes that curses has ibeen initialized
+				This assumes that curses has been initialized
 				with startCurses()
 
 
@@ -2906,7 +2906,7 @@ void negateImage();
 
 					\item{cb}
 
-						This is the second colod (background)
+						This is the second color (background)
 						for the color pair to set in the window
 						
 				\end{itemize}	
@@ -2986,7 +2986,7 @@ void negateImage();
 		\begin{description}
 			\item{Purpose}
 
-				Prompts for an int at some int at some (x,y) cordinate
+				Prompts for an int at some int at some (x,y) coordinate
 
 			\item{Input}
 
@@ -2998,12 +2998,12 @@ void negateImage();
 
 					\item{y}
 
-						The y cordinate at which to prompt
+						The y coordinate at which to prompt
 						for the int
 
 					\item{x} 
 
-						The x cordinate at which to prompt
+						The x coordinate at which to prompt
 						for the int
 
 					\item{promptString[]}
@@ -3036,7 +3036,7 @@ void negateImage();
 		\begin{description}
 			\item{Purpose}
 
-				Prompts for a double at some int at some (x,y) cordinate
+				Prompts for a double at some int at some (x,y) coordinate
 
 			\item{Input}
 
@@ -3048,12 +3048,12 @@ void negateImage();
 
 					\item{y}
 
-						The y cordinate at which to prompt
+						The y coordinate at which to prompt
 						for the double
 
 					\item{x} 
 
-						The x cordinate at which to prompt
+						The x coordinate at which to prompt
 						for the double
 
 					\item{promptString[]}
@@ -3089,7 +3089,7 @@ void negateImage();
 		\begin{description}
 			\item{Purpose}
 
-				Prompts for a string at some (x,y) cordinate
+				Prompts for a string at some (x,y) coordinate
 
 			\item{Input}
 
@@ -3102,11 +3102,11 @@ void negateImage();
 
 					\item{y}
 
-						The y cordinate at which to prompt
+						The y coordinate at which to prompt
 
 					\item{x}
 
-						The rxy cordinate at which to prompt
+						The x coordinate at which to prompt
 
 					\item{promptstring}
 
@@ -3141,21 +3141,21 @@ void negateImage();
 
 \section{Bugs and Errors}
 
-	During the creation of this program we ran into a multitude of bugs and errors.  Some of the biggest obsticals came
+	During the creation of this program we ran into a multitude of bugs and errors.  Some of the biggest obstacles came
 while implementing the main driver program.  Learning how curses works and finding way to make it do what was needed was
 quite a challenge but also very rewarding.  One odd bug was that when the function wattron() was used to set to
 highlight for the menu options it worked fine on one computer, but when it was used on Josiah's computer the
 highlighting didn't show up.  The fix for this involved manually inverting the colors rather than just changing the
 attribute.  This is a good example of how a program may act differently on different computers.
 
-Another bug that we ran into was having trouble when enlarging images too much.  The way this was delt with was to add a
+Another bug that we ran into was having trouble when enlarging images too much.  The way this was dealt with was to add a
 global constant to the main driver which limited the size allowed to scale an image.  Although there weren't many actual
 bugs while writing the image class, there was a huge amount of testing done to try and make the program as robust as
 possible given the time limitation.
 
 \section{What was Learned}
 
-The most important thing learned in this assigment was the use of dynamic 2D arrays. This was not taught in the previous
+The most important thing learned in this assignment was the use of dynamic 2D arrays. This was not taught in the previous
 semester of CS, so the concept of it was new to the students. This challenge did not sway them though. the students
 quickly grasped the concepts of a dynamic 2D array and easily implemented it into the image class. The students were
 then able to design the functions that manipulated the 2D array that in turn manipulated the image. This was an
@@ -3165,7 +3165,7 @@ correctly develop algorithms that correctly manipulated the image.
 Another concept that the students learned was the knowledge of how images are stored. The students had first hand
 experience with an image format and this knowledge allowed the students to have a greater understanding of how computers
 and the data structures associated with file formats intertwine with the software developer. The students have more of
-an appreciation for the neccesity of data structures and the implications of designing easy to use and compact data
+an appreciation for the necessity of data structures and the implications of designing easy to use and compact data
 structures for the end user. 
 
 One of the other concepts that the students learned was the ability to use ncurses in their program. This knowledge
@@ -3173,12 +3173,12 @@ allowed the students to create a very easy-to-use menu that is capable of multip
 this part of the program was not needed, the students had a desire to learn more about C++ than what is being taught in
 the class and brought it upon themselves to learn about ncurses. This knowledge has greatly improved their knowledge of
 pointers and correct program structure because ncurses utilizes many pointers. The implementation of ncurses also becomes
-very complex if there is not a clean program structure implemented. There are many facets of ncruses that are
+very complex if there is not a clean program structure implemented. There are many facets of ncurses that are
 intertwined, so the students made a clean and modular ncurses driver that is able to be easily read.
 
 Since this was a group project, we felt that it would be fairly difficult to merge and maintain our code, so we decided
 to learn and use git. Git is a revision control program that focuses on software development. It was developed by Linus
-Trovalds for the development of the linux kernel. Git has proven to be extrememly useful in the management of the source
+Torvalds for the development of the Linux kernel. Git has proved to be extremely useful in the management of the source
 code. It did have a small learning curve, but once that was crossed, it has become one of the most valuable tools that I
 know of.
 
@@ -3240,8 +3240,8 @@ documentation very easy and structured. Overall, the students contributed equall
 				index values of the pixel's needed to be reversed.  The one issue with this method is that instead
 				of a counter-clockwise rotation, a clockwise rotation happens.  We fixed this problem by reversing
 				the angle before making the calculation.  Another feature we added to rotate was that it estimates
-				intermediate values so if the desination is looking for a value at (23.234, 43.23) a simple
-				bilinear algorithm is implemented to obtain the estimated value for that point based on the four
+				intermediate values so if the destination is looking for a value at (23.234, 43.23) a simple
+				bi-linear algorithm is implemented to obtain the estimated value for that point based on the four
 				points it falls around.
 
 		\end{description}
@@ -3260,14 +3260,14 @@ documentation very easy and structured. Overall, the students contributed equall
 
 			\item{ANSWER:}
 
-				For image subtraction there were a few idea's that we had to reduce the amound of noise, but the
+				For image subtraction there were a few idea's that we had to reduce the amount of noise, but the
 				one we ended up going with was to simply add a difference threshold.  This basically means that
 				we made all pixels that differed by at least 43 (which is $\approx$ 255 $\div$ 6).  This does
 				show some improvements for noticing differences in images without a lot of noise, although some
 				noise is still there.
 
 				An idea that we had, but didn't have time to implement was to look at each pixel after the threshold
-				is made and remove any white pixel that doesn't have 3 neighbours, then run this over the image until
+				is made and remove any white pixel that doesn't have 3 neighbors, then run this over the image until
 				no changes are made.  I don't know how this would react but we thought it was an interesting idea.
 
 		\end{description}
@@ -3277,9 +3277,9 @@ documentation very easy and structured. Overall, the students contributed equall
 		\begin{description}
 
 			This section isn't required but we thought that it was important to explain all the extra features that
-			were added to this project.  The biggest addition to the project was the addition of bicubic interpolation
+			were added to this project.  The biggest addition to the project was the addition of bi-cubic interpolation
 			for enlargeImage().  This was done by Josh as more of a coding challenge, but worked out pretty well.  The
-			type of spline used is a natural spline calculated using a Lagrange polynomial.  This method was choosen
+			type of spline used is a natural spline calculated using a Lagrange polynomial.  This method was chosen
 			because it only has n-1 unknowns, rather than a normal polynomial interpolation which has 4 times as many
 			unknowns.  It also allows a tridiagonal matrix to solve for all the unknowns, which is much faster than
 			a normal matrix solving algorithm.
