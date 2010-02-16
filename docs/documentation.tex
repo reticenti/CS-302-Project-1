@@ -785,12 +785,39 @@ a powerful programmer.
 				locations.  A few constants can be changed to change the colors of the window.
 
 			\item{Input}
+				
+				\begin{itemize}
 
-				An un-initialized window pointer, a string to be the title,
-				height, width, xLoc, yLoc of the window, list of c-style
-			   	strings to be used in the menu, the number of menu options,
-				and a bool value which says weather the last choice is
-				left highlighted.
+					\item{*\&menu}
+
+						An un-initialized window pointer.
+
+					\item{title[]}
+
+						A string to be the title.
+
+					\item{height and width}
+
+						The height and width of the menu.
+
+					\item{locY and locX}
+						
+						The y and x locations of the menu's upper left corner.
+
+					\item{menuStr[][NAME\_LEN] }
+
+						A list of c-style strings to be used in the menu.
+						
+					\item{choices}
+					
+						The number of strings in menuStr.
+
+					\item{erase}
+						
+						A bool value which says if the last choice is left highlighted.
+						Default value is true.
+
+				\end{itemize}
 
 			\item{Output}
 				
@@ -814,9 +841,22 @@ a powerful programmer.
 				dictate).
 
 			\item{Input}
+			
+				\begin{itemize}
 
-				An un-initialized window pointer, a title string, and a
-				list of register names.
+					\item{*\&regWin}
+						
+						An un-initialized window pointer.
+
+					\item{loaded[]}
+
+						A list of bools representing which registers are loaded.
+
+					\item{names[][NAMES\_LEN]}
+
+						A list of the names of each register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -840,9 +880,30 @@ a powerful programmer.
 
 			\item{Input}
 
-				An un-intialized window pointer, a title string, and then
-				the window height, width, yLoc, and xLoc, plus the colors
-				for the background and foreground which are defaulted to some constants.
+				\begin{itemize}
+
+					\item{*\&win}
+
+						An un-initialized window pointer.
+
+					\item{title[]}
+
+						A c-style string.
+
+					\item{height and width}
+
+						The height and width of the desired window.
+
+					\item{y and x}
+
+						The y and x locations of the upper left corner.
+
+					\item{bgColor and fgColor}
+
+						The background and foreground colors, both have default values equal
+						to the menu colors defined as constants.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -865,8 +926,14 @@ a powerful programmer.
 				passed.
 
 			\item{Input}
-				A WINDOW pointer that is has been initialized.
 
+				\begin{itemize}
+
+					\item{*\&menu}
+
+						A window pointer which has been initialized.	
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -890,9 +957,26 @@ a powerful programmer.
 				subsequent functions that will be using them.
 
 			\item{Input}
-				List of register images, list of register bools, list of
-				register names, and a value assumed to be choosen by user.
 
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of images that are stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools that represent if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						The names of all the registers as c strings.
+
+					\item{choice}
+				
+						The choice the user made at the main menu.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -901,7 +985,7 @@ a powerful programmer.
 
 			\item{Assumptions}
 
-				Assumes value >= 0 and < MENU\_OPTIONS, not that anything
+				Assumes value $\geq$ 0 and $<$ MENU\_OPTIONS, not that anything
 				will crash if its not true, but nothing will happen, also
 				assumes that names contain valid c strings.
 
@@ -918,20 +1002,27 @@ a powerful programmer.
 				
 			\item{Input}
 				
-				An un-initalized window and a title string.
+				\begin{itemize}
 
+					\item{newWin}
+
+						An un-initalized window pointer.
+
+					\item{title[]}
+
+						A c style string.
+
+				\end{itemize}
 
 			\item{Output}
 
 				Displays a window in the standard text box location with
 				the title and a border.
 
-
 			\item{Assumptions}
 
 				The window object is initalized here but not deleted, this
 				is left up to the calling function.
-
 
 		\end{description}
 
@@ -952,9 +1043,25 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of register bools, list of regist names, a flag that
-				indicates if registers that have not been loaded can be
-				choosen, the yLoc, and xLoc of the menu.
+				\begin{itemize}
+
+					\item{loaded[]}
+
+						A list of flags indicating which registers are loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of each register.
+
+					\item{check}
+
+						A flag used to indicate weather registers that aren't loaded are valid.
+
+					\item{y and x}
+
+						The y and x locations of the menu, default values are defined for this.
+
+				\end{itemize}
 
 			\item{Output}
 				
@@ -977,8 +1084,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				Title string, prompt string and char used to store user
-				input.
+				\begin{itemize}
+
+					\item{title[]}
+
+						The title of the prompt window as a c style string.
+
+					\item{prompt[]}
+
+						The prompting message.
+
+					\item{str[]}
+
+						A string in which to store output into.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1007,7 +1127,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				A prompt string, image object, and 2 integers passed by reference.
+				\begin{itemize}
+
+					\item{title[]}
+
+						The title of the prompt window as a c style string.
+
+					\item{\&img}
+
+						This is just so the dimensions of the image can be obtained.
+
+					\item{\&row and \&col}
+
+						Used to store the user's input values.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1032,7 +1166,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				A title string, prompt string and max input value.
+				\begin{itemize}
+					
+					\item{title[]}
+
+						The title of the prompt window as a c style string.
+
+					\item{prompt[]}
+
+						The prompting message.
+
+					\item{maxVal}
+
+						The maximum value allowed to input.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1058,7 +1206,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				Title string, prompt string and max input value.
+				\begin{itemize}
+					
+					\item{title[]}
+
+						The title of the prompt window as a c style string.
+
+					\item{prompt[]}
+
+						The prompting message.
+
+					\item{maxVal}
+
+						The maximum value allowed to input.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1082,7 +1244,17 @@ a powerful programmer.
 
 			\item{Input}
 
-				A title, prompt string.
+				\begin{itemize}
+					
+					\item{title[]}
+
+						The title of the prompt window as a c style string.
+
+					\item{prompt[]}
+
+						The prompting message.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1105,7 +1277,17 @@ a powerful programmer.
 
 			\item{Input}
 
-				A title and prompt string
+				\begin{itemize}
+					
+					\item{title[]}
+
+						The title of the prompt window as a c style string.
+
+					\item{prompt[]}
+
+						The prompting message.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1126,8 +1308,19 @@ a powerful programmer.
 				the message displayed in it.
 
 			\item{Input}
-				
-				A title and message string.
+
+				\begin{itemize}
+					
+					\item{title[]}
+
+						The title of the window as a c style string.
+
+					\item{msg[]}
+
+						The message to be displayed in the message box.
+
+				\end{itemize}
+
 
 			\item{Output}
 				
@@ -1153,9 +1346,29 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images, bools, and c strings all of length REGS
-				also the number of arguments passed to main and the array
-				of strings passed to main.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+					
+					\item{argc}
+
+						The number of strings in argv.
+
+					\item{**argv}
+
+						The parameters passed to main.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1179,8 +1392,21 @@ a powerful programmer.
 				
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1208,8 +1434,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1237,8 +1476,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1267,8 +1519,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1296,8 +1561,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1324,8 +1602,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1354,8 +1645,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1384,8 +1688,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1414,8 +1731,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1443,8 +1773,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1474,8 +1817,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1504,8 +1860,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1534,8 +1903,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1563,8 +1945,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1591,8 +1986,21 @@ a powerful programmer.
 
 			\item{Input}
 
-				List of images of length REGS, list of bools of length
-				REGS, and list of c strings of length REGS.
+				\begin{itemize}
+
+					\item{img[]}
+
+						A list of all the images stored in the registers.
+
+					\item{loaded[]}
+
+						A list of bools representing if each register is loaded.
+
+					\item{name[][NAME\_LEN]}
+
+						A list of names of every register.
+
+				\end{itemize}
 
 			\item{Output}
 
@@ -1621,7 +2029,13 @@ a powerful programmer.
 
 			\item{Input}
 
-				One un-intialized double pointer of chars
+				\begin{itemize}
+
+					\item{**filenames}
+						
+						A double char pointer that is uninitialized.
+
+				\end{itemize}
 
 			\item{Output}
 
