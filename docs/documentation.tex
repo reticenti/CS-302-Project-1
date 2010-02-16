@@ -127,6 +127,12 @@ be between 0 and 1.
 
 	\item{\textsc{constructor}}
 		\begin{description}
+
+ImageType();
+\begin{lstlisting}
+ImageType();
+\end{lstlisting}
+
 			\item{Purpose}
 
 				default constructor allocates no memory and sets the size to zero 
@@ -150,6 +156,11 @@ be between 0 and 1.
 
 	\item{\textsc{constructor with parameters}}
 		\begin{description}
+
+\begin{lstlisting}
+ImageType(int, int, int);
+\end{lstlisting}
+
 			\item{Purpose}
 
 				change the dimenstions of the image, delete,
@@ -174,6 +185,11 @@ be between 0 and 1.
 
 	\item{\textsc{desctructor}}
 		\begin{description}
+
+\begin{lstlisting}
+~ImageType();
+\end{lstlisting}
+
 			\item{Purpose}
 
 				Deletes and memory that has been dynamically allocated
@@ -196,6 +212,11 @@ be between 0 and 1.
 
 	\item{\textsc{copy\_constructor}}
 		\begin{description}
+
+\begin{lstlisting}
+ImageType( const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 		
 				Creates a new array absed on the thing to be copied
@@ -223,6 +244,11 @@ be between 0 and 1.
 
 	\item{\textsc{operator=}}
 		\begin{description}
+
+\begin{lstlisting}
+ImageType& operator= ( const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 
 				equal operator overload, this is basically
@@ -253,6 +279,11 @@ be between 0 and 1.
 
 	\item{\textsc{getimageInfo}}
 		\begin{description}
+
+\begin{lstlisting}
+void getImageInfo(int&, int&, int&) const;
+\end{lstlisting}
+
 			\item{Purpose}
 			
  				returns the width height and color depth 
@@ -294,6 +325,11 @@ be between 0 and 1.
 
 	\item{\textsc{setImageInfo}}
 		\begin{description}
+
+\begin{lstlisting}
+void setImageInfo(int, int, int);
+\end{lstlisting}
+
 			\item{Purpose}
 			
 				Sets the image info, deleting and allocating memory
@@ -334,6 +370,11 @@ be between 0 and 1.
 
 	\item{\textsc{getpixelval}}
 		\begin{description}
+
+\begin{lstlisting}
+int getPixelVal(int, int) const;
+\end{lstlisting}
+
 			\item{Purpose}
 
 				Returns the value of a pixel
@@ -368,6 +409,11 @@ be between 0 and 1.
 
 	\item{\textsc{setpixelval}}
 		\begin{description}
+
+\begin{lstlisting}
+void setPixelVal(int, int, int);
+\end{lstlisting}
+
 			\item{Purpose}
 
 				Sets the value of a pixel
@@ -399,6 +445,11 @@ be between 0 and 1.
 
 	\item{\textsc{getsubimage}}
 		\begin{description}
+
+\begin{lstlisting}
+void getSubImage( int, int, int, int, const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 
  				Obtain a sub-image from old.  Uses the coordinates
@@ -458,6 +509,11 @@ be between 0 and 1.
 
 	\item{\textsc{meangray}}
 		\begin{description}
+
+\begin{lstlisting}
+double meanGray() const;
+\end{lstlisting}
+
 			\item{Purpose}
 
 				
@@ -486,6 +542,11 @@ be between 0 and 1.
 
 	\item{\textsc{enlargeImage}}
 		\begin{description}
+
+\begin{lstlisting}
+void enlargeImage( int, const ImageType&, bool=true );
+\end{lstlisting}
+
 			\item{Purpose}
 				
 				This function enlarges an image by a 
@@ -543,6 +604,11 @@ be between 0 and 1.
 
 	\item{\textsc{shrinkImage}}
 		\begin{description}
+
+\begin{lstlisting}
+void shrinkImage( int, const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 
 				Shrink image, average all the values
@@ -585,6 +651,11 @@ be between 0 and 1.
 
 	\item{\textsc{reflectImage}}
 		\begin{description}
+
+\begin{lstlisting}
+void reflectImage( bool, const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 
 				reflects image by moving the pixel to N or M
@@ -630,6 +701,11 @@ be between 0 and 1.
 
 	\item{\textsc{translateImage}}
 		\begin{description}
+
+\begin{lstlisting}
+void translateImage( int, const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 
 				Translate the image down to the right,
@@ -675,6 +751,11 @@ be between 0 and 1.
 
 	\item{\textsc{rotateImage}}
 		\begin{description}
+
+\begin{lstlisting}
+void rotateImage( int, const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 
 				Rotate the image clockwise using bilinear
@@ -728,6 +809,11 @@ be between 0 and 1.
 
 	\item{\textsc{operator+}}
 		\begin{description}
+
+\begin{lstlisting}
+ImageType& operator+ ( const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 
 				
@@ -775,6 +861,11 @@ be between 0 and 1.
 
 	\item{\textsc{operator-}}
 		\begin{description}
+
+\begin{lstlisting}
+ImageType& operator- ( const ImageType& );
+\end{lstlisting}
+
 			\item{Purpose}
 
 				subtract two images from each other to see the 
@@ -821,6 +912,11 @@ be between 0 and 1.
 
 	\item{\textsc{negateImage}}
 		\begin{description}
+
+\begin{lstlisting}
+void negateImage();
+\end{lstlisting}
+
 			\item{Purpose}
 
 				This function simply subtracts the current pixel
@@ -2786,9 +2882,5 @@ design the menu system. Both students studied and learned how the curses environ
 the functionality of curses and its implementation into a menu system. For the documentation, Josiah wanted to go above
 the normal implementation of a standard documentation and implemented a \LaTeX document that made the writing of the
 documentation very easy and structured. Overall, the students contributed equally for their level of programming skill.
-
-\section{Extra Credit}
-
-1)
 
 \end{document}
