@@ -218,7 +218,7 @@ using namespace std;
 	//               obvious looking at each functions name.  All input is
 	//               bounds checked to make sure no bad input is passed to an
 	//               ImageType object
-	// assumptions : assumes all names int the c string list are valid c
+	// assumptions : assumes all names in the c string list are valid c
 	//               c strings and bools coincide with wether image types are
 	//               loaded of the same index
 	void clearRegister( ImageType[], bool[], char[][NAME_LEN] );
@@ -804,7 +804,7 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 
 /******************************************************************************\
  Save image from a register to the local images directory, prompting user for
- register and file name
+ register and file name.
 \******************************************************************************/
 void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1134,7 +1134,7 @@ void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 
 /******************************************************************************\
  Prompt user for a direction to reflect an image then reflect the image and
- store it back in the original register image
+ store it back in the original register image.
 \******************************************************************************/
 void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1347,7 +1347,7 @@ void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
- Prompt user for which image to negate and negate it, pretty simple function
+ Prompt user for which image to negate and negate it, pretty simple function.
 \******************************************************************************/
 void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1464,7 +1464,7 @@ int promptForFilename( const char title[], const char prompt[], char str[] )
 
 /******************************************************************************\
  Prompt user for a valid angle using a message box, make sure input is between
- 0 and 360, if not display a message box and then re-prompt
+ 0 and 360, if not display a message box and then re-prompt.
 \******************************************************************************/
 int promptForAngle( const char title[], const char prompt[] )
 {
@@ -1503,7 +1503,7 @@ int promptForAngle( const char title[], const char prompt[] )
 
 /******************************************************************************\
  Prompt for a pixel value which is from 0 to maxVal, if not display message
- box and re-prompt user until valid choice is made
+ box and re-prompt user until valid choice is made.
 \******************************************************************************/
 int promptForPixValue( const char title[], const char prompt[], int maxVal )
 {
@@ -1546,7 +1546,7 @@ int promptForPixValue( const char title[], const char prompt[], int maxVal )
 
 /******************************************************************************\
  Prompt the user for the characters h, v, or c (not case sensitive) and return
- the value as soon as one of the 3 is pressed
+ the value as soon as one of the 3 is pressed.
 \******************************************************************************/
 char promptForMirror( const char title[], const char prompt[] )
 {

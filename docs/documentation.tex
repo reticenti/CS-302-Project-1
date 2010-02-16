@@ -722,16 +722,30 @@
 
 		\begin{description}
 			\item{Purpose}
-
+				
+ 				This is the function which builds the scrolling menu system, this simply
+				creates a curses window and puts all the options stored in menuStr onto the
+				window, it then waits for the user to press UP, DOWN, or RETURN before
+				reacting.  The parameters allow menus to be different widths, heights, and
+				locations.  A few constants can be changed to change the colors of the window.
 
 			\item{Input}
 
+				An un-initialized window pointer, a string to be the title,
+				height, width, xLoc, yLoc of the window, list of c-style
+			   	strings to be used in the menu, the number of menu options,
+				and a bool value which says weather the last choice is
+				left highlighted.
 
 			\item{Output}
-
+				
+				Display a window with menu options, let user choose and
+				return the index of that choice.
 
 			\item{Assumptions}
 
+				Assumes that window is un-intialized and will be destructed
+				by calling function.
 
 		\end{description}
 
@@ -741,15 +755,21 @@
 		\begin{description}
 			\item{Purpose}
 
+ 				Display a window of registers next to the main menu (or wherever the constants
+				dictate).
 
 			\item{Input}
 
+				An un-initialized window pointer, a title string, and a
+				list of register names.
 
 			\item{Output}
 
+				Displays a window next to main of all the registers.
 
 			\item{Assumptions}
 
+				This allocates memeory for a WINDOW but it doesn't delete it.
 
 		\end{description}
 
@@ -759,15 +779,24 @@
 		\begin{description}
 			\item{Purpose}
 
+				This function simply draws an empty window with a given title, height, width,
+				x, and y locations.  The colors have default values but can be changed if
+				oddly colored windows are wanted.
 
 			\item{Input}
 
+				An un-intialized window pointer, a title string, and then
+				the window height, width, yLoc, and xLoc, plus the colors
+				for the background and foreground which are defaulted to some constants.
 
 			\item{Output}
 
+				Displays a empty window with a border and title using the
+				given parameters.
 
 			\item{Assumptions}
 
+				This allocates memeory for a WINDOW but it doesn't delete it.
 
 		\end{description}
 
@@ -777,50 +806,49 @@
 		\begin{description}
 			\item{Purpose}
 
+				This basically clears the entire screen after deleting the window that is
+				passed.
 
 			\item{Input}
+				A WINDOW pointer that is has been initialized.
 
 
 			\item{Output}
 
+				De-allocate memory for the window pointer and refresh the
+				main screen.
 
 			\item{Assumptions}
+
+				Assumes WINDOW object is intialized before calling.
 
 
 		\end{description}
 
 
-	\item{\textsc{deletewindow}}
-
+	\item{\textsc{processentry}}
 		\begin{description}
 			\item{Purpose}
 
+				This is the function that decides where to go depending on the choice in the
+				main menu.  The reason it has all the parameters is for passing to the
+				subsequent functions that will be using them.
 
 			\item{Input}
+				List of register images, list of register bools, list of
+				register names, and a value assumed to be choosen by user.
 
 
 			\item{Output}
 
+				Depending on the value of choice, call a function to do some image
+				manipulation.
 
 			\item{Assumptions}
 
-
-		\end{description}
-
-
-	\item{\textsc{process entry}}
-		\begin{description}
-			\item{Purpose}
-
-
-			\item{Input}
-
-
-			\item{Output}
-
-
-			\item{Assumptions}
-
+				Assumes value >= 0 and < MENU_OPTIONS, not that anything
+				will crash if its not true, but nothing will happen, also
+				assumes that names contain valid c strings.
 
 		\end{description}
 
@@ -830,14 +858,24 @@
 		\begin{description}
 			\item{Purpose}
 
-
+				This just builds the window used for message box, this function is just to
+				simplify the plethora of other functions that use this.
+				
 			\item{Input}
+				
+				An un-initalized window and a title string.
 
 
 			\item{Output}
 
+				Displays a window in the standard text box location with
+				the title and a border.
+
 
 			\item{Assumptions}
+
+				The window object is initalized here but not deleted, this
+				is left up to the calling function.
 
 
 		\end{description}
@@ -847,16 +885,30 @@
 	\item{\textsc{promptforreg}}
 		\begin{description}
 			\item{Purpose}
-
+				
+				This is the function that calls the menu for the register prompt, it can be
+				called in different locations (like in addImg and subImg) but has a default
+				defined by some global constants.  The function creates a list of registers
+				and adds the "Back" option as the final option, this way the user has the
+				option to cancel choosing a register.  Although in the program it looks like
+				the register display and register choosing window are the same, this menu
+				overlaps the other menu to make it seem like control is transfering to another
+				window.
 
 			\item{Input}
 
+				List of register bools, list of regist names, a flag that
+				indicates if registers that have not been loaded can be
+				choosen, the yLoc, and xLoc of the menu.
 
 			\item{Output}
-
+				
+				Display a menu with the registers in it, allowing user to
+				choose a register.
 
 			\item{Assumptions}
 
+				Assumes that names are already set to valid c strings.
 
 		\end{description}
 
@@ -866,15 +918,23 @@
 		\begin{description}
 			\item{Purpose}
 
+				Create a message box and prompt the user for a string value with given prompt.
 
 			\item{Input}
 
+				Title string, prompt string and char used to store user
+				input.
 
 			\item{Output}
 
+				Sets the final parameter equal to the filename the user
+				chooses and returns the length.
 
 			\item{Assumptions}
 
+				Assumes first 2 parameters are valid c strings and that
+				the final parameter is a string of at least length 16 plus
+				the length of the file path declared as a constant.
 
 		\end{description}
 
@@ -884,15 +944,25 @@
 		\begin{description}
 			\item{Purpose}
 
+				This function prompts the user for a location (both row and column) and sets
+				the valid points equal to row or col.  If -1 is returned in either location
+				it means user choose to cancel the prompt.  The validity of the points is
+				calculated by the image object it is passed.  The image properties are
+				calculated and then used to determine the bounds of row and column.
 
 			\item{Input}
 
+				A prompt string, image object, and 2 integers passed by reference.
 
 			\item{Output}
 
+				Sets two reference parameters equal to row and column of
+				users choice.
 
 			\item{Assumptions}
 
+				Assumes image is intialized and has a valid height and width
+				also that first parameter is a valid c string.
 
 		\end{description}
 
@@ -902,15 +972,21 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompt for a pixel value which is from 0 to maxVal, if not display message
+				box and re-prompt user until valid choice is made.
 
 			\item{Input}
 
+				A title string, prompt string and max input value.
 
 			\item{Output}
 
+				Prompts user in message window and returns the value when
+				the user inputs a valid value(-1 indicates cancel).
 
 			\item{Assumptions}
 
+				Assumes that first 2 parameters are valid c strings.
 
 		\end{description}
 
@@ -921,15 +997,22 @@
 		\begin{description}
 			\item{Purpose}
 
+				This function prompts the user for a scale value and checks to make sure it
+				is not greater than maxVal and not less than 2.  This is used in the enlarge
+				and shrink functions.
 
 			\item{Input}
 
+				Title string, prompt string and max input value.
 
 			\item{Output}
 
+				Prompts user in message window and returns the value when
+				the user inputs a valid value(-1 indicates cancel).
 
 			\item{Assumptions}
 
+				Assumes that first 2 parameters are valid c strings.
 
 		\end{description}
 
@@ -939,15 +1022,20 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompt the user for the characters h, v, or c (not case sensitive) and return
+				the value as soon as one of the 3 is pressed.
 
 			\item{Input}
 
+				A title, prompt string.
 
 			\item{Output}
 
+				Returns users choice as a char.
 
 			\item{Assumptions}
 
+				Both parameters are valid c strings.
 
 		\end{description}
 
@@ -957,15 +1045,20 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompt user for a valid angle using a message box, make sure input is between
+				0 and 360, if not display a message box and then re-prompt.
 
 			\item{Input}
 
+				A title and prompt string
 
 			\item{Output}
 
+				Returns the user angle choice.
 
 			\item{Assumptions}
 
+				Both parameters are valid c strings.
 
 		\end{description}
 
@@ -974,15 +1067,22 @@
 		\begin{description}
 			\item{Purpose}
 
+				Displays a message box in the center of the screen with
+				the message displayed in it.
 
 			\item{Input}
-
+				
+				A title and message string.
 
 			\item{Output}
-
+				
+				Displays a message box in the center of the screen with
+				the message displayed in it, then waits for the user to press
+				return before continuing.
 
 			\item{Assumptions}
 
+				Assumes both parameters are valid c strings.
 
 		\end{description}
 
@@ -992,15 +1092,25 @@
 		\begin{description}
 			\item{Purpose}
 
+				This displays a simple message box to the screen with the given title and msg
+				inside of it, it waits for the user to press RETURN before returning to
+				calling function.
 
 			\item{Input}
 
+				List of images, bools, and c strings all of length REGS
+				also the number of arguments passed to main and the array
+				of strings passed to main.
 
 			\item{Output}
 
+				Sets valid arguments to registers (loading images) and
+				clears the rest of the registers.
 
 			\item{Assumptions}
 
+				Assumes that char** is a valid list of strings with int
+				rows.
 
 		\end{description}
 
@@ -1010,33 +1120,54 @@
 		\begin{description}
 			\item{Purpose}
 
-
+				Prompt for a register that is filled and then clear it.
+				
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
 
 
-	\item{\textsc{laodimage}}
+	\item{\textsc{loadimage}}
 		\begin{description}
 			\item{Purpose}
 
+				Prompt the user for a register to load to, then let them choose from a list
+				of the .pgm files in the local images directory (defined as a constant).
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1046,33 +1177,56 @@
 		\begin{description}
 			\item{Purpose}
 
+				Save image from a register to the local images directory, prompting user for
+				register and file name.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
 
 
-	\item{\textsc{getimage}}
+	\item{\textsc{getimageinfo}}
 		\begin{description}
 			\item{Purpose}
 
+				Simply retrieve image information and display to a window below the registers
+				The data being displayed is the Register number, Image Height, Width, Q value,
+				and average gray value.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1082,15 +1236,26 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompt user for a register then a pixel location (row, col) and then the pixel
+				value to change that pixel to.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1100,15 +1265,25 @@
 		\begin{description}
 			\item{Purpose}
 
+				Return the value of a pixel in a selected image to the user.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1118,15 +1293,27 @@
 		\begin{description}
 			\item{Purpose}
 
+				After getting the image to manipulate, prompt for two corners to make a
+				subimage out of, if the lower right corner is above or left of the upper
+				right corner re-prompt for valid points
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1136,15 +1323,27 @@
 		\begin{description}
 			\item{Purpose}
 
+				This function prompts the user for a scale value to enlarge an image by, it
+				makes sure the scale value does not make the image larger than MAX_IMG value
+				because it may cause a stack overflow.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1154,15 +1353,27 @@
 		\begin{description}
 			\item{Purpose}
 
+				The same as enlarge except it shrinks the image making sure it never gets
+				smaller than MIN_IMG.  This is because some image viewers won't open images
+				as small as 2x2 (xv for example).
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1172,15 +1383,26 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompt user for a direction to reflect an image then reflect the image and
+				store it back in the original register image.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1189,16 +1411,29 @@
 	\item{\textsc{translateimg}}
 		\begin{description}
 			\item{Purpose}
-
+			
+				This prompts the user for how far to translate the image, then calls the
+				translate function which moves the image down to the right 't' number of
+				pixels.  Also Won't let user choose t value that would move image totaly off
+				the screen.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1208,15 +1443,27 @@
 		\begin{description}
 			\item{Purpose}
 
+				This prompts the user for an angle theta which will rotate the image counter 
+				clockwise by theta degrees.  The input is only valid from 0 to 360 which
+				should cover all possibilities.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1226,15 +1473,27 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompt for 2 images and attempt to sum them, there is no size checking because
+				operator+ will throw a string which will be handeled by main if sizes of the
+				two images are different.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1244,15 +1503,26 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompt for 2 images and attempt to calculate the difference, there's no size
+				checking here for the same reason sumImg doesn't do size checking
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1262,15 +1532,25 @@
 		\begin{description}
 			\item{Purpose}
 
+				Prompt user for which image to negate and negate it, pretty simple function.
 
 			\item{Input}
 
+				List of images of length REGS, list of bools of length
+				REGS, and list of c strings of length REGS.
 
 			\item{Output}
 
+				Prompt the user for which register to use, then if nessessary
+				prompt for additional information and call the function
+				in ImageType that will allow the image in that register to
+				be manipulated.
 
 			\item{Assumptions}
 
+				Assumes all names in the c string list are valid c
+				strings and the bools coincide with the image types that
+				reference the same index.
 
 		\end{description}
 
@@ -1280,15 +1560,25 @@
 		\begin{description}
 			\item{Purpose}
 
+				A somewhat brittle function that reads all the .pgm files from a local
+				directory (defined as a constant) and places them into a dynamically
+				allocated c style string array.
 
 			\item{Input}
 
+				One un-intialized double pointer of chars
 
 			\item{Output}
 
+				Allocates enough memory for a list of all the ".pgm" files
+				in the local path specified by the FILELOC constant.  It
+				then copys the file names to the array and returns the
+				number of rows in the array.
 
 			\item{Assumptions}
 
+				Pointer parameter is not initialized, but will be in the function
+				this means it needs to be de-allocated later.
 
 		\end{description}
 
