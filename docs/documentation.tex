@@ -3265,7 +3265,6 @@ documentation very easy and structured. Overall, the students contributed equall
 				5, then blocks of 5x5 would be shrunk to 1x1.  The original method made it so that only the upper
 				left corner of the 5x5 block would be sampled. 
 
-				Here is an example of the quality difference...
 				
 		\end{description}
 
@@ -3317,7 +3316,10 @@ documentation very easy and structured. Overall, the students contributed equall
 				we made all pixels that differed by at least 43 (which is $\approx$ 255 $\div$ 6).  This does
 				show some improvements for noticing differences in images without a lot of noise, although some
 				noise is still there.
-
+				
+				See figures~\ref{fig:subnoisy} and~\ref{fig:subclear} on pages~\pageref{fig:subnoisy}
+				and~\pageref{fig:subclear}
+				
 				An idea that we had, but didn't have time to implement was to look at each pixel after the threshold
 				is made and remove any white pixel that doesn't have 3 neighbors, then run this over the image until
 				no changes are made.  I don't know how this would react but we thought it was an interesting idea.
@@ -3341,6 +3343,23 @@ documentation very easy and structured. Overall, the students contributed equall
 				Another addition to the project was the curses driver program.  This was done to make using the program a
 				little more enjoyable and also to show some of the things that can be done with curses.  All in all these
 				extra additions were an enjoyable challenge and I hope you enjoy them.
+
+				See figure~\ref{fig:enlargecubic} and~\ref{fig:enlargestd} on page~\pageref{fig:enlargecubic}
+				and~\pageref{fig:enlargestd}
+				
+				\begin{figure}[p]
+					\centering
+					\caption{enlarge without cubic Example}
+					\includegraphics{images/subnoisy.png}
+					\label{fig:subnoisy}
+				\end{figure}
+				
+				\begin{figure}[p]
+					\centering
+					\caption{enlarge without cubic Example}
+					\includegraphics{images/subclear.png}
+					\label{fig:subclear}
+				\end{figure}
 
 		\end{description}
 
