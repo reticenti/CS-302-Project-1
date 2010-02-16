@@ -37,6 +37,7 @@
 
 
 \begin{document}
+
 %import the title page
 \input{./title.tex}
 
@@ -326,8 +327,6 @@ be between 0 and 1.
 
 				Assumes nothing
 
-			\item{Example}
-
 		\end{description}
 
 
@@ -363,8 +362,6 @@ be between 0 and 1.
 
 				It is assumed that the image has been intialized
 
-			\item{Example}
-
 
 		\end{description}
 
@@ -396,8 +393,6 @@ be between 0 and 1.
 			\item{Assumptions}
 
 				Assumes the image has been intialized
-
-			\item{Example}
 
 		\end{description}
 
@@ -452,7 +447,11 @@ be between 0 and 1.
 
 			\item{Example}
 
-				\includegraphics{images/outsubimg.png}
+				\begin{figure}[h]
+					\centering
+					\caption{subImage Example}
+					\includegraphics{images/outsubimg.png}
+				\end{figure}
 
 		\end{description}
 
@@ -481,9 +480,6 @@ be between 0 and 1.
 
 				Assumes nothing and returns 0 if the image 
 				has not been intialized
-
-			\item{Example}
-
 
 		\end{description}
 
@@ -578,7 +574,11 @@ be between 0 and 1.
 
 			\item{Example}
 
+				\begin{figure}[h]
+					\centering
+					\caption{shrinkImage Example}
 				\includegraphics{images/outshrink.png}
+			\end{figure}
 
 		\end{description}
 
@@ -619,7 +619,11 @@ be between 0 and 1.
 
 			\item{Example}
 
+				\begin{figure}[h]
+					\centering
+					\caption{reflectImage Example}
 				\includegraphics{images/outreflect.png}
+			\end{figure}
 
 		\end{description}
 
@@ -660,7 +664,11 @@ be between 0 and 1.
 
 			\item{Example}
 
+				\begin{figure}[h]
+					\centering
+					\caption{translateImage Example}
 				\includegraphics{images/outtrans.png}
+			\end{figure}
 
 		\end{description}
 
@@ -709,7 +717,11 @@ be between 0 and 1.
 
 			\item{Example}
 
+				\begin{figure}[h]
+					\centering
+					\caption{rotateImage Example}
 				\includegraphics{images/outrotate.png}
+			\end{figure}
 
 		\end{description}
 
@@ -751,7 +763,12 @@ be between 0 and 1.
 
 			\item{Example}
 
+				\begin{figure}[h]
+					\centering
+					\caption{operator+ Example}
 				\includegraphics{images/outasum.png}
+			\end{figure}
+
 
 		\end{description}
 
@@ -793,12 +810,45 @@ be between 0 and 1.
 
 			\item{Example}
 
+				\begin{figure}[h]
+					\centering
+					\caption{operator- Example}
 				\includegraphics{images/outsubtract.png}
+			\end{figure}
 
 		\end{description}
 
 
 	\item{\textsc{negateImage}}
+		\begin{description}
+			\item{Purpose}
+
+				This function simply subtracts the current pixel
+				value from the max value of
+				the pixel, thus negating the image
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumptions}
+
+				Nothing is assumed
+
+			\item{Example}
+
+				\begin{figure}[h]
+					\centering
+					\caption{negateImage Example}
+				\includegraphics{images/outnegative.png}
+			\end{figure}
+
+		\end{description}
+
 
 \end{description}
 
@@ -2717,6 +2767,6 @@ intertwined, so the students made a clean and modular ncurses driver that is abl
 
 \section{Division of Labor}
 
-ok!
+
 
 \end{document}
