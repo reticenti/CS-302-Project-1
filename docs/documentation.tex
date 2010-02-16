@@ -62,26 +62,6 @@
 
 \section{Introduction}
 
-In this assigment, the students were asked to make an image class that manipulated a Portable Gray Map (PGM) image
-in various ways. This was to be accomplished using dynamic 2D arrays and other tools that were learned in previous CS courses.
-
-One of the first problems faced was how to use the supplied read and write image files.
-These functions were provided to simplefy the build process as they allowed the students to concentrate 
-on the manipulation of the images.
-
-After reading and writing images was mastered, the students undertook the bulk of the assignment which was to
-manipulate the images that had been read in with the supplied read function. This required the knowledge of
-manipulating dynamic 2D arrays. Dynamic 2D arrays was a new tool for the students' C++ repatoire, but the
-students soon came to understand the benefits of dynamic 2D arrays.
-
-The assignment also required the use of constructors, desctructors, copy contrusctors, and operator overloading,
-These topics were review from CS 202, but the use of them refreshed the students minds on how they work
-and to their purposes.
-
-The students also extensively documented their program and made it as easy as possible to understand what
-was happening in the various algorithms that were implemented. The students realize that commenting
-and documenting the source code for projects is extremely important and is essential to the success of
-a powerful programmer.
 
 \section{Use of Code}
 
@@ -2061,32 +2041,19 @@ a powerful programmer.
 		\begin{description}
 			\item{Purpose}
 
+				Initialize everything to NULL and 0.
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
-
-		\end{description}
-
-
-	\item{\textsc{copy constructor}}
-		\begin{description}
-			\item{Purpose}
-
-
-			\item{Input}
-
-
-			\item{Output}
-
-
-			\item{Assumptions}
-
+				After this runs, all variables are zero.
 
 		\end{description}
 
@@ -2095,15 +2062,31 @@ a powerful programmer.
 		\begin{description}
 			\item{Purpose}
 
+				Let object be initialized and create a linear and cubic spline based
+				on the parameters.
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{points[]}
+
+						The array of points to be interpolated.
+
+					\item{num}
+
+						The number of points in the array.
+
+				\end{itemize}
 
 			\item{Output}
-
+			
+				Sets the variables for both cubic and linear splines in the object.
 
 			\item{Assumptions}
 
+				It is assumed that there are at least 3 points, otherwise cubic splines can't
+				be created with this algorithm.
 
 		\end{description}
 
@@ -2112,15 +2095,19 @@ a powerful programmer.
 		\begin{description}
 			\item{Purpose}
 
+				Delete all dynamically allocated memory before object is removed.
 
 			\item{Input}
 
+				None
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				None
 
 		\end{description}
 
@@ -2129,15 +2116,31 @@ a powerful programmer.
 		\begin{description}
 			\item{Purpose}
 
+				Using the points make it possible to calculate a location along the
+				piecewise function at a later time.  Creates a linear spline function.
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{points[]}
+
+						A list of points to be used to interpolate.
+
+					\item{num}
+
+						The number of points.
+
+				\end{itemize}
 
 			\item{Output}
 
+				Sets the object up so that linear approximations of intermediate values between
+				the points can be obtained using the getVal() function.
 
 			\item{Assumptions}
 
+				There is at least 1 point.
 
 		\end{description}
 
@@ -2146,15 +2149,31 @@ a powerful programmer.
 		\begin{description}
 			\item{Purpose}
 
+				Using the points make it possible to calculate a location along the
+				piecewise function at a later time.  Creates a cubic spline function.
 
 			\item{Input}
+			
+				\begin{itemize}
 
+					\item{points[]}
+
+						A list of points to be used to interpolate.
+
+					\item{num}
+
+						The number of points.
+
+				\end{itemize}
 
 			\item{Output}
 
+				Sets the object up so that cubic approximations of intermediate values between
+				the points can be obtained using the getCubicVal() function.
 
 			\item{Assumptions}
 
+				It is assumed that 3 or more points exist.
 
 		\end{description}
 
@@ -2163,15 +2182,28 @@ a powerful programmer.
 		\begin{description}
 			\item{Purpose}
 
+				Returns an estimated value along the function, the spline function assumes
+				that the first point lies at 0.0 and the final point lies at 100.0 with each
+				point equally spaced.  Uses a linear spline.
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{x}
+
+						A floating point value of the desired location along the function.
+
+				\end{itemize}
 
 			\item{Output}
 
+				Returns the value of the intermediate approximation between the points.
 
 			\item{Assumptions}
 
+				Assumes a linear spline has been defined. a.k.a. the function create()
+				has been called, initializing the spline.
 
 		\end{description}
 
@@ -2180,15 +2212,28 @@ a powerful programmer.
 		\begin{description}
 			\item{Purpose}
 
+				Returns an estimated value along the function, the spline function assumes
+				that the first point lies at 0.0 and the final point lies at 100.0 with each
+				point equally spaced.  Uses a cubic spline.
 
 			\item{Input}
 
+				\begin{itemize}
+
+					\item{x}
+
+						A floating point value of the desired location along the function.
+
+				\end{itemize}
 
 			\item{Output}
 
+				Returns the value of the intermediate approximation between the points.
 
 			\item{Assumptions}
 
+				Assumes a cubic spline has been defined. a.k.a. the function createCubic() has
+				been called, initializing the spline.
 
 		\end{description}
 
