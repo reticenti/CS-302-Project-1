@@ -51,6 +51,8 @@
 \renewcommand{\footrulewidth}{0.4pt}
 
 \tableofcontents
+
+\listoffigures
 \newpage
 
 \lhead{Joshua Gleason \& Josiah Humphrey}
@@ -603,6 +605,28 @@ void enlargeImage( int, const ImageType&, bool=true );
 				handle S values less
 				than 1, the shrinkImage function works better for this.
 
+			\item{Example}
+
+				See figure~\ref{fig:enlargecubic} on page~\pageref{fig:enlargecubic}
+
+				\begin{figure}[p]
+					\centering
+					\caption{Cubic Enlarge Example}
+					\includegraphics{images/cubicexample.png}
+					\label{fig:enlargecubic}
+				\end{figure}
+
+				See figure~\ref{fig:enlargestd} on page~\pageref{fig:enlargestd}
+
+				\begin{figure}[p]
+					\centering
+					\caption{Standard Enlarge Example}
+					\includegraphics{images/stdexample.png}
+					\label{fig:enlargestd}
+				\end{figure}
+
+
+
 		\end{description}
 
 	\item{\textsc{shrinkImage}}
@@ -960,7 +984,7 @@ void negateImage();
 
 				See figure~\ref{fig:negative} on page~\pageref{fig:negative}
 
-				\begin{figure}[p]
+				\begin{figure}[h!]
 					\centering
 					\caption{negateImage Example}
 				\includegraphics{images/outnegative.png}
