@@ -845,8 +845,8 @@
 				passed.
 
 			\item{Input}
-				A WINDOW pointer that is has been initialized.
 
+				A WINDOW pointer that is has been initialized.
 
 			\item{Output}
 
@@ -870,6 +870,7 @@
 				subsequent functions that will be using them.
 
 			\item{Input}
+
 				List of register images, list of register bools, list of
 				register names, and a value assumed to be choosen by user.
 
@@ -881,7 +882,7 @@
 
 			\item{Assumptions}
 
-				Assumes value >= 0 and < MENU_OPTIONS, not that anything
+				Assumes value $\geq$ to 0 and $<$ MENU\_OPTIONS, not that anything
 				will crash if its not true, but nothing will happen, also
 				assumes that names contain valid c strings.
 
@@ -900,12 +901,10 @@
 				
 				An un-initalized window and a title string.
 
-
 			\item{Output}
 
 				Displays a window in the standard text box location with
 				the title and a border.
-
 
 			\item{Assumptions}
 
@@ -1359,7 +1358,7 @@
 			\item{Purpose}
 
 				This function prompts the user for a scale value to enlarge an image by, it
-				makes sure the scale value does not make the image larger than MAX_IMG value
+				makes sure the scale value does not make the image larger than MAX\_IMG value
 				because it may cause a stack overflow.
 
 			\item{Input}
@@ -1389,7 +1388,7 @@
 			\item{Purpose}
 
 				The same as enlarge except it shrinks the image making sure it never gets
-				smaller than MIN_IMG.  This is because some image viewers won't open images
+				smaller than MIN\_IMG.  This is because some image viewers won't open images
 				as small as 2x2 (xv for example).
 
 			\item{Input}
