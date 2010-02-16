@@ -2740,7 +2740,17 @@ be between 0 and 1.
 
 \section{Bugs and Errors}
 
-hmm what goes here
+	During the creation of this program we ran into a multitude of bugs and errors.  Some of the biggest obsticals came
+while implementing the main driver program.  Learning how curses works and finding way to make it do what was needed was
+quite a challenge but also very rewarding.  One odd bug was that when the function wattron() was used to set to
+highlight for the menu options it worked fine on one computer, but when it was used on Josiah's computer the
+highlighting didn't show up.  The fix for this involved manually inverting the colors rather than just changing the
+attribute.  This is a good example of how a program may act differently on different computers.
+
+Another bug that we ran into was having trouble when enlarging images too much.  The way this was delt with was to add a
+global constant to the main driver which limited the size allowed to scale an image.  Although there weren't many actual
+bugs while writing the image class, there was a huge amount of testing done to try and make the program as robust as
+possible given the time limitation.
 
 \section{What was Learned}
 
@@ -2777,5 +2787,8 @@ the functionality of curses and its implementation into a menu system. For the d
 the normal implementation of a standard documentation and implemented a \LaTeX document that made the writing of the
 documentation very easy and structured. Overall, the students contributed equally for their level of programming skill.
 
+\section{Extra Credit}
+
+1)
 
 \end{document}
