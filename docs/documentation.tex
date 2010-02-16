@@ -90,6 +90,7 @@
 				Sets everything to zero and 
 				sets the pixelValue array to NULL
 
+
 		\end{description}
 
 
@@ -233,6 +234,7 @@
 				queried has been loaded with some image
 
 
+
 		\end{description}
 
 
@@ -271,6 +273,8 @@
 
 				Assumes nothing
 
+			\item{Example}
+
 		\end{description}
 
 
@@ -306,6 +310,8 @@
 
 				It is assumed that the image has been intialized
 
+			\item{Example}
+
 
 		\end{description}
 
@@ -337,6 +343,8 @@
 			\item{Assumptions}
 
 				Assumes the image has been intialized
+
+			\item{Example}
 
 		\end{description}
 
@@ -389,6 +397,9 @@
 				properly bounds and error checked before the function
 				call
 
+			\item{Example}
+
+				\includegraphics{images/outsubimg.png}
 
 		\end{description}
 
@@ -417,6 +428,8 @@
 
 				Assumes nothing and returns 0 if the image 
 				has not been intialized
+
+			\item{Example}
 
 
 		\end{description}
@@ -477,8 +490,6 @@
 				handle S values less
 				than 1, the shrinkImage function works better for this.
 
-
-
 		\end{description}
 
 	\item{\textsc{shrinkImage}}
@@ -511,6 +522,10 @@
 
 				Assumes the image has been intialized and that error
 				checking has been done.
+
+			\item{Example}
+
+				\includegraphics{images/outshrink.png}
 
 		\end{description}
 
@@ -549,6 +564,10 @@
 				Assumes nothing, but it makes sense to have an intialized
 				image to reflect
 
+			\item{Example}
+
+				\includegraphics{images/outreflect.png}
+
 		\end{description}
 
 
@@ -585,6 +604,10 @@
 
 				No assumptions are made, but it makes sense to have
 				an intialized image
+
+			\item{Example}
+
+				\includegraphics{images/outtrans.png}
 
 		\end{description}
 
@@ -631,6 +654,10 @@
 				before the function call. It is also assumed that theta
 				is between 0 and 360.
 
+			\item{Example}
+
+				\includegraphics{images/outrotate.png}
+
 		\end{description}
 
 
@@ -669,6 +696,10 @@
 				each image initialized, but it makes senses
 				that they would each be initialized.
 
+			\item{Example}
+
+				\includegraphics{images/outasum.png}
+
 		\end{description}
 
 
@@ -706,6 +737,10 @@
 				not have the same dimensions. It is not neccesary to have
 				each image initialized, but it makes senses
 				that they would each be initialized.
+
+			\item{Example}
+
+				\includegraphics{images/outsubtract.png}
 
 		\end{description}
 
@@ -1789,15 +1824,24 @@
 
 					\item{fname[]}
 
+						The C-style string to hold the image 
+						file name
+
 					\item{ImageType image}
+
+						The image object that holds the
+						image data
 
 				\end{itemize}
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes there is a file to be read and that the
+				user has read access
 
 		\end{description}
 
@@ -1806,15 +1850,34 @@
 		\begin{description}
 			\item{Purpose}
 
+				Writes the image to disk
 
 			\item{Input}
+
+				\begin{itemize}
+
+					\item{fname[]}
+
+						The C-style string to hold the image 
+						file name
+
+					\item{ImageType image}
+
+						The image object that holds the
+						image data
+
+				\end{itemize}
+
 
 
 			\item{Output}
 
+				None
 
 			\item{Assumptions}
 
+				Assumes the user has write access to the
+				destination folder
 
 		\end{description}
 
