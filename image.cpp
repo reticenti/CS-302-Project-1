@@ -41,6 +41,8 @@ ImageType::~ImageType()
 \*****************************************************************************/
 ImageType::ImageType(int tmpN, int tmpM, int tmpQ)
 {
+	pixelValue = NULL;
+	N = M = Q = 0;
 	// set the new values of N, M and Q
 	setImageInfo( tmpN, tmpM, tmpQ );
 }
@@ -535,6 +537,12 @@ void ImageType::rotateImage( int theta, const ImageType& old )
 			// calculate where the original value should be
 			r = r_0 + (i-r_0)*cos(rad) - (j-c_0)*sin(rad);
 			c = c_0 + (i-r_0)*sin(rad) + (j-c_0)*cos(rad);
+
+			// old method
+			/*if ( r < N && r >= 0 && c < M && c >= 0 )
+				final = old.pixelValue[(int)r][(int)c];
+			else
+				final = pixelValue[i][j];*/
 
 			// only draw a pixel if source value is in range
 			if ( r > 0 && ceil(r) < N && c > 0 && ceil(c) < M ) {
