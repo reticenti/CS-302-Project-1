@@ -7,7 +7,7 @@ using namespace std;
 
 #include "image.h"
 
-void readImage(const char fname[], ImageType& image)
+void readImage(const char fname[], ImageType<int>& image)
 {
 	int i, j;
 	int N, M, Q;
@@ -132,7 +132,7 @@ void readImageHeader(const char fname[], int& N, int& M, int& Q, bool& type)
 
 }
 
-void writeImage(const char fname[], ImageType& image)
+void writeImage(const char fname[], ImageType<int>& image)
 {
 	int i, j;
 	int N, M, Q;

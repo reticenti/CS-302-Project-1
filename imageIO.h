@@ -17,12 +17,12 @@
 	// input : cstring of filename, and ImageType object to hold image data
 	// output : set image info to the ImageType object
 	// dependencies : image.h
-	void readImage( const char[], ImageType& );
+	void readImage( const char[], ImageType<int>& );
 
 	// name : writeImage
 	// input : cstring of filename, and ImageType object to be store in file
 	// output : writes a pgm type file with ImageType stored as a RAW form
 	// dependencies : image.h
-	void writeImage( const char[], ImageType& );
+	void writeImage( const char[], ImageType<int>& );
 
 #endif

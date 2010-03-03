@@ -3,11 +3,11 @@
 
  Date Due For Review  : 02/16/2010
 
- 	This program is designed to be a driver for the ImageType objects.  The
+ 	This program is designed to be a driver for the ImageType<int> objects.  The
  user interface attempts to allow the objects to be throughly tested in a
  robust, simple environment.
 
- 	The ImageType object (defined in image.h) is for manipulating grayscale
+ 	The ImageType<int> object (defined in image.h) is for manipulating grayscale
  images, it allows the user to easly enlarge, rotate, negate, etc... an image.
  The functions in imageIO.h are used to load and save images of type .pgm.
 
@@ -129,7 +129,7 @@ using namespace std;
 	// assumptions : assumes value >= 0 and < MENU_OPTIONS, not that anything
 	//               will crash if its not true, but nothing will happen, also
 	//               assumes that names contain valid c strings
-	void processEntry( ImageType[], bool[], char[][NAME_LEN], int );
+	void processEntry( ImageType<int>[], bool[], char[][NAME_LEN], int );
 
 	// name        : stdWindow
 	// input       : an un-initalized window and a title string
@@ -165,7 +165,7 @@ using namespace std;
 	//               users choice
 	// assumptions : assumes image is intialized and has a valid height/width
 	//               also that first parameter is a valid c string
-	void promptForLoc( const char[], ImageType&, int&, int& );
+	void promptForLoc( const char[], ImageType<int>&, int&, int& );
 	
 	// name        : promptFor<Pix/Scale>Value
 	// input       : title string, prompt string and max input value
@@ -208,7 +208,7 @@ using namespace std;
 	//               clears the rest of the registers
 	// assumptions : assumes that char** is a valid list of strings with int
 	//               rows
-	void fillRegs( ImageType[], bool[], char[][NAME_LEN], int, char** );
+	void fillRegs( ImageType<int>[], bool[], char[][NAME_LEN], int, char** );
 
 	// name        : Register manipulation functions
 	// input       : List of images of length REGS, list of bools of length
@@ -217,25 +217,25 @@ using namespace std;
 	//               to its manipulation function, these should be pretty
 	//               obvious looking at each functions name.  All input is
 	//               bounds checked to make sure no bad input is passed to an
-	//               ImageType object
+	//               ImageType<int> object
 	// assumptions : assumes all names in the c string list are valid c
 	//               c strings and bools coincide with wether image types are
 	//               loaded of the same index
-	void clearRegister( ImageType[], bool[], char[][NAME_LEN] );
-	void loadImage( ImageType[], bool[], char[][NAME_LEN] );
-	void saveImage( ImageType[], bool[], char[][NAME_LEN] );
-	void getImageInfo( ImageType[], bool[], char[][NAME_LEN] );
-	void setPixel( ImageType[], bool[], char[][NAME_LEN] );
-	void getPixel( ImageType[], bool[], char[][NAME_LEN] );
-	void extractSub( ImageType[], bool[], char[][NAME_LEN] );
-	void enlargeImg( ImageType[], bool[], char[][NAME_LEN] );
-	void shrinkImg( ImageType[], bool[], char[][NAME_LEN] );
-	void reflectImg( ImageType[], bool[], char[][NAME_LEN] );
-	void translateImg( ImageType[], bool[], char[][NAME_LEN] );
-	void rotateImg( ImageType[], bool[], char[][NAME_LEN] );
-	void sumImg( ImageType[], bool[], char[][NAME_LEN] );
-	void subtractImg( ImageType[], bool[], char[][NAME_LEN] );
-	void negateImg( ImageType[], bool[], char[][NAME_LEN] );
+	void clearRegister( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void loadImage( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void saveImage( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void getImageInfo( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void setPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void getPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void extractSub( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void enlargeImg( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void shrinkImg( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void reflectImg( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void translateImg( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void rotateImg( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void sumImg( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void subtractImg( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void negateImg( ImageType<int>[], bool[], char[][NAME_LEN] );
 
 	// name        : findLocalPGM
 	// input       : one un-intialized double pointer of chars
@@ -270,7 +270,7 @@ int main( int argc, char **argv )
 	bool imgLoaded[REGS];
 
 	// this is where all the registers are stored
-	ImageType image[REGS];
+	ImageType<int> image[REGS];
 
 	// create main menu strings
 	char choices[MENU_OPTIONS][NAME_LEN] = {
@@ -569,7 +569,7 @@ void drawWindow( WINDOW *& win, const char title[], int height, int width,
  main menu.  The reason it has all the parameters is for passing to the
  subsequent functions that will be using them.
 \******************************************************************************/
-void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN], 
+void processEntry( ImageType<int> img[], bool loaded[], char name[][NAME_LEN], 
     int choice )
 {
 	// enter switch statement evaluating choice
@@ -629,7 +629,7 @@ void processEntry( ImageType img[], bool loaded[], char name[][NAME_LEN],
 /******************************************************************************\
  Prompt for a register that is filled and then clear it.
 \******************************************************************************/
-void clearRegister( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void clearRegister( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index;
 
@@ -653,7 +653,7 @@ void clearRegister( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  string object.  It stores the values into the registers sequentially, if there
  are no arguments relating to the register it is set to empty
 \******************************************************************************/
-void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc,
+void fillRegs( ImageType<int> img[], bool loaded[], char name[][NAME_LEN], int argc,
     char **argv )
 {
 	char *msg = new char[1+(argc-1)*40];
@@ -725,7 +725,7 @@ void fillRegs( ImageType img[], bool loaded[], char name[][NAME_LEN], int argc,
  Prompt the user for a register to load to, then let them choose from a list
  of the .pgm files in the local images directory (defined as a constant)
 \******************************************************************************/
-void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the file names, menuChoices is a copy with "Back" added at the end
 	char **fileNames, **menuChoices;
@@ -806,7 +806,7 @@ void loadImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  Save image from a register to the local images directory, prompting user for
  register and file name.
 \******************************************************************************/
-void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void saveImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the file name
 	char strInput[NAME_LEN];
@@ -848,7 +848,7 @@ void saveImage( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  The data being displayed is the Register number, Image Height, Width, Q value,
  and average gray value.
 \******************************************************************************/
-void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// hold image info
 	int N, M, Q, index, y, x;
@@ -884,7 +884,7 @@ void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 		mvwprintw( infoWin, y, x, "%-20s%c %i", "Color Depth",':',Q );
 		y+=2;
 		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Gray Value",':',
-		    img[index].meanGray() );
+		    img[index].meanColor() );
 		y+=2;
 		mvwprintw( infoWin, y, x, "Press Enter to continue..." );
 
@@ -902,7 +902,7 @@ void getImageInfo( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  Prompt user for a register then a pixel location (row, col) and then the pixel
  value to change that pixel to.
 \******************************************************************************/
-void setPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void setPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds various information about image
 	int index, row, col, val;
@@ -944,7 +944,7 @@ void setPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 /******************************************************************************\
  Return the value of a pixel in a selected image to the user.
 \******************************************************************************/
-void getPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void getPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// self describing variables
 	int index, row = -1, col = -1, val;
@@ -984,14 +984,14 @@ void getPixel( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  subimage out of, if the lower right corner is above or left of the upper
  right corner re-prompt for valid points
 \******************************************************************************/
-void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void extractSub( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// self documenting variables
 	int index;
 	int ULr, ULc, LRr = -1, LRc = -1;
 
 	// temporary image to hold the subimage
-	ImageType temp;
+	ImageType<int> temp;
 
 	// prompt for image register
 	index = promptForReg( loaded, name );
@@ -1041,7 +1041,7 @@ void extractSub( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  makes sure the scale value does not make the image larger than MAX_IMG value
  because it may cause a stack overflow.
 \******************************************************************************/
-void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void enlargeImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds image info and maxS value
 	int index, N, M, Q, maxS;
@@ -1050,7 +1050,7 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	int s;
 
 	// temporary image used to store enlarged image
-	ImageType temp;
+	ImageType<int> temp;
 
 	// prompt user for register value
 	index = promptForReg( loaded, name );
@@ -1089,7 +1089,7 @@ void enlargeImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  smaller than MIN_IMG.  This is because some image viewers won't open images
  as small as 2x2 (xv for example)
 \******************************************************************************/
-void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void shrinkImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// image info and max s value
 	int index, N, M, Q, maxS;
@@ -1098,7 +1098,7 @@ void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	int s;
 
 	// holds the reduced image before transfering it to img[index]
-	ImageType temp;
+	ImageType<int> temp;
 
 	// prompt for the register to be used
 	index = promptForReg( loaded, name );
@@ -1136,7 +1136,7 @@ void shrinkImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  Prompt user for a direction to reflect an image then reflect the image and
  store it back in the original register image.
 \******************************************************************************/
-void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void reflectImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the index of the register
 	int index;
@@ -1145,7 +1145,7 @@ void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	char dir;
 
 	// used to reflect the image before saving to image
-	ImageType temp;
+	ImageType<int> temp;
 
 	// prompt for which image to use
 	index = promptForReg( loaded, name );
@@ -1182,7 +1182,7 @@ void reflectImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  pixels.  Also Won't let user choose t value that would move image totaly off
  the screen.
 \******************************************************************************/
-void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void translateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the image info and maximum t value
 	int index, N, M, Q, maxT;
@@ -1191,7 +1191,7 @@ void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 	int t;
 
 	// temporary image used as a buffer to the register image
-	ImageType temp;
+	ImageType<int> temp;
 
 	// get a valid image register
 	index = promptForReg( loaded, name );
@@ -1231,13 +1231,13 @@ void translateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  clockwise by theta degrees.  The input is only valid from 0 to 360 which
  should cover all possibilities.
 \******************************************************************************/
-void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void rotateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the register index and angle theta
 	int index, theta;
 	
 	// temporary image used as a kind of buffer for register image
-	ImageType temp;
+	ImageType<int> temp;
 
 	// prompt for a regiseter that is used
 	index = promptForReg( loaded, name );
@@ -1270,13 +1270,13 @@ void rotateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  operator+ will throw a string which will be handeled by main if sizes of the
  two images are different.
 \******************************************************************************/
-void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void sumImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of image 1 and 2
 	int index1, index2;
 
 	// 2 temporary images used to sum the images
-	ImageType temp1, temp2;
+	ImageType<int> temp1, temp2;
 
 	// prompt for first image
 	index1 = promptForReg( loaded, name );
@@ -1310,13 +1310,13 @@ void sumImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
  Prompt for 2 images and attempt to calculate the difference, there's no size
  checking here for the same reason sumImg doesn't do size checking
 \******************************************************************************/
-void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void subtractImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of image 1 and 2
 	int index1, index2;
 
 	// 2 temporary images used to subtract the images
-	ImageType temp1, temp2;
+	ImageType<int> temp1, temp2;
 
 	// prompt for first image
 	index1 = promptForReg( loaded, name );
@@ -1349,7 +1349,7 @@ void subtractImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
 /******************************************************************************\
  Prompt user for which image to negate and negate it, pretty simple function.
 \******************************************************************************/
-void negateImg( ImageType img[], bool loaded[], char name[][NAME_LEN] )
+void negateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of register to use
 	int index;
@@ -1628,7 +1628,7 @@ int promptForScaleValue( const char title[], const char prompt[], int maxVal )
  calculated by the image object it is passed.  The image properties are
  calculated and then used to determine the bounds of row and column.
 \******************************************************************************/
-void promptForLoc( const char title[], ImageType& img, int& row, int& col )
+void promptForLoc( const char title[], ImageType<int>& img, int& row, int& col )
 {
 	// holds various image info
 	int N, M, Q;
