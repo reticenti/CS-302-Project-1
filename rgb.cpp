@@ -137,6 +137,8 @@ rgb::rgb operator+=(const rgb& rhs){
 	r += rhs.r;
 	r += rhs.g;
 	r += rhs.b;
+
+	return *this;
 }
 
 //operator -=
@@ -145,6 +147,8 @@ rgb::rgb operator-=(const rgb& rhs){
 	r -= rhs.r;
 	r -= rhs.g;
 	r -= rhs.b;
+
+	return *this;
 }
 
 //operator /=
@@ -153,6 +157,8 @@ rgb::rgb operator/=(const rgb& rhs){
 	r /= rhs.r;
 	r /= rhs.g;
 	r /= rhs.b;
+
+	return *this;
 }
 
 //operator *=
@@ -161,6 +167,8 @@ rgb::rgb operator*=(const rgb& rhs){
 	r *= rhs.r;
 	r *= rhs.g;
 	r *= rhs.b;
+
+	return *this;
 }
 
 //operator <
