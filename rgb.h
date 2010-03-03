@@ -20,18 +20,47 @@ class rgb{
 		// destructor sets all values to 0
 		~rgb();
 
-// OPERATORS ///////////////////////////////////////////////////////////////////
+		// OPERATORS ///////////////////////////////////////////////////////////////////
 
+		rgb& operator+(const int& );
 
-		rgb& operator=();
+		rgb& operator+(const rgb& );
 
-		rgb& operator+();
+		rgb& operator-(const int& );
 
-		rgb& operator-();
+		rgb& operator-(const rgb& );
 
-		rgb& operator/();
+		rgb& operator/(const int& );
 
-		rgb& operator*();
+		rgb& operator/(const rgb& );
+
+		rgb& operator*(const int& );
+
+		rgb& operator*(const rgb& );
+
+		rgb operator+=(const rgb& );
+
+		rgb operator-=(const rgb& );
+
+		rgb operator/=(const rgb& );
+
+		rgb operator*=(const rgb& );
+
+		bool operator<(const rgb& )const;
+
+		bool operator<(const int )const;
+
+		bool operator>(const rgb& )const;
+
+		bool operator>(const int )const;
+
+		bool operator==(const rgb& )const;
+
+		bool operator==(const int )const;
+
+		bool operator!=(const rgb& )const;
+
+		bool operator!=(const int )const;
 
 	private:
 		int r; // red value

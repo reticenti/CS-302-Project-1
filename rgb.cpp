@@ -130,3 +130,151 @@ rgb::rgb& operator*(const rgb& rhs){
 
 	return *this
 }
+
+//operator +=
+rgb::rgb operator+=(const rgb& rhs){
+
+	r += rhs.r;
+	r += rhs.g;
+	r += rhs.b;
+}
+
+//operator -=
+rgb::rgb operator-=(const rgb& rhs){
+
+	r -= rhs.r;
+	r -= rhs.g;
+	r -= rhs.b;
+}
+
+//operator /=
+rgb::rgb operator/=(const rgb& rhs){
+
+	r /= rhs.r;
+	r /= rhs.g;
+	r /= rhs.b;
+}
+
+//operator *=
+rgb::rgb operator*=(const rgb& rhs){
+
+	r *= rhs.r;
+	r *= rhs.g;
+	r *= rhs.b;
+}
+
+//operator <
+rgb::bool operator<(const rgb& rhs)const{
+
+	if(rhs.r > r)
+		return false;
+
+	else if(rhs.g > g)
+		return false;
+
+	else if(rhs.b > b)
+		return false;
+
+	else return true;
+}
+
+rgb::bool operator<(const int rhs)const{
+
+	if(rhs > r)
+		return false;
+
+	else if(rhs > g)
+		return false;
+
+	else if(rhs > b)
+		return false;
+
+	else return true;
+}
+
+//operator >
+rgb::bool operator>(const rgb& rhs)const{
+
+	if(rhs.r < r)
+		return false;
+
+	else if(rhs.g < g)
+		return false;
+
+	else if(rhs.b < b)
+		return false;
+
+	else return true;
+}
+
+rgb::bool operator>(const int rhs)const{
+
+	if(rhs < r)
+		return false;
+
+	else if(rhs < g)
+		return false;
+
+	else if(rhs < b)
+		return false;
+
+	else return true;
+}
+
+//operator ==
+rgb::bool operator==(const rgb& rhs)const{
+
+	if(rhs.r != r)
+		return false;
+
+	else if(rhs.g != g)
+		return false;
+
+	else if(rhs.b != b)
+		return false;
+
+	else return true;
+}
+
+rgb::bool operator==(const int rhs)const{
+
+	if(rhs != r)
+		return false;
+
+	else if(rhs != g)
+		return false;
+
+	else if(rhs != b)
+		return false;
+
+	else return true;
+}
+
+//operator !=
+rgb::bool operator!=(const rgb& rhs)const{
+
+	if(rhs.r == r)
+		return false;
+
+	else if(rhs.g == g)
+		return false;
+
+	else if(rhs.b == b)
+		return false;
+
+	else return true;
+}
+
+rgb::bool operator!=(const int rhs)const{
+
+	if(rhs == r)
+		return false;
+
+	else if(rhs == g)
+		return false;
+
+	else if(rhs == b)
+		return false;
+
+	else return true;
+}
