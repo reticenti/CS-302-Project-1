@@ -38,6 +38,8 @@ class rgb{
 
 		rgb& operator*(const rgb& );
 
+		rgb& operator*(const double& );
+
 		rgb operator+=(const rgb& );
 
 		rgb operator-=(const rgb& );
