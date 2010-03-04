@@ -1,3 +1,5 @@
+#include "rgb.h"
+
 // default construtor, sets to 0
 rgb::rgb(){
 
@@ -27,7 +29,7 @@ rgb::rgb( const rgb& rhs){
 }
 
 // same as copy 
-rgb::rgb& operator= ( const rgb& rhs){
+rgb& rgb::operator= ( const rgb& rhs){
 
 	r = rhs.r;
 	g = rhs.g;
@@ -46,7 +48,7 @@ rgb::~rgb(){
 }
 
 // operator = 
-rgb::rgb& operator= ( const int& rhs){
+rgb& rgb::operator= ( const int& rhs){
 
 	r = rhs;
 	g = rhs;
@@ -56,123 +58,117 @@ rgb::rgb& operator= ( const int& rhs){
 }
 
 // Operator +
-rgb::rgb& operator+(const int& rhs){
+rgb& rgb::operator+(const int& rhs){
 
 	r += rhs;
 	g += rhs;
 	b += rhs;
 
-	return *this
+	return *this;
 }
 
-rgb::rgb& operator+(const rgb& rhs){
+rgb& rgb::operator+(const rgb& rhs){
 
 	r += rhs.r;
 	g += rhs.g;
 	b += rhs.b;
 
-	return *this
+	return *this;
 }
 
 // Operator -
-rgb::rgb& operator-(const int& rhs){
+rgb& rgb::operator-(const int& rhs){
 
 	r -= rhs;
 	g -= rhs;
 	b -= rhs;
 
-	return *this
+	return *this;
 }
 
-rgb::rgb& operator-(const rgb& rhs){
+rgb& rgb::operator-(const rgb& rhs){
 
 	r -= rhs.r;
 	g -= rhs.g;
 	b -= rhs.b;
 
-	return *this
+	return *this;
 }
 
 // Operator /
-rgb::rgb& operator/(const int& rhs){
+rgb& rgb::operator/(const int& rhs){
 
 	r /= rhs;
 	g /= rhs;
 	b /= rhs;
 
-	return *this
+	return *this;
 }
 
-rgb::rgb& operator/(const rgb& rhs){
+rgb& rgb::operator/(const rgb& rhs){
 
 	r /= rhs.r;
 	g /= rhs.g;
 	b /= rhs.b;
 
-	return *this
+	return *this;
 }
 
 // Operator *
-rgb::rgb& operator*(const int& rhs){
+rgb& rgb::operator*(const int& rhs){
 
 	r *= rhs;
 	g *= rhs;
 	b *= rhs;
 
-	return *this
+	return *this;
 }
 
-rgb::rgb& operator*(const rgb& rhs){
+rgb& rgb::operator*(const rgb& rhs){
 
 	r *= rhs.r;
 	g *= rhs.g;
 	b *= rhs.b;
 
-	return *this
+	return *this;
 }
 
 //operator +=
-rgb::rgb operator+=(const rgb& rhs){
+void rgb::operator+=(const rgb& rhs){
 
 	r += rhs.r;
 	r += rhs.g;
 	r += rhs.b;
 
-	return *this;
 }
 
 //operator -=
-rgb::rgb operator-=(const rgb& rhs){
+void rgb::operator-=(const rgb& rhs){
 
 	r -= rhs.r;
 	r -= rhs.g;
 	r -= rhs.b;
-
-	return *this;
 }
 
 //operator /=
-rgb::rgb operator/=(const rgb& rhs){
+void rgb::operator/=(const rgb& rhs){
 
 	r /= rhs.r;
 	r /= rhs.g;
 	r /= rhs.b;
-
-	return *this;
 }
 
 //operator *=
-rgb::rgb operator*=(const rgb& rhs){
+void rgb::operator*=(const rgb& rhs){
 
 	r *= rhs.r;
 	r *= rhs.g;
 	r *= rhs.b;
 
-	return *this;
 }
 
 //operator <
-rgb::bool operator<(const rgb& rhs)const{
+bool rgb::operator<(const rgb& rhs)const{
 
 	if(rhs.r > r)
 		return false;
@@ -186,22 +182,14 @@ rgb::bool operator<(const rgb& rhs)const{
 	else return true;
 }
 
-rgb::bool operator<(const int rhs)const{
+bool rgb::operator<(const int& rhs)const{
 
-	if(rhs > r)
-		return false;
-
-	else if(rhs > g)
-		return false;
-
-	else if(rhs > b)
-		return false;
-
-	else return true;
+	int avg = (r+g+b)/3;
+	return (avg < rhs);
 }
 
 //operator >
-rgb::bool operator>(const rgb& rhs)const{
+bool rgb::operator>(const rgb& rhs)const{
 
 	if(rhs.r < r)
 		return false;
@@ -215,22 +203,14 @@ rgb::bool operator>(const rgb& rhs)const{
 	else return true;
 }
 
-rgb::bool operator>(const int rhs)const{
+bool rgb::operator>(const int& rhs)const{
 
-	if(rhs < r)
-		return false;
-
-	else if(rhs < g)
-		return false;
-
-	else if(rhs < b)
-		return false;
-
-	else return true;
+	int avg = (r+g+b)/3;
+	return (avg > rhs);
 }
 
 //operator ==
-rgb::bool operator==(const rgb& rhs)const{
+bool rgb::operator==(const rgb& rhs)const{
 
 	if(rhs.r != r)
 		return false;
@@ -244,7 +224,7 @@ rgb::bool operator==(const rgb& rhs)const{
 	else return true;
 }
 
-rgb::bool operator==(const int rhs)const{
+bool rgb::operator==(const int& rhs)const{
 
 	if(rhs != r)
 		return false;
@@ -259,7 +239,7 @@ rgb::bool operator==(const int rhs)const{
 }
 
 //operator !=
-rgb::bool operator!=(const rgb& rhs)const{
+bool rgb::operator!=(const rgb& rhs)const{
 
 	if(rhs.r == r)
 		return false;
@@ -273,7 +253,7 @@ rgb::bool operator!=(const rgb& rhs)const{
 	else return true;
 }
 
-rgb::bool operator!=(const int rhs)const{
+bool rgb::operator!=(const int& rhs)const{
 
 	if(rhs == r)
 		return false;

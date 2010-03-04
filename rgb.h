@@ -1,5 +1,5 @@
 #ifndef rgb_H
-#define
+#define rgb_H
 class rgb{
 
 	public:
@@ -22,6 +22,8 @@ class rgb{
 
 		// OPERATORS ///////////////////////////////////////////////////////////////////
 
+		rgb& operator= (const int& );
+		
 		rgb& operator+(const int& );
 
 		rgb& operator+(const rgb& );
@@ -38,29 +40,29 @@ class rgb{
 
 		rgb& operator*(const rgb& );
 
-		rgb operator+=(const rgb& );
+		void operator+=(const rgb& );
 
-		rgb operator-=(const rgb& );
+		void operator-=(const rgb& );
 
-		rgb operator/=(const rgb& );
+		void operator/=(const rgb& );
 
-		rgb operator*=(const rgb& );
+		void operator*=(const rgb& );
 
 		bool operator<(const rgb& )const;
 
-		bool operator<(const int )const;
+		bool operator<(const int& )const;
 
 		bool operator>(const rgb& )const;
 
-		bool operator>(const int )const;
+		bool operator>(const int& )const;
 
 		bool operator==(const rgb& )const;
 
-		bool operator==(const int )const;
+		bool operator==(const int& )const;
 
 		bool operator!=(const rgb& )const;
 
-		bool operator!=(const int )const;
+		bool operator!=(const int& )const;
 
 	private:
 		int r; // red value
@@ -68,7 +70,5 @@ class rgb{
 		int b; // blue value
 };
 
-
-
-}
 #endif
+

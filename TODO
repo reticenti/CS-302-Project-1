@@ -1,9 +1,10 @@
-Okay, so all the minimum stuff is done
+Still need to
+	- make imageIO work with rgb colors
+	- make cubic_splines work with rgb
+	- add rgb to driver program
 Still want to 
-	- arrange windows better
-	- add message boxes to tell user when input is invalid
-	- COMMENT COMMENT COMMENT!!!!
 	- add hotkeys for main menu
 
 Maybe
 	- add Splash screen intro and outro
+
