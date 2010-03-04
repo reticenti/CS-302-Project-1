@@ -1,9 +1,18 @@
-Okay, so all the minimum stuff is done
-Still want to 
+Critcal:
+	-get everything to work with the rgb class
+	-update driver to be file type agnostic
+
+Medium Priority:
+	-use the file header to determine file type instead of extension
+	
+
+Medium-Low Priority:
 	- arrange windows better
 	- add message boxes to tell user when input is invalid
-	- COMMENT COMMENT COMMENT!!!!
 	- add hotkeys for main menu
 
-Maybe
+Low Priority:
 	- add Splash screen intro and outro
+	- make it so that it can be run from command line only
+		ie: main.out -resize 50% image.pgm
+	
