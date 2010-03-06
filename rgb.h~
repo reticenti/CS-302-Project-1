@@ -45,7 +45,13 @@ class rgb{
 		
 		rgb& operator*(const rgb& );
 
+<<<<<<< HEAD
+		rgb& operator*(const double& );
+
+		rgb operator+=(const rgb& );
+=======
 		void operator+=(const rgb& );
+>>>>>>> 7d4a46dfd1c0c8007ef9f7385e95cc78030ccc33
 
 		void operator-=(const rgb& );
 

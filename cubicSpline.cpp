@@ -7,12 +7,12 @@
 cubicSpline::cubicSpline()
 {
 	// initialize all values to zero or NULL
-	coef_0 = NULL;
-	coef_1 = NULL;
-	a = NULL;
-	y = NULL;
+	for ( int i = 0; i < 3; i++ )
+	{	
+		a[i] = NULL;
+		y[i] = NULL;
+	}
 	len = 0;
-	len2 = 0;
 }
 
 /******************************************************************************\
@@ -22,31 +22,48 @@ cubicSpline::cubicSpline()
 cubicSpline::cubicSpline( int points[], int num )
 {
 	// initialize all the values to zero or NULL
-	coef_0 = NULL;
-	coef_1 = NULL;
-	a = NULL;
-	y = NULL;
+	for ( int i = 0; i < 3; i++ )
+	{	
+		a[i] = NULL;
+		y[i] = NULL;
+	}
 	len = 0;
-	len2 = 0;
 	
-	// creates both a cubic and linear spline based on points
+	// create a cubic or linear spline based on points
 	create( points, num );
-	createCubic( points, num );
 }
+
+/******************************************************************************\
+ paramaterized constructor, creates both a cubic spline and a linear spline
+ based on the parameters
+\******************************************************************************/
+cubicSpline::cubicSpline( rgb points[], int num )
+{
+	// initialize all the values to zero or NULL
+	for ( int i = 0; i < 3; i++ )
+	{	
+		a[i] = NULL;
+		y[i] = NULL;
+	}
+	len = 0;
+	
+	// create a cubic
+	create( points, num );
+}
+
 
 /******************************************************************************\
  destructor makes sure all the memory is de-allocated before object is lost
 \******************************************************************************/
 cubicSpline::~cubicSpline()
 {
-	if ( coef_0 != NULL )
-		delete [] coef_0;
-	if ( coef_1 != NULL )
-		delete [] coef_1;
-	if ( a != NULL )
-		delete [] a;
-	if ( y != NULL )
-		delete [] y;
+	for ( int i = 0; i < 3; i++ )
+	{
+		if ( a[i] != NULL )
+			delete [] a[i];
+		if ( y[i] != NULL )
+			delete [] y[i];
+	}
 }
 
 /*****************************************************************************\
@@ -56,32 +73,32 @@ cubicSpline::~cubicSpline()
 
  NOTE: This creates a natural cubic spline
 \*****************************************************************************/
-void cubicSpline::createCubic( int points[], int num )
+void cubicSpline::create( int points[], int num )
 {
 	// defines the step size
 	double h = 100.0 / (num-1);
 
 	// allocate memory for the variables if required
-	if ( len2 != num-2 )
+	if ( len != num-2 )
 	{
-		len2 = num-2;
+		len = num-2;
 		if ( a != NULL )
-			delete [] a;
+			delete [] a[0];
 		if ( y != NULL )
-			delete [] y;
+			delete [] y[0];
 
-		a = new double[num];
-		y = new double[num];
+		a[0] = new double[num];
+		y[0] = new double[num];
 	}
 		
 	// the vectors that will be used to calculate the tri-diagonal matrix
-	double *diag_b = new double[len2];
-	double *diag_d = new double[len2];
-	double *diag_a = new double[len2];
-	double *B = new double[len2];
+	double *diag_b = new double[len];
+	double *diag_d = new double[len];
+	double *diag_a = new double[len];
+	double *B = new double[len];
 
 	// set up the vectors based on the Lagrange spline method
-	for ( int i = 0; i < len2; i++ )
+	for ( int i = 0; i < len; i++ )
 	{
 		diag_b[i] = h;
 		diag_d[i] = 4*h;
@@ -89,18 +106,18 @@ void cubicSpline::createCubic( int points[], int num )
 		B[i] = 6/h*((points[i+2]-points[i+1])-(points[i+1]-points[i]));
 
 		// y simply holds a copy of the points
-		y[i] = points[i];
+		y[0][i] = points[i];
 	}
 
 	// get the last 2 y points since the previous loop went 2 to short
-	y[len2] = points[len2];
-	y[len2+1] = points[len2+1];
+	y[0][len] = points[len];
+	y[0][len+1] = points[len+1];
 
 	// set the begining and end of a to zero like it should be
-	a[0] = a[len2+1] = 0;
+	a[0][0] = a[0][len+1] = 0;
 	
 	// passing a+1 to solve for a[1]->a[len] since a[0] is already defines as 0
-	solveTriDiag( diag_b, diag_d, diag_a, B, a+1, len2 );
+	solveTriDiag( diag_b, diag_d, diag_a, B, a[0]+1, len );
 
 	// now that a has been solved these are no longer required
 	delete [] diag_a;
@@ -110,62 +127,89 @@ void cubicSpline::createCubic( int points[], int num )
 
 }
 
-/******************************************************************************\
- this creates a LINEAR spline function for the given points from 0-100
-\******************************************************************************/
-void cubicSpline::create( int points[], int num )
+/*****************************************************************************\
+ creates a CUBIC spline function for the given points, note that an equal
+ distance between nodes is assumed, since this function is being used only
+ for images this should be fine since pixels are evenly spaced
+
+ NOTE: This creates a natural cubic spline
+\*****************************************************************************/
+void cubicSpline::create( rgb points[], int num )
 {
-	// define the step size
-	double stepsize = 100.0 / (num-1);
-	double x1, y1, x2, y2;
+	// defines the step size
+	double h = 100.0 / (num-1);
 
-	// allocate memory if needed
-	if ( len != num-1 )
+	// allocate memory for the variables if required
+	if ( len != num-2 )
 	{
-		if ( coef_0 != NULL )
-			delete [] coef_0;
-		if ( coef_1 != NULL )
-			delete [] coef_1;
-
-		len = num-1;
-		coef_0 = new double[len];
-		coef_1 = new double[len];
+		len = num-2;
+		for ( int i = 0; i < 3; i++ )
+		{
+			if ( a != NULL )
+				delete [] a[i];
+			if ( y != NULL )
+				delete [] y[i];
+			a[i] = new double[num];
+			y[i] = new double[num];
+		}
 	}
+		
+	// the vectors that will be used to calculate the tri-diagonal matrix
+	double* diag_b[3] = {new double[len], new double[len], new double[len]};
+	double* diag_d[3] = {new double[len], new double[len], new double[len]};
+	double* diag_a[3] = {new double[len], new double[len], new double[len]};
+	double* B[3] = {new double[len], new double[len], new double[len]};
 
-	// set up the splines based on linear spline definition
-	for ( int i = 0; i < len; i++ )
+	// set up the vectors based on the Lagrange spline method
+	for ( int j = 0; j < 3; j++ )
+		for ( int i = 0; i < len; i++ )
+		{
+			diag_b[j][i] = h;
+			diag_d[j][i] = 4*h;
+			diag_a[j][i] = h;
+			if ( j == 0 )
+			{
+				B[j][i] = 6/h*((points[i+2].r-points[i+1].r)
+				          -(points[i+1].r-points[i].r));
+				y[j][i] = points[i].r;
+			}
+			else if ( j == 1 )
+			{
+				B[j][i] = 6/h*((points[i+2].g-points[i+1].g)
+				          -(points[i+1].g-points[i].g));
+				y[j][i] = points[i].g;
+			}
+			else if ( j == 2 )
+			{
+				B[j][i] = 6/h*((points[i+2].b-points[i+1].b)
+				          -(points[i+1].b-points[i].b));
+				y[j][i] = points[i].b;
+			}
+		}
+
+	// get the last 2 y points since the previous loop went 2 to short
+	y[0][len] = points[len].r;
+	y[1][len] = points[len].g;
+	y[2][len] = points[len].b;
+
+	y[0][len+1] = points[len+1].r;
+	y[1][len+1] = points[len+1].g;
+	y[2][len+1] = points[len+1].b;
+
+	// set the begining and end of a to zero like it should be
+	a[0][0] = a[0][len+1] = a[1][0] = a[1][len+1] = a[2][0] = a[2][len+1] = 0;
+	
+	// passing a+1 to solve for a[1]->a[len] since a[0] is already defines as 0
+	for ( int i = 0; i < 3; i++ )
 	{
-		x1 = stepsize * i;
-		y1 = points[i];
-		x2 = stepsize * (i+1);
-		y2 = points[i+1];
-
-		// with x1, x2, y1 and y2 we can define the coefficients
-		coef_0[i] = -x2*y1/(x1-x2) - x1*y2/(x2-x1);
-		coef_1[i] = y1/(x1-x2) + y2/(x2-x1);
+		solveTriDiag( diag_b[i], diag_d[i], diag_a[i], B[i], a[i]+1, len );
+	
+		// now that a has been solved these are no longer required
+		delete [] diag_a[i];
+		delete [] diag_b[i];
+		delete [] diag_d[i];
+		delete [] B[i];
 	}
-}
-
-/******************************************************************************\
- depending on the value of x return a value using the linear spline coef.
-\******************************************************************************/
-double cubicSpline::getVal( double x )
-{
-	if ( len == 0 ) return 0; // protects from divide by 0
-
-	// define the step size again so we can use it in our calculations
-	double stepsize = 100.0 / len;
-
-	// the index is simply x / stepsize rounded down
-	int index = (int)(x / stepsize);
-
-	// if x is greater than 100 or less than 0 just use the closest line
-	if ( index >= len )
-		index = len-1;
-	if ( index < 0 )
-		index = 0;
-
-	return coef_1[index] * x + coef_0[index];
 }
 
 /******************************************************************************\
@@ -173,30 +217,83 @@ double cubicSpline::getVal( double x )
  is defined from 0 to 100, so x should be around there, if not x will be the
  nearest spline value
 \******************************************************************************/
-double cubicSpline::getCubicVal( double x )
+void cubicSpline::getVal( double x, int& val )
 {
-	if ( len2 == 0 ) return 0;  // protects against divide by zero
+	if ( len == 0 )
+	{
+		val = 0;
+		return;
+	}
 
 	// define the step size to be used in the calculation
-	double h = 100.0 / (len2+1);
+	double h = 100.0 / (len+1);
 
 	// define the index of a to be used
 	int i = (int)(x/h);
 
 	// if x is greater than 100 or less than 0 then just use the closest curve
-	if ( i >= len2+1 )
-		i = len2;
+	if ( i >= len+1 )
+		i = len;
 	if ( i < 0 )
 		i = 0;
 	
 	// using the definition of Lagrange cubic interpolation
-	if ( len2 != 0 )
-		return (a[i]/(6*h)*((i+1)*h-x)*((i+1)*h-x)*((i+1)*h-x) +
-				a[i+1]/(6*h)*(x-(i*h))*(x-(i*h))*(x-(i*h)) +
-				(y[i]/h - a[i]*h/6)*((i+1)*h-x) +
-				(y[i+1]/h-a[i+1]*h/6)*(x-i*h));
+	if ( len != 0 )
+		val = (a[0][i]/(6*h)*((i+1)*h-x)*((i+1)*h-x)*((i+1)*h-x)
+			  + a[0][i+1]/(6*h)*(x-(i*h))*(x-(i*h))*(x-(i*h))
+		      + (y[0][i]/h - a[0][i]*h/6)*((i+1)*h-x)
+		      + (y[0][i+1]/h-a[0][i+1]*h/6)*(x-i*h));
 	else
-		return 0;
+		val = 0;
+}
+
+/******************************************************************************\
+ Return the value of the cubic spline function at the given x value, the spline
+ is defined from 0 to 100, so x should be around there, if not x will be the
+ nearest spline value, this is the rgb version
+\******************************************************************************/
+void cubicSpline::getVal( double x, rgb& val )
+{
+	if ( len == 0 )
+	{
+		val.r = 0;
+		val.g = 0;
+		val.b = 0;
+		return;
+	}
+
+	// define the step size to be used in the calculation
+	double h = 100.0 / (len+1);
+
+	// define the index of a to be used
+	int i = (int)(x/h);
+
+	// if x is greater than 100 or less than 0 then just use the closest curve
+	if ( i >= len+1 )
+		i = len;
+	if ( i < 0 )
+		i = 0;
+	
+	// using the definition of Lagrange cubic interpolation
+	if ( len != 0 )
+	{
+		val.r = (a[0][i]/(6*h)*((i+1)*h-x)*((i+1)*h-x)*((i+1)*h-x)
+				+ a[0][i+1]/(6*h)*(x-(i*h))*(x-(i*h))*(x-(i*h))
+				+ (y[0][i]/h - a[0][i]*h/6)*((i+1)*h-x)
+				+ (y[0][i+1]/h-a[0][i+1]*h/6)*(x-i*h));
+
+		val.g = (a[1][i]/(6*h)*((i+1)*h-x)*((i+1)*h-x)*((i+1)*h-x)
+				+ a[1][i+1]/(6*h)*(x-(i*h))*(x-(i*h))*(x-(i*h))
+				+ (y[1][i]/h - a[1][i]*h/6)*((i+1)*h-x)
+				+ (y[1][i+1]/h-a[1][i+1]*h/6)*(x-i*h));
+
+		val.b = (a[2][i]/(6*h)*((i+1)*h-x)*((i+1)*h-x)*((i+1)*h-x)
+			    + a[2][i+1]/(6*h)*(x-(i*h))*(x-(i*h))*(x-(i*h))
+		        + (y[2][i]/h - a[2][i]*h/6)*((i+1)*h-x)
+		        + (y[2][i+1]/h-a[2][i+1]*h/6)*(x-i*h));
+	}
+	else
+		val.r = val.g = val.b = 0;
 }
 
 /******************************************************************************\

@@ -1,18 +1,10 @@
-Critcal:
-	-get everything to work with the rgb class
-	-update driver to be file type agnostic
-
-Medium Priority:
-	-use the file header to determine file type instead of extension
-	
-
-Medium-Low Priority:
-	- arrange windows better
-	- add message boxes to tell user when input is invalid
+Still need to
+	- make imageIO work with rgb colors
+	- make cubic_splines work with rgb
+	- add rgb to driver program
+Still want to 
 	- add hotkeys for main menu
-
 Low Priority:
 	- add Splash screen intro and outro
 	- make it so that it can be run from command line only
 		ie: main.out -resize 50% image.pgm
-	
