@@ -509,7 +509,10 @@ void ImageType<pType>::negateImage()
 	// calculate the negative of each pixel
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
-			pixelValue[i][j] = pixelValue[i][j] - Q * -1;
+		{
+			pixelValue[i][j] = pixelValue[i][j] - Q;
+			pixelValue[i][j] = pixelValue[i][j] * (-1);
+		}
 }
 
 /*****************************Josiah's functions*******************************/

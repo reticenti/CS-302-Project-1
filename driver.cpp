@@ -287,7 +287,7 @@ int main( int argc, char **argv )
 
 	// users menu choice
 	int choice;
-	bool color = true;
+	bool color;
 
 	// holds the name of the image stored in the register
 	char imgName[REGS][NAME_LEN];
@@ -318,24 +318,49 @@ int main( int argc, char **argv )
 		"  Clear a register",
 		"  Exit" };
 
+	char colorChoice[2][NAME_LEN] = {
+		"Grayscale Images", 
+		"Color Images" };
+
 	// start
 	startCurses();
 
 	// hide that pesky cursor
 	hideCursor();
 
+	// set the colors
+	setColor( FG_COLOR, BG_COLOR );
+
 	// initialize the bool array
 	for ( int i = 0; i < REGS; i++ )
 		imgLoaded[i] = false;
+
+	// clear the screen
+	for ( int i = 0; i < screenWidth(); i++ )
+		for ( int j = 0; j < screenHeight(); j++ )
+			mvaddch(j, i, ' ');
+	refresh();
+
+	// ask if grayscale or color
+	choice = showMenu( menu, "Choose Color Mode", 7, MENU_WIDTH,
+	    screenHeight()/2-4, (screenWidth()-MENU_WIDTH)/2, colorChoice, 2 );
+
+	if ( choice == 0 )
+		color = false;
+	else
+		color = true;
+
+	// clear the screen
+	for ( int i = 0; i < screenWidth(); i++ )
+		for ( int j = 0; j < screenHeight(); j++ )
+			mvaddch(j, i, ' ');
+	refresh();
 
 	// read argument parameters
 	if ( color )
 		fillRegs( grayImage, imgLoaded, imgName, argc, argv );
 	else
 		fillRegs( colorImage, imgLoaded, imgName, argc, argv );
-
-	// set the colors
-	setColor( FG_COLOR, BG_COLOR );
 
 	// clear the screen
 	for ( int i = 0; i < screenWidth(); i++ )
@@ -764,7 +789,8 @@ void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], int
 void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the file names, menuChoices is a copy with "Back" added at the end
-	char **fileNames, **menuChoices;
+	char **fileNames = NULL;
+	char **menuChoices;
 
 	// the window that will hold the file menu
 	WINDOW *fileMenu;
@@ -787,7 +813,8 @@ void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 		menuChoices[a] = fileNames[a];
 	
 	// delete the list of string pointers since menuChoices has them now
-	delete [] fileNames;
+	if ( fileNames != NULL )
+		delete [] fileNames;
 
 	// create the final choice
 	menuChoices[files] = new char[5];
@@ -845,7 +872,8 @@ void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 void loadImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the file names, menuChoices is a copy with "Back" added at the end
-	char **fileNames, **menuChoices;
+	char **fileNames = NULL;
+	char **menuChoices;
 
 	// the window that will hold the file menu
 	WINDOW *fileMenu;
@@ -868,7 +896,8 @@ void loadImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 		menuChoices[a] = fileNames[a];
 	
 	// delete the list of string pointers since menuChoices has them now
-	delete [] fileNames;
+	if ( fileNames != NULL )
+		delete [] fileNames;
 
 	// create the final choice
 	menuChoices[files] = new char[5];
