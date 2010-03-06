@@ -362,6 +362,9 @@ int main( int argc, char **argv )
 	else
 		fillRegs( colorImage, imgLoaded, imgName, argc, argv );
 
+	// set the colors again just in case
+	setColor( FG_COLOR, BG_COLOR );
+
 	// clear the screen
 	for ( int i = 0; i < screenWidth(); i++ )
 		for ( int j = 0; j < screenHeight(); j++ )
@@ -765,17 +768,17 @@ void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], int
 		// just white on black
 		setColor( COLOR_WHITE, COLOR_BLACK );
 
+		// clear screen with black
+		for ( int x = 0; x < screenWidth(); x++ )
+			for ( int y = 0; y < screenHeight(); y++ )
+				mvaddch( y, x, ' ' );
+		refresh();
+
 		// display the message
 		mvaddstr( 0, 0, msg );
 
 		// wait for input
 		getch();
-
-		// clear screen
-		for ( int x = 0; x < screenWidth(); x++ )
-			for ( int y = 0; y < screenHeight(); y++ )
-				mvaddch( y, x, ' ' );
-		refresh();
 	}
 	
 	// de-allocate memory for message
