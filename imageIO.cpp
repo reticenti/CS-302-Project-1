@@ -223,6 +223,9 @@ void writeImage(const char fname[], ImageType<int>& image)
 		for( j=0; j<M; j++ )
 		{
 			val = image.getPixelVal(i, j);
+			// clip values here
+			if ( val > Q ) val = Q;
+			if ( val < 0 ) val = 0;
 			charImage[i*M+j] = (unsigned char)val;
 		}
 
@@ -271,6 +274,12 @@ void writeImage(const char fname[], ImageType<rgb>& image)
 		for(j=0; j<3*M; j+=3)
 		{
 			val = image.getPixelVal(i, j/3);
+			if ( val.r > Q ) val.r = Q;
+			if ( val.g > Q ) val.g = Q;
+			if ( val.b > Q ) val.b = Q;
+			if ( val.r < 0 ) val.r = 0;
+			if ( val.g < 0 ) val.g = 0;
+			if ( val.b < 0 ) val.b = 0;
 			charImage[i*3*M+j]=(unsigned char)val.r;
 			charImage[i*3*M+j+1]=(unsigned char)val.g;
 			charImage[i*3*M+j+2]=(unsigned char)val.b;
