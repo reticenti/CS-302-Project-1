@@ -5,6 +5,10 @@
 // added them to this header file to make linking easier to understand
 //    -Josh
 
+	#include <iostream>
+	#include <fstream>
+	#include <stdlib.h>
+	#include <stdio.h>
 	#include "image.h"
 
 	// name : readImageHeader

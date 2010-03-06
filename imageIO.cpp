@@ -1,7 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <stdlib.h>
-#include <stdio.h>
 #include "imageIO.h"
 
 using namespace std;
