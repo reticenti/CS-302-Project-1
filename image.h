@@ -390,8 +390,8 @@ void ImageType<pType>::enlargeImage( double S, const ImageType<pType>& old )
 			spline.getVal(splineX, colorVal);
 			
 			// clip the color if it goes out of bounds
-			if ( colorVal < 0 ) colorVal = 0;
-			if ( colorVal > Q ) colorVal = Q;
+			//if ( colorVal < 0 ) colorVal = 0;
+			//if ( colorVal > Q ) colorVal = Q;
 
 			// set the pixel value for half1
 			half1.pixelValue[row][col] = colorVal;
@@ -442,8 +442,8 @@ void ImageType<pType>::enlargeImage( double S, const ImageType<pType>& old )
 			spline.getVal(splineX, colorVal);
 			
 			// clip the color if it goes out of bounds
-			if ( colorVal < 0 ) colorVal = 0;
-			if ( colorVal > Q ) colorVal = Q;
+			//if ( colorVal < 0 ) colorVal = 0;
+			//if ( colorVal > Q ) colorVal = Q;
 
 			// set the value of half2
 			half2.pixelValue[row][col] = colorVal;

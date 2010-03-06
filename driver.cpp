@@ -1041,7 +1041,7 @@ void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 		y+=2;
 		mvwprintw( infoWin, y, x, "%-20s%c %i", "Color Depth",':',Q );
 		y+=2;
-		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Gray Value",':',
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Mean Gray Value",':',
 		    img[index].meanColor() );
 		y+=2;
 		mvwprintw( infoWin, y, x, "Press Enter to continue..." );
@@ -1097,13 +1097,13 @@ void getImageInfo( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 		y+=2;
 		mvwprintw( infoWin, y, x, "%-20s%c %i", "Color Depth",':',Q );
 		y+=2;
-		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Red Value",':',
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Mean Red Value",':',
 			img[index].meanColor().r );
 		y+=2;
-		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Green Value",':',
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Mean Green Value",':',
 			img[index].meanColor().g );
 		y+=2;
-		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Blue Value",':',
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Mean Blue Value",':',
 		    img[index].meanColor().b );
 		y+=2;
 		mvwprintw( infoWin, y, x, "Press Enter to continue..." );

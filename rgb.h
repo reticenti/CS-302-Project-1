@@ -40,7 +40,9 @@ class rgb{
 		rgb& operator/(const rgb& );
 
 		rgb& operator*(const int& );
-
+		
+		rgb& operator*(const double& );
+		
 		rgb& operator*(const rgb& );
 
 		void operator+=(const rgb& );
