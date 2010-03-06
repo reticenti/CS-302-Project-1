@@ -210,20 +210,21 @@ bool rgb::operator<(const rgb& rhs)const{
 
 bool rgb::operator<(const int& rhs)const{
 
-	int avg = (r+g+b)/3;
-	return (avg < rhs);
+	return ( !( r >= rhs ||
+	            g >= rhs ||
+	            b >= rhs ) );
 }
 
 //operator >
 bool rgb::operator>(const rgb& rhs)const{
 
-	if(rhs.r < r)
+	if(rhs.r <= r)
 		return false;
 
-	else if(rhs.g < g)
+	else if(rhs.g <= g)
 		return false;
 
-	else if(rhs.b < b)
+	else if(rhs.b <= b)
 		return false;
 
 	else return true;
@@ -231,8 +232,9 @@ bool rgb::operator>(const rgb& rhs)const{
 
 bool rgb::operator>(const int& rhs)const{
 
-	int avg = (r+g+b)/3;
-	return (avg > rhs);
+	return ( !( r <= rhs ||
+	            g <= rhs ||
+	            b <= rhs ) );
 }
 
 //operator ==
