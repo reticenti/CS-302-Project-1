@@ -64,7 +64,6 @@ class rgb{
 
 		bool operator!=(const int& )const;
 
-	private:
 		int r; // red value
 		int g; // green value
 		int b; // blue value

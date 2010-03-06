@@ -26,6 +26,8 @@
 #ifndef CUBIC_SPL
 #define CUBIC_SPL
 
+#include "rgb.h"
+
 class cubicSpline
 {
 public:	
@@ -34,33 +36,24 @@ public:
 
 	// initialize the cubic spline using createCubic with the parameters
 	cubicSpline( int[], int );
+	cubicSpline( rgb[], int );
 
 	// destructor de-allocates memory for all dynamically allocated memory
 	~cubicSpline();
 
-	// builds the linear spline from a list of values
-	void create( int[], int );
-
 	// build the cubic spline from a list of values
-	void createCubic(int[], int);
+	void create(int[], int);
+	void create(rgb[], int);
 	
 	// returns the value of the linear spline
-	double getVal( double );
-
-	// returns the value of cubic spline
-	double getCubicVal( double );
+	void getVal( double, int& );
+	void getVal( double, rgb& );
 private:
-
-	// holds the coeffiencts for the linear splines
-	double *coef_0;
-	double *coef_1;
-
 	// holds the values used to calculate the cubic splines
-	double *a;
-	double *y;
+	double* a[3];
+	double* y[3];
 
-	int len; 	// number of sub intervals for linear function
-	int len2;	// number of sub intervals for cubic function
+	int len;	// number of sub intervals for cubic function
 };
 
 /* solves the matrix equation Ax=b for a tri-diagonal matrix, implementation

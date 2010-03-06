@@ -1072,7 +1072,7 @@ void enlargeImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 		if ( s != -1 )
 		{
 			// enlarge image by factor s
-			temp.enlargeImage( s, img[index], CUBIC_INTER );
+			temp.enlargeImage( s, img[index] );
 
 			// set register image to the values of temp
 			img[index] = temp;

@@ -63,8 +63,8 @@ public:
 	// bool is true, otherwise uses bi-linear interpolation which is more light
 	// weight.  The version with an int value for s simply casts s to a double
 	// and calls the version that takes a double
-	void enlargeImage( double, const ImageType<pType>&, bool=true );
-	void enlargeImage( int, const ImageType<pType>&, bool=true );
+	void enlargeImage( double, const ImageType<pType>& );
+	void enlargeImage( int, const ImageType<pType>& );
 
 	// reflect the image either horiz. or vert. depending on the bool value
 	void reflectImage( bool, const ImageType<pType>& );
@@ -282,11 +282,10 @@ pType ImageType<pType>::meanColor() const
  This simply calls the double version of enlargeImage
 \******************************************************************************/
 template <class pType>
-void ImageType<pType>::enlargeImage( int S, const ImageType<pType>& old,
-    bool cubic )
+void ImageType<pType>::enlargeImage( int S, const ImageType<pType>& old )
 {
 		// call double version of enlarge
-		enlargeImage( (double)S, old, cubic );
+		enlargeImage( (double)S, old );
 }
 
 /******************************************************************************\
@@ -306,15 +305,13 @@ void ImageType<pType>::enlargeImage( int S, const ImageType<pType>& old,
  if cubic = false then use linear interpolation
 \******************************************************************************/
 template <class pType>
-void ImageType<pType>::enlargeImage( double S, const ImageType<pType>& old,
-    bool cubic )
+void ImageType<pType>::enlargeImage( double S, const ImageType<pType>& old )
 {
 	// check parameters
-	if ( old.M < 4 || old.N < 4 && old.M != 0 && old.N != 0 )
+	if ( old.M < 4 || old.N < 4 )
 		// force linear if less than 4 height or width
-		cubic = false;
-	else if ( old.M == 0 || old.N == 0 )
-		throw (string)"Image file is empty!";
+		throw (string)"Image too small to enlarge, must be at least 3x3";
+
 
 	// slightly modify S to make it a better value for spline
 	double Shoriz = (double)((int)(old.M*S))/old.M;
@@ -349,22 +346,15 @@ void ImageType<pType>::enlargeImage( double S, const ImageType<pType>& old,
 			vertVals[row] = old.pixelValue[row][col];
 
 		// actually create the spline (assumed the pixels are equally spaced)
-		if ( cubic )
-			spline.createCubic( vertVals, old.N );
-		else
-			spline.create( vertVals, old.N );
+		spline.create( vertVals, old.N );
 
 		// using the spline set the values of vert
 		for ( int row = 0; row < N; row++ )
 		{
 			// value to pull from spline for current row
 			splineX = (row-Svert/2.0)/(N-Svert-1.0) * 100.0;
-			colorVal;
 			
-			if ( cubic )
-				colorVal = spline.getCubicVal(splineX);
-			else
-				colorVal = spline.getVal(splineX);
+			spline.getVal(splineX, colorVal);
 			
 			// NOTE: don't clip values yet, it causes problems...
 
@@ -380,22 +370,15 @@ void ImageType<pType>::enlargeImage( double S, const ImageType<pType>& old,
 			horizVals[col] = vert.pixelValue[row][col];
 
 		// actually create the spline (cubic if parameter is true)
-		if ( cubic )
-			spline.createCubic( horizVals, old.M );
-		else
-			spline.create( horizVals, old.M );
+		spline.create( horizVals, old.M );
 
 		// using the spline set the values
 		for ( int col = 0 ; col < M; col++ )
 		{
 			splineX = (col-Shoriz/2.0)/(M-Shoriz-1.0) * 100.0;
-			colorVal;
 			
 			// obtain new color from spline value
-			if ( cubic )
-				colorVal = spline.getCubicVal(splineX);
-			else
-				colorVal = spline.getVal(splineX);
+			spline.getVal(splineX, colorVal);
 			
 			// clip the color if it goes out of bounds
 			if ( colorVal < 0 ) colorVal = 0;
@@ -414,22 +397,16 @@ void ImageType<pType>::enlargeImage( double S, const ImageType<pType>& old,
 			horizVals[col] = old.pixelValue[row][col];
 
 		// actually create the spline (assumed the pixels are equally spaced)
-		if ( cubic )
-			spline.createCubic( horizVals, old.M );
-		else
-			spline.create( horizVals, old.M );
+		spline.create( horizVals, old.M );
 
 		// using the spline set the values of temp
 		for ( int col = 0; col < M; col++ )
 		{
 			// value to pull from spline for current col
 			splineX = (col-Shoriz/2.0)/(M-Shoriz-1.0) * 100.0;
-			colorVal;
 			
-			if ( cubic )
-				colorVal = spline.getCubicVal(splineX);
-			else
-				colorVal = spline.getVal(splineX);
+			// obtain new color from spline value
+			spline.getVal(splineX, colorVal);
 			
 			// NOTE: don't clip values yet, it causes problems...
 
@@ -445,22 +422,15 @@ void ImageType<pType>::enlargeImage( double S, const ImageType<pType>& old,
 			vertVals[row] = horiz.pixelValue[row][col];
 
 		// actually create the spline (cubic if parameter is true)
-		if ( cubic )
-			spline.createCubic( vertVals, old.N );
-		else
-			spline.create( vertVals, old.N );
+		spline.create( vertVals, old.N );
 
 		// using the spline set the values
 		for ( int row = 0 ; row < N; row++ )
 		{
 			splineX = (row-Svert/2.0)/(N-Svert-1.0) * 100.0;
-			colorVal;
 			
 			// obtain new color from spline value
-			if ( cubic )
-				colorVal = spline.getCubicVal(splineX);
-			else
-				colorVal = spline.getVal(splineX);
+			spline.getVal(splineX, colorVal);
 			
 			// clip the color if it goes out of bounds
 			if ( colorVal < 0 ) colorVal = 0;
