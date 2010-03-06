@@ -114,14 +114,6 @@ rgb& rgb::operator/(const rgb& rhs){
 	return *this;
 }
 
-rgb& rgb::operator*(const double& rhs){
-
-	r *= rhs;
-	g *= rhs;
-	b *= rhs;
-
-	return *this;
-}
 
 // Operator *
 rgb& rgb::operator*(const int& rhs){
@@ -141,13 +133,13 @@ rgb& rgb::operator*(const rgb& rhs){
 
 	return *this;
 }
-rgb::rgb& operator*(const double& rhs){
+rgb& rgb::operator*(const double& rhs){
 
 	r *= rhs;
 	g *= rhs;
 	b *= rhs;
 
-	return *this
+	return *this;
 }
 
 //operator +=
