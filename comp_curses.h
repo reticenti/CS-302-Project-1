@@ -44,6 +44,12 @@
 	// assumptions : assumes that curses has been initialized
 	void endCurses();
 
+	// name        : clearScreen
+	// input       : none
+	// output      : prints spaces across the screen
+	// assumptions : assumes that curses has been initialized
+	void clearScreen();
+
 	// name        : setColor 
 	// input       : (optional WINDOW), foreground color and background colors
 	// output      : changes the colors to be used at the given window

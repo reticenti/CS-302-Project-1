@@ -1,13 +1,16 @@
 /******************************************************************************\
- Authors: Josiah Humphrey and Joshua Gleason
+ Authors              : Josiah Humphrey and Joshua Gleason
 
- Date Due For Review  : 02/16/2010
+ Date Started         : 2/02/2010
+ Last Modified        : 3/08/2010
+ Date Due For Review  : 03/09/2010
+ Version              : 1.1
 
- 	This program is designed to be a driver for the ImageType<int> objects.  The
+ 	This program is designed to be a driver for the ImageType objects.  The
  user interface attempts to allow the objects to be throughly tested in a
  robust, simple environment.
 
- 	The ImageType<int> object (defined in image.h) is for manipulating grayscale
+ 	The ImageType object (defined in image.h) is for manipulating grayscale
  images, it allows the user to easly enlarge, rotate, negate, etc... an image.
  The functions in imageIO.h are used to load and save images of type .pgm.
 
@@ -21,6 +24,16 @@
  	comp_curses.h was written to make initializing curses easier, it also has
  some functions for obtaining user input as integers, doubles, and strings.
  Many ncurses library functions however are used directly in this program.
+
+ *Change Log*******************************************************************
+
+ Version 1.1
+   -added color image support (.ppm)
+          This was accomplished by templating the ImageType class to be used
+       with either an int or rgb type pixel.  The rgb type pixel has all the
+       arithmatic operators overloaded to make this possible.  Anything that
+       was done to a single int is now done to all 3 values (red, green, blue).
+
 \******************************************************************************/
 
 #include <string>
@@ -60,8 +73,8 @@ using namespace std;
 	const int MAX_IMG = 10000;		// the max size you can enlarge to
 	const int MIN_IMG = 4;			// the min size you can reduce to
 
-	const short BG_COLOR = COLOR_BLUE;	// doesnt matter
-	const short FG_COLOR = COLOR_BLACK;	// background color
+	const short BG_COLOR = COLOR_BLUE;	// background color
+	const short FG_COLOR = COLOR_BLACK;	// doesn't matter(must be dif than BG)
 
 	const short MENU_BACKGROUND = COLOR_CYAN;	// window backgrounds
 	const short MENU_FOREGROUND = COLOR_BLACK;	// window foregrounds
@@ -216,7 +229,7 @@ using namespace std;
 	//               to its manipulation function, these should be pretty
 	//               obvious looking at each functions name.  All input is
 	//               bounds checked to make sure no bad input is passed to an
-	//               ImageType<int> object
+	//               ImageType object
 	// assumptions : assumes all names in the c string list are valid c
 	//               c strings and bools coincide with wether image types are
 	//               loaded of the same index
@@ -251,27 +264,18 @@ using namespace std;
 	template <class pType>
 	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
 
-	// name        : findLocalPGM
+	// name        : findLocalPGM/PPM
 	// input       : one un-intialized double pointer of chars
-	// output      : allocates enough memory for a list of all the .pgm files
-	//               in the local path specified by the FILELOC constant.  It
-	//               then copys the file names to the array and returns the
+	// output      : allocates enough memory for a list of all the .pgm or .ppm
+	//               files in the local path specified by the FILELOC constant.
+	//               It then copys the file names to the array and returns the
 	//               number of rows in the array.
 	// assumptions : filenames is not initialized, but will be in the function
 	//               this means it needs to be de-allocated before it goes out
 	//               of scope
 	int findLocalPGM( char **&filenames );
-
-	// name        : findLocalPGM
-	// input       : one un-intialized double pointer of chars
-	// output      : allocates enough memory for a list of all the .pgm files
-	//               in the local path specified by the FILELOC constant.  It
-	//               then copys the file names to the array and returns the
-	//               number of rows in the array.
-	// assumptions : filenames is not initialized, but will be in the function
-	//               this means it needs to be de-allocated before it goes out
-	//               of scope
 	int findLocalPPM( char **&filenames );
+
 /******************************************************************************\
                                      MAIN
 \******************************************************************************/
@@ -335,10 +339,7 @@ int main( int argc, char **argv )
 		imgLoaded[i] = false;
 
 	// clear the screen
-	for ( int i = 0; i < screenWidth(); i++ )
-		for ( int j = 0; j < screenHeight(); j++ )
-			mvaddch(j, i, ' ');
-	refresh();
+	clearScreen();
 
 	// ask if grayscale or color
 	choice = showMenu( menu, "Choose Color Mode", 7, MENU_WIDTH,
@@ -350,10 +351,7 @@ int main( int argc, char **argv )
 		color = true;
 
 	// clear the screen
-	for ( int i = 0; i < screenWidth(); i++ )
-		for ( int j = 0; j < screenHeight(); j++ )
-			mvaddch(j, i, ' ');
-	refresh();
+	clearScreen();
 
 	// read argument parameters
 	if ( !color )
@@ -365,10 +363,7 @@ int main( int argc, char **argv )
 	setColor( FG_COLOR, BG_COLOR );
 
 	// clear the screen
-	for ( int i = 0; i < screenWidth(); i++ )
-		for ( int j = 0; j < screenHeight(); j++ )
-			mvaddch(j, i, ' ');
-	refresh();
+	clearScreen();
 
 	do {
 		// display register window
@@ -768,10 +763,7 @@ void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], int
 		setColor( COLOR_WHITE, COLOR_BLACK );
 
 		// clear screen with black
-		for ( int x = 0; x < screenWidth(); x++ )
-			for ( int y = 0; y < screenHeight(); y++ )
-				mvaddch( y, x, ' ' );
-		refresh();
+		clearScreen();
 
 		// display the message
 		mvaddstr( 0, 0, msg );
@@ -786,7 +778,8 @@ void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], int
 
 /******************************************************************************\
  Prompt the user for a register to load to, then let them choose from a list
- of the .pgm files in the local images directory (defined as a constant)
+ of the .pgm files in the local images directory (defined as a constant). This
+ function is used for loading grayscale images only.
 \******************************************************************************/
 void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -869,7 +862,8 @@ void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 
 /******************************************************************************\
  Prompt the user for a register to load to, then let them choose from a list
- of the .pgm files in the local images directory (defined as a constant)
+ of the .pgm files in the local images directory (defined as a constant). This
+ function is used for loading color images only.
 \******************************************************************************/
 void loadImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -952,7 +946,7 @@ void loadImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 
 /******************************************************************************\
  Save image from a register to the local images directory, prompting user for
- register and file name.
+ register and file name.  This is used only for saving grayscale images.
 \******************************************************************************/
 void saveImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -993,7 +987,7 @@ void saveImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 
 /******************************************************************************\
  Save image from a register to the local images directory, prompting user for
- register and file name.
+ register and file name.  This is used only for saving color images.
 \******************************************************************************/
 void saveImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1035,7 +1029,7 @@ void saveImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 /******************************************************************************\
  Simply retrieve image information and display to a window below the registers
  The data being displayed is the Register number, Image Height, Width, Q value,
- and average gray value.
+ and average gray value.  This displays the data for a grayscale image.
 \******************************************************************************/
 void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1091,7 +1085,7 @@ void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 /******************************************************************************\
  Simply retrieve image information and display to a window below the registers
  The data being displayed is the Register number, Image Height, Width, Q value,
- and average gray value.
+ and average gray value.  This displays the data for a color image.
 \******************************************************************************/
 void getImageInfo( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1151,7 +1145,7 @@ void getImageInfo( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 
 /******************************************************************************\
  Prompt user for a register then a pixel location (row, col) and then the pixel
- value to change that pixel to.
+ value to change that pixel to.  Used for grayscale images.
 \******************************************************************************/
 void setPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1175,8 +1169,8 @@ void setPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 			img[index].getImageInfo( N, M, Q );
 			
 			// prompt for the pixel with Q as the max value
-			promptForPixValue( "Set Pixel Value",
-			    "Enter new pixel value(-1 to cancel): ", Q );
+			val = promptForPixValue( "Set Pixel Value",
+			     "Enter new pixel value(-1 to cancel): ", Q );
 
 			// if back isn't choosen
 			if ( val != -1 )
@@ -1194,7 +1188,7 @@ void setPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 
 /******************************************************************************\
  Prompt user for a register then a pixel location (row, col) and then the pixel
- value to change that pixel to.
+ value to change that pixel to.  Used for color images.
 \******************************************************************************/
 void setPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1245,7 +1239,7 @@ void setPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
- Return the value of a pixel in a selected image to the user.
+ Return the value of a pixel in a selected image to the user(grayscale only).
 \******************************************************************************/
 void getPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
@@ -1283,7 +1277,7 @@ void getPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
- Return the value of a pixel in a selected image to the user.
+ Return the value of a pixel in a selected image to the user(color only).
 \******************************************************************************/
 void getPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {

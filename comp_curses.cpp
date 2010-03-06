@@ -32,6 +32,18 @@ void endCurses()
 }
 
 /******************************************************************************\
+ Clears the screen
+\******************************************************************************/
+void clearScreen()
+{
+	// clear the screen by printing spaces across it
+	for ( int i = 0; i < screenHeight(); i++ )
+		for ( int j = 0; j < screenWidth(); j++ )
+			mvaddch( i, j, ' ' );
+	refresh();
+}
+
+/******************************************************************************\
  Returns the width of the current terminal
 \******************************************************************************/
 int screenWidth()
