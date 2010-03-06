@@ -4,7 +4,7 @@ Still need to
 	- add rgb to driver program
 Still want to 
 	- add hotkeys for main menu
-
-Maybe
+Low Priority:
 	- add Splash screen intro and outro
-
+	- make it so that it can be run from command line only
+		ie: main.out -resize 50% image.pgm
