@@ -1,12 +1,11 @@
 #ifndef IMAGE_IO
 #define IMAGE_IO
 
-#include "image.h"
-#include "rgb.h"
-
 // These are the functions used to read and write images to .pgm files I just
 // added them to this header file to make linking easier to understand
 //    -Josh
+
+	#include "image.h"
 
 	// name : readImageHeader
 	// input : cstring of filename, int N, M, Q and bool value to hold image data

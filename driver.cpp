@@ -30,7 +30,6 @@
 #include <cstring>
 #include "comp_curses.h"
 #include "imageIO.h"
-
 #include "image.h"
 
 using namespace std;
@@ -357,7 +356,7 @@ int main( int argc, char **argv )
 	refresh();
 
 	// read argument parameters
-	if ( color )
+	if ( !color )
 		fillRegs( grayImage, imgLoaded, imgName, argc, argv );
 	else
 		fillRegs( colorImage, imgLoaded, imgName, argc, argv );
