@@ -331,3 +331,17 @@ void solveTriDiag( double *b, double *d, double *a, double *B, double *x, int n 
 		x[i] = B[i] - a[i] * x[i+1];
 }
 
+int slope( const int& a, const int& b, const double& c )
+{
+	return (a+b*(c-(int)c));
+}
+
+rgb slope( const rgb& a, const rgb& b, const double& c )
+{
+	rgb temp;
+	temp.r = a.r+b.r*(c-(int)c);
+	temp.g = a.g+b.g*(c-(int)c);
+	temp.b = a.b+b.b*(c-(int)c);
+	return temp;
+}
+

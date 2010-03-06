@@ -2,10 +2,9 @@
 #include <fstream>
 #include <stdlib.h>
 #include <stdio.h>
+#include "image.h"
 
 using namespace std;
-
-#include "image.h"
 
 void readImageHeader(const char fname[], int& N, int& M, int& Q, bool& type)
 {

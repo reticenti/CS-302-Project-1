@@ -27,29 +27,31 @@ class rgb{
 
 		rgb& operator= (const int& );
 		
-		rgb& operator+(const int& );
+		rgb operator+(const int& );
 
-		rgb& operator+(const rgb& );
+		rgb operator+(const rgb& );
 
-		rgb& operator-(const int& );
+		rgb operator-(const int& );
 
-		rgb& operator-(const rgb& );
+		rgb operator-(const rgb& );
 
-		rgb& operator/(const int& );
+		rgb operator/(const int& );
 
-		rgb& operator/(const rgb& );
+		rgb operator/(const rgb& );
 
-		rgb& operator*(const int& );
+		rgb operator*(const int& );
 		
-		rgb& operator*(const double& );
+		rgb operator*(const double& );
 		
-		rgb& operator*(const rgb& );
+		rgb operator*(const rgb& );
 
 		void operator+=(const rgb& );
 
 		void operator-=(const rgb& );
 
 		void operator/=(const rgb& );
+
+		void operator/=(const int& );
 
 		void operator*=(const rgb& );
 
@@ -74,7 +76,7 @@ class rgb{
 		int b; // blue value
 };
 
-rgb abs( rgb& );
+rgb abs( const rgb& );
 
 #endif
 

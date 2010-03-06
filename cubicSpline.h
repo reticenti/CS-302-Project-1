@@ -59,6 +59,8 @@ private:
 /* solves the matrix equation Ax=b for a tri-diagonal matrix, implementation
    for a better description, used in cubic spline function */
 void solveTriDiag( double*, double*, double*, double*, double*, int );
+int slope( const int&, const int&, const double&);
+rgb slope( const rgb&, const rgb&, const double&);
 
 #endif
 

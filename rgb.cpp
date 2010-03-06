@@ -58,88 +58,97 @@ rgb& rgb::operator= ( const int& rhs){
 }
 
 // Operator +
-rgb& rgb::operator+(const int& rhs){
+rgb rgb::operator+(const int& rhs){
+	rgb temp;
 
-	r += rhs;
-	g += rhs;
-	b += rhs;
+	temp.r = r + rhs;
+	temp.g = g + rhs;
+	temp.b = b + rhs;
 
-	return *this;
+	return temp;
 }
 
-rgb& rgb::operator+(const rgb& rhs){
+rgb rgb::operator+(const rgb& rhs){
+	rgb temp;
 
-	r += rhs.r;
-	g += rhs.g;
-	b += rhs.b;
-
-	return *this;
+	temp.r = r + rhs.r;
+	temp.g = g + rhs.g;
+	temp.b = b + rhs.b;
+	
+	return temp;
 }
 
 // Operator -
-rgb& rgb::operator-(const int& rhs){
+rgb rgb::operator-(const int& rhs){
+	rgb temp;
 
-	r -= rhs;
-	g -= rhs;
-	b -= rhs;
+	temp.r = r - rhs;
+	temp.g = g - rhs;
+	temp.b = b - rhs;
 
-	return *this;
+	return temp;
 }
 
-rgb& rgb::operator-(const rgb& rhs){
+rgb rgb::operator-(const rgb& rhs){
+	rgb temp;
 
-	r -= rhs.r;
-	g -= rhs.g;
-	b -= rhs.b;
+	temp.r = r - rhs.r;
+	temp.g = g - rhs.g;
+	temp.b = b - rhs.b;
 
-	return *this;
+	return temp;
 }
 
 // Operator /
-rgb& rgb::operator/(const int& rhs){
+rgb rgb::operator/(const int& rhs){
+	rgb temp;
 
-	r /= rhs;
-	g /= rhs;
-	b /= rhs;
+	temp.r = r / rhs;
+	temp.g = g / rhs;
+	temp.b = b / rhs;
 
-	return *this;
+	return temp;
 }
 
-rgb& rgb::operator/(const rgb& rhs){
+rgb rgb::operator/(const rgb& rhs){
+	rgb temp;
 
-	r /= rhs.r;
-	g /= rhs.g;
-	b /= rhs.b;
+	temp.r = r / rhs.r;
+	temp.g = g / rhs.g;
+	temp.b = b / rhs.b;
 
-	return *this;
-}
-
-rgb& rgb::operator*(const double& rhs){
-
-	r *= rhs;
-	g *= rhs;
-	b *= rhs;
-
-	return *this;
+	return temp;
 }
 
 // Operator *
-rgb& rgb::operator*(const int& rhs){
+rgb rgb::operator*(const double& rhs){
+	rgb temp;
 
-	r *= rhs;
-	g *= rhs;
-	b *= rhs;
+	temp.r = r * rhs;
+	temp.g = g * rhs;
+	temp.b = b * rhs;
 
-	return *this;
+	return temp;
 }
 
-rgb& rgb::operator*(const rgb& rhs){
+rgb rgb::operator*(const int& rhs){
+	rgb temp;
 
-	r *= rhs.r;
-	g *= rhs.g;
-	b *= rhs.b;
+	temp.r = r * rhs;
+	temp.g = g * rhs;
+	temp.b = b * rhs;
 
-	return *this;
+	return temp;
+}
+
+rgb rgb::operator*(const rgb& rhs){
+	rgb temp;
+
+	temp.r = r * rhs.r;
+	temp.g = g * rhs.g;
+	temp.b = b * rhs.b;
+
+	return temp;
 }
 
 //operator +=
@@ -157,6 +166,14 @@ void rgb::operator-=(const rgb& rhs){
 	r -= rhs.r;
 	g -= rhs.g;
 	b -= rhs.b;
+}
+
+//operator /=
+void rgb::operator/=(const int& rhs){
+
+	r /= rhs;
+	g /= rhs;
+	b /= rhs;
 }
 
 //operator /=
@@ -276,7 +293,7 @@ bool rgb::operator!=(const int& rhs)const{
 	else return true;
 }
 
-rgb abs( rgb& rhs )
+rgb abs( const rgb& rhs )
 {
 	rgb retVal( abs(rhs.r), abs(rhs.g), abs(rhs.b) );
 	return retVal;

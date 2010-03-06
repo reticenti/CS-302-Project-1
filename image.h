@@ -107,6 +107,7 @@ private:
 	pType **pixelValue;
 };
 
+
 /******************************************************************************\
  default constructor allocates no memory and sets the size to zero 
 \******************************************************************************/
@@ -651,22 +652,22 @@ void ImageType<pType>::rotateImage( int theta, const ImageType<pType>& old )
 				// find the slope of the line between all four corners
 				USlope = UR - UL;
 				DSlope = LR - LL;
-				LSlope = LL - UL;
+				LSlope = LL - UL; 
 				RSlope = LR - UR;
 	
 				// get the intermediate value corresponding with desired r/c val
-				U = UL + USlope*(c - (int)c);
-				D = LL + DSlope*(c - (int)c);
-				L = UL + LSlope*(r - (int)r);
-				R = UR + RSlope*(r - (int)r);
+				U = UL + USlope*(c-(int)c);//slope(UL, USlope, c);
+				D = LL + DSlope*(c-(int)c);//slope(LL, DSlope, c);
+				L = UL + LSlope*(r-(int)r);//slope(UL, LSlope, r);
+				R = UR + RSlope*(r-(int)r);//slope(UR, RSlope, r);
 
 				// get the slop between intermediate values
-				HSlope = D-U;
-				VSlope = R-L;
+				HSlope = D - U;
+				VSlope = R - L;
 
 				// find 2 different color estimations of the desired pixel
-				Hval = U + HSlope*(r - (int)r);
-				Vval = L + VSlope*(c - (int)c);
+				Hval = U + HSlope*(r-(int)r);//slope(U, HSlope, r);
+				Vval = L + VSlope*(c-(int)c);//slope(L, VSlope, c);
 
 				// average the estimations
 				final = (Hval + Vval) / 2;
@@ -680,7 +681,7 @@ void ImageType<pType>::rotateImage( int theta, const ImageType<pType>& old )
 				LSlope = LL - UL;
 
 				// get value of final point
-				final = UL + LSlope*(r - (int)r);
+				final = UL + LSlope*(r-(int)r);//slope(UL, LSlope, r);
 			}
 			else if ( r > 0 && r < N && c > 0 && ceil(c) < M ) { // bottom edge
 				// get left and right values
@@ -691,7 +692,7 @@ void ImageType<pType>::rotateImage( int theta, const ImageType<pType>& old )
 				USlope = UR - UL;
 
 				// get value of final point
-				final = UL + USlope*(c - (int)c);
+				final = UL + USlope*(c-(int)c);//slope(UL, USlope, c);
 			}
 			else if ( r > 0 && r < N && c > 0 && c < M ) { // lower right
 				// no slopes, just set value
@@ -700,10 +701,6 @@ void ImageType<pType>::rotateImage( int theta, const ImageType<pType>& old )
 			else { // no value here
 				final = pixelValue[i][j]; // retain background
 			}
-
-			// make sure final value is not out of color bounds
-			if ( final < 0 ) final = 0;
-			if ( final > Q ) final = Q;
 
 			// set final pixel value
 			pixelValue[i][j] = final;
