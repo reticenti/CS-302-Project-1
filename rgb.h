@@ -1,5 +1,8 @@
 #ifndef rgb_H
 #define rgb_H
+
+#include <cstdlib>
+
 class rgb{
 
 	public:
@@ -68,6 +71,8 @@ class rgb{
 		int g; // green value
 		int b; // blue value
 };
+
+rgb abs( rgb& );
 
 #endif
 

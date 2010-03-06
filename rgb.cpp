@@ -266,3 +266,10 @@ bool rgb::operator!=(const int& rhs)const{
 
 	else return true;
 }
+
+rgb abs( rgb& rhs )
+{
+	rgb retVal( abs(rhs.r), abs(rhs.g), abs(rhs.b) );
+	return retVal;
+}
+

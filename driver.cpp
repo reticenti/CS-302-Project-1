@@ -38,9 +38,6 @@ using namespace std;
 /******************************************************************************\
                                    CONSTANTS
 \******************************************************************************/
-	// sets cubic or linear interpolation for enlarge
-	const bool CUBIC_INTER = true;	
-
 	// the folder with the images in it, (make it ./ for local) 
 	const char IMAGELOC[] = "./images/";
 
@@ -129,7 +126,8 @@ using namespace std;
 	// assumptions : assumes value >= 0 and < MENU_OPTIONS, not that anything
 	//               will crash if its not true, but nothing will happen, also
 	//               assumes that names contain valid c strings
-	void processEntry( ImageType<int>[], bool[], char[][NAME_LEN], int );
+	template <class pType>
+	void processEntry( ImageType<pType>[], bool[], char[][NAME_LEN], int );
 
 	// name        : stdWindow
 	// input       : an un-initalized window and a title string
@@ -165,7 +163,8 @@ using namespace std;
 	//               users choice
 	// assumptions : assumes image is intialized and has a valid height/width
 	//               also that first parameter is a valid c string
-	void promptForLoc( const char[], ImageType<int>&, int&, int& );
+	template <class pType>
+	void promptForLoc( const char[], ImageType<pType>&, int&, int& );
 	
 	// name        : promptFor<Pix/Scale>Value
 	// input       : title string, prompt string and max input value
@@ -208,7 +207,8 @@ using namespace std;
 	//               clears the rest of the registers
 	// assumptions : assumes that char** is a valid list of strings with int
 	//               rows
-	void fillRegs( ImageType<int>[], bool[], char[][NAME_LEN], int, char** );
+	template <class pType>
+	void fillRegs( ImageType<pType>[], bool[], char[][NAME_LEN], int, char** );
 
 	// name        : Register manipulation functions
 	// input       : List of images of length REGS, list of bools of length
@@ -221,21 +221,36 @@ using namespace std;
 	// assumptions : assumes all names in the c string list are valid c
 	//               c strings and bools coincide with wether image types are
 	//               loaded of the same index
-	void clearRegister( ImageType<int>[], bool[], char[][NAME_LEN] );
 	void loadImage( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void loadImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 	void saveImage( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void saveImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 	void getImageInfo( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void getImageInfo( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 	void setPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void setPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 	void getPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void extractSub( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void enlargeImg( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void shrinkImg( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void reflectImg( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void translateImg( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void rotateImg( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void sumImg( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void subtractImg( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void negateImg( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void getPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void extractSub( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void enlargeImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void shrinkImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void reflectImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void translateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void rotateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void sumImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void subtractImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void negateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
 
 	// name        : findLocalPGM
 	// input       : one un-intialized double pointer of chars
@@ -248,6 +263,16 @@ using namespace std;
 	//               of scope
 	int findLocalPGM( char **&filenames );
 
+	// name        : findLocalPGM
+	// input       : one un-intialized double pointer of chars
+	// output      : allocates enough memory for a list of all the .pgm files
+	//               in the local path specified by the FILELOC constant.  It
+	//               then copys the file names to the array and returns the
+	//               number of rows in the array.
+	// assumptions : filenames is not initialized, but will be in the function
+	//               this means it needs to be de-allocated before it goes out
+	//               of scope
+	int findLocalPPM( char **&filenames );
 /******************************************************************************\
                                      MAIN
 \******************************************************************************/
@@ -262,6 +287,7 @@ int main( int argc, char **argv )
 
 	// users menu choice
 	int choice;
+	bool color = true;
 
 	// holds the name of the image stored in the register
 	char imgName[REGS][NAME_LEN];
@@ -270,7 +296,8 @@ int main( int argc, char **argv )
 	bool imgLoaded[REGS];
 
 	// this is where all the registers are stored
-	ImageType<int> image[REGS];
+	ImageType<int> grayImage[REGS];
+	ImageType<rgb> colorImage[REGS];
 
 	// create main menu strings
 	char choices[MENU_OPTIONS][NAME_LEN] = {
@@ -302,7 +329,10 @@ int main( int argc, char **argv )
 		imgLoaded[i] = false;
 
 	// read argument parameters
-	fillRegs( image, imgLoaded, imgName, argc, argv );
+	if ( color )
+		fillRegs( grayImage, imgLoaded, imgName, argc, argv );
+	else
+		fillRegs( colorImage, imgLoaded, imgName, argc, argv );
 
 	// set the colors
 	setColor( FG_COLOR, BG_COLOR );
@@ -324,7 +354,10 @@ int main( int argc, char **argv )
 		try
 		{
 			// this is the main driving function that calls all others
-			processEntry( image, imgLoaded, imgName, choice );
+			if ( color )
+				processEntry( colorImage, imgLoaded, imgName, choice );
+			else
+				processEntry( grayImage, imgLoaded, imgName, choice );
 		}
 		catch( string err )
 		{
@@ -569,7 +602,8 @@ void drawWindow( WINDOW *& win, const char title[], int height, int width,
  main menu.  The reason it has all the parameters is for passing to the
  subsequent functions that will be using them.
 \******************************************************************************/
-void processEntry( ImageType<int> img[], bool loaded[], char name[][NAME_LEN], 
+template <class pType>
+void processEntry( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], 
     int choice )
 {
 	// enter switch statement evaluating choice
@@ -629,7 +663,8 @@ void processEntry( ImageType<int> img[], bool loaded[], char name[][NAME_LEN],
 /******************************************************************************\
  Prompt for a register that is filled and then clear it.
 \******************************************************************************/
-void clearRegister( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void clearRegister( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index;
 
@@ -653,7 +688,8 @@ void clearRegister( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
  string object.  It stores the values into the registers sequentially, if there
  are no arguments relating to the register it is set to empty
 \******************************************************************************/
-void fillRegs( ImageType<int> img[], bool loaded[], char name[][NAME_LEN], int argc,
+template <class pType>
+void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], int argc,
     char **argv )
 {
 	char *msg = new char[1+(argc-1)*40];
@@ -803,6 +839,87 @@ void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
+ Prompt the user for a register to load to, then let them choose from a list
+ of the .pgm files in the local images directory (defined as a constant)
+\******************************************************************************/
+void loadImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
+{
+	// holds the file names, menuChoices is a copy with "Back" added at the end
+	char **fileNames, **menuChoices;
+
+	// the window that will hold the file menu
+	WINDOW *fileMenu;
+
+	// holds the image values N, M, and Q, the number of local image files, the
+	// index of index of the register choosen and index of the file choosen
+	int i, j, k, files, index, imageVal;
+
+	// format of file (unused for now) but required for readImageHeader param
+	bool f;
+	
+	// get a list of local files dynamically allocated
+	files = findLocalPPM( fileNames );
+
+	// add one more option to the menu
+	menuChoices = new char*[files+1];
+
+	// copy all the pointers from the filenames to the menuChoices
+	for ( int a = 0; a < files; a++ )
+		menuChoices[a] = fileNames[a];
+	
+	// delete the list of string pointers since menuChoices has them now
+	delete [] fileNames;
+
+	// create the final choice
+	menuChoices[files] = new char[5];
+
+	// make the final choice "Exit"
+	strcpy( menuChoices[files], "Back" );
+
+	// prompt for a register (false indicated it doesn't need to be full)
+	index = promptForReg( loaded, name, false );
+
+	// if exit wasn't choosen then prompt for a file
+	if ( index != BAD_REG )
+	{	
+		// prompt for file
+		imageVal = showMenu( fileMenu, "Load Image", FILEWIN_HEIGHT,
+		    FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 , menuChoices,
+			files+1 );
+
+		// if exit isn't choosen attempt to load image
+		if ( imageVal != files )
+		{
+			// read the image that was choosen
+			readImageHeader( menuChoices[imageVal], i, j, k, f );
+
+			// set up the image to store the correct data
+			img[index].setImageInfo( i, j, k );
+	
+			// read and store image data
+			readImage( menuChoices[imageVal], img[index] );
+	
+			// make sure that the register is read as full
+			loaded[index] = true;
+			
+			// remove the file path from the front of the filename
+			// exampe: ./images/img.pgm -> img.pgm
+			sprintf( name[index], "Register %i: %s", index+1,
+			    &(menuChoices[imageVal][strlen(IMAGELOC)]) );
+		}
+
+		// de-allocate fileMenu
+		delwin( fileMenu );
+	}
+
+	// de-allocate list of menuChoices
+	for ( int a = 0; a < files+1; a++ )
+		delete [] menuChoices[a];
+	delete [] menuChoices;
+
+}
+
+/******************************************************************************\
  Save image from a register to the local images directory, prompting user for
  register and file name.
 \******************************************************************************/
@@ -831,6 +948,47 @@ void saveImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 			strcat( strInput, ".pgm" );
 		else if ( strcmp( (strInput+strlen(strInput)-4), ".pgm" ) != 0 )
 			strcat( strInput, ".pgm" );
+		
+		// add the file path to the filename
+		sprintf( imageLoc, "%s%s", IMAGELOC, strInput );
+		
+		// save the image to the given filename
+		writeImage( imageLoc, img[index] );
+
+		// set register name to match file name
+		sprintf( name[index], "Register %i: %s", index+1, strInput );
+	}
+}
+
+/******************************************************************************\
+ Save image from a register to the local images directory, prompting user for
+ register and file name.
+\******************************************************************************/
+void saveImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
+{
+	// holds the file name
+	char strInput[NAME_LEN];
+
+	// used to remove the file path from the front of the filename
+	char imageLoc[NAME_LEN];
+
+	// holds the register that the user chooss
+	int index;
+
+	// prompt for register
+	index = promptForReg( loaded, name );
+	
+	// if user doesn't choose 'Back'
+	if ( index != BAD_REG )
+	{
+		// prompt the user for a file name
+		promptForFilename( "Save Image", "Enter filename: ", strInput );
+		
+		// add .pgm to the filename if it wasnt already
+		if ( strlen( strInput ) < 4 )
+			strcat( strInput, ".ppm" );
+		else if ( strcmp( (strInput+strlen(strInput)-4), ".ppm" ) != 0 )
+			strcat( strInput, ".ppm" );
 		
 		// add the file path to the filename
 		sprintf( imageLoc, "%s%s", IMAGELOC, strInput );
@@ -898,6 +1056,68 @@ void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 	}
 }
 
+
+/******************************************************************************\
+ Simply retrieve image information and display to a window below the registers
+ The data being displayed is the Register number, Image Height, Width, Q value,
+ and average gray value.
+\******************************************************************************/
+void getImageInfo( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
+{
+	// hold image info
+	int N, M, Q, index, y, x;
+
+	// the window that holds all the info
+	WINDOW *infoWin;
+
+	// prompt for a register
+	index = promptForReg( loaded, name );
+	
+	// if back isn't choosen
+	if ( index != BAD_REG )
+	{
+		// retrieve image height, width, and color depth
+		img[index].getImageInfo( N, M, Q );
+
+		// draw/intialize the info window
+		drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, REGWIN_HEIGHT+2,
+		    MENU_WIDTH+3 );
+		
+		// set the starting x/y values
+		x = 2;
+		y = 2;
+		
+		// print all the information to the window with formating
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Saved in Register",':',
+		    index+1 );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Image Width(pixels)",':',M );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Image Height(pixels)",':',N );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %i", "Color Depth",':',Q );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Red Value",':',
+			img[index].meanColor().r );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Green Value",':',
+			img[index].meanColor().g );
+		y+=2;
+		mvwprintw( infoWin, y, x, "%-20s%c %.2f", "Mean Blue Value",':',
+		    img[index].meanColor().b );
+		y+=2;
+		mvwprintw( infoWin, y, x, "Press Enter to continue..." );
+
+		wrefresh( infoWin );
+		
+		// wait for input
+		while ( wgetch( infoWin ) != KEY_RETURN );
+
+		// de-allocate the window
+		delwin( infoWin );
+	}
+}
+
 /******************************************************************************\
  Prompt user for a register then a pixel location (row, col) and then the pixel
  value to change that pixel to.
@@ -942,6 +1162,58 @@ void setPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
+ Prompt user for a register then a pixel location (row, col) and then the pixel
+ value to change that pixel to.
+\******************************************************************************/
+void setPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
+{
+	// holds various information about image
+	int index, row, col;
+	rgb val;
+	int N, M, Q;
+
+	// prompt for register
+	index = promptForReg( loaded, name );
+
+	// if back isn't choosen
+	if ( index != BAD_REG )
+	{
+		// prompt for a pixel location
+		promptForLoc( "Set Pixel Value", img[index], row, col );
+
+		// if back isn't choosen
+		if ( row != -1 && col != -1 )
+		{
+			// get image info (just for the Q)
+			img[index].getImageInfo( N, M, Q );
+			
+			// prompt for the pixel with Q as the max value
+			val.r = promptForPixValue( "Set Pixel Value",
+			       "Enter new red value(-1 to cancel): ", Q );
+			if ( val.r != -1 )
+			{
+				val.g = promptForPixValue( "Set Pixel Value",
+			           "Enter new green value(-1 to cancel): ", Q );
+				if ( val.g != -1 )
+				{
+					val.b = promptForPixValue( "Set Pixel Value",
+			               "Enter new blue value(-1 to cancel): ", Q );
+					if ( val.b != -1 )
+					{
+						// change pixel value
+						img[index].setPixelVal( row, col, val );
+
+						// add modified to end of register name
+						if ( name[index][strlen(name[index])-1] != ')' )
+							strcat( name[index], " (modified)" );
+					}
+				}
+			}
+		}
+	}
+}
+
+/******************************************************************************\
  Return the value of a pixel in a selected image to the user.
 \******************************************************************************/
 void getPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
@@ -980,18 +1252,64 @@ void getPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
+ Return the value of a pixel in a selected image to the user.
+\******************************************************************************/
+void getPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
+{
+	// self describing variables
+	int index, row = -1, col = -1;
+	rgb val;
+	WINDOW *infoWin;
+
+	// prompt for the register
+	index = promptForReg( loaded, name );
+
+	// if back isn't choosen
+	if ( index != BAD_REG )
+	{
+		// prompt for pixel location
+		promptForLoc( "Get Pixel Value", img[index], row, col );
+
+		// if back isn't choosen
+		if ( row != -1 && col != -1 )
+		{
+			// create a message box window
+			stdWindow( infoWin, "Get Pixel Value" );
+			mvwprintw( infoWin, 1, 2, "The red Value at (%i,%i) is %i", 
+				col, row, img[index].getPixelVal(row, col).r );
+			while ( wgetch( infoWin ) != KEY_RETURN );
+			// create a message box window
+			stdWindow( infoWin, "Get Pixel Value" );
+			mvwprintw( infoWin, 1, 2, "The green Value at (%i,%i) is %i", 
+				col, row, img[index].getPixelVal(row, col).g );
+			while ( wgetch( infoWin ) != KEY_RETURN );
+			// create a message box window
+			stdWindow( infoWin, "Get Pixel Value" );
+			mvwprintw( infoWin, 1, 2, "The blue Value at (%i,%i) is %i", 
+				col, row, img[index].getPixelVal(row, col).b );
+			while ( wgetch( infoWin ) != KEY_RETURN );
+			
+			// de-allocate the message window
+			delwin( infoWin );
+			
+		}
+	}
+}
+
+/******************************************************************************\
  After getting the image to manipulate, prompt for two corners to make a
  subimage out of, if the lower right corner is above or left of the upper
  right corner re-prompt for valid points
 \******************************************************************************/
-void extractSub( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void extractSub( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// self documenting variables
 	int index;
 	int ULr, ULc, LRr = -1, LRc = -1;
 
 	// temporary image to hold the subimage
-	ImageType<int> temp;
+	ImageType<pType> temp;
 
 	// prompt for image register
 	index = promptForReg( loaded, name );
@@ -1041,7 +1359,8 @@ void extractSub( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
  makes sure the scale value does not make the image larger than MAX_IMG value
  because it may cause a stack overflow.
 \******************************************************************************/
-void enlargeImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void enlargeImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds image info and maxS value
 	int index, N, M, Q, maxS;
@@ -1050,7 +1369,7 @@ void enlargeImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 	int s;
 
 	// temporary image used to store enlarged image
-	ImageType<int> temp;
+	ImageType<pType> temp;
 
 	// prompt user for register value
 	index = promptForReg( loaded, name );
@@ -1089,7 +1408,8 @@ void enlargeImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
  smaller than MIN_IMG.  This is because some image viewers won't open images
  as small as 2x2 (xv for example)
 \******************************************************************************/
-void shrinkImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void shrinkImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// image info and max s value
 	int index, N, M, Q, maxS;
@@ -1098,7 +1418,7 @@ void shrinkImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 	int s;
 
 	// holds the reduced image before transfering it to img[index]
-	ImageType<int> temp;
+	ImageType<pType> temp;
 
 	// prompt for the register to be used
 	index = promptForReg( loaded, name );
@@ -1136,7 +1456,8 @@ void shrinkImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
  Prompt user for a direction to reflect an image then reflect the image and
  store it back in the original register image.
 \******************************************************************************/
-void reflectImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void reflectImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the index of the register
 	int index;
@@ -1145,7 +1466,7 @@ void reflectImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 	char dir;
 
 	// used to reflect the image before saving to image
-	ImageType<int> temp;
+	ImageType<pType> temp;
 
 	// prompt for which image to use
 	index = promptForReg( loaded, name );
@@ -1182,7 +1503,8 @@ void reflectImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
  pixels.  Also Won't let user choose t value that would move image totaly off
  the screen.
 \******************************************************************************/
-void translateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void translateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the image info and maximum t value
 	int index, N, M, Q, maxT;
@@ -1191,7 +1513,7 @@ void translateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 	int t;
 
 	// temporary image used as a buffer to the register image
-	ImageType<int> temp;
+	ImageType<pType> temp;
 
 	// get a valid image register
 	index = promptForReg( loaded, name );
@@ -1231,13 +1553,14 @@ void translateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
  clockwise by theta degrees.  The input is only valid from 0 to 360 which
  should cover all possibilities.
 \******************************************************************************/
-void rotateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void rotateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the register index and angle theta
 	int index, theta;
 	
 	// temporary image used as a kind of buffer for register image
-	ImageType<int> temp;
+	ImageType<pType> temp;
 
 	// prompt for a regiseter that is used
 	index = promptForReg( loaded, name );
@@ -1270,13 +1593,14 @@ void rotateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
  operator+ will throw a string which will be handeled by main if sizes of the
  two images are different.
 \******************************************************************************/
-void sumImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void sumImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of image 1 and 2
 	int index1, index2;
 
 	// 2 temporary images used to sum the images
-	ImageType<int> temp1, temp2;
+	ImageType<pType> temp1, temp2;
 
 	// prompt for first image
 	index1 = promptForReg( loaded, name );
@@ -1310,13 +1634,14 @@ void sumImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
  Prompt for 2 images and attempt to calculate the difference, there's no size
  checking here for the same reason sumImg doesn't do size checking
 \******************************************************************************/
-void subtractImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void subtractImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of image 1 and 2
 	int index1, index2;
 
 	// 2 temporary images used to subtract the images
-	ImageType<int> temp1, temp2;
+	ImageType<pType> temp1, temp2;
 
 	// prompt for first image
 	index1 = promptForReg( loaded, name );
@@ -1349,7 +1674,8 @@ void subtractImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 /******************************************************************************\
  Prompt user for which image to negate and negate it, pretty simple function.
 \******************************************************************************/
-void negateImg( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
+template <class pType>
+void negateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of register to use
 	int index;
@@ -1628,7 +1954,8 @@ int promptForScaleValue( const char title[], const char prompt[], int maxVal )
  calculated by the image object it is passed.  The image properties are
  calculated and then used to determine the bounds of row and column.
 \******************************************************************************/
-void promptForLoc( const char title[], ImageType<int>& img, int& row, int& col )
+template <class pType>
+void promptForLoc( const char title[], ImageType<pType>& img, int& row, int& col )
 {
 	// holds various image info
 	int N, M, Q;
@@ -1785,6 +2112,86 @@ int findLocalPGM( char **&filenames )
 				// compare the suffix to ".pgm" again
 				if ( len > 5 )
 					if ( strcmp( ".pgm", &(namelist[i]->d_name[len-4]) ) == 0 )
+					{
+						// this time allocate memory to store the name
+						filenames[j] = new char[strlen(namelist[i]->d_name) +
+						    1 + strlen(IMAGELOC)];
+						// store the name with the file path added
+						sprintf( filenames[j], "%s%s", IMAGELOC,
+						    namelist[i]->d_name );
+						// increase counter
+						j++;
+					}
+				// de-allocate name list
+				delete [] namelist[i];
+			}
+			// finish de-allocating name list
+			delete [] namelist;
+		}
+	}
+
+	// return the number of rows in filenames
+	return count;
+}
+
+/******************************************************************************\
+ Couldn't find a good place to put this function, its a not so robust function
+ that reads all the .pgm files from a local directory (defined as a constant)
+ and places them into a dynamically allocated c style string array.
+
+ !!!Note this function allocates memory for a 2D array and returns the number
+ of rows.  This information is REQUIRED to properly de-allocate the memory in
+ the calling function.
+\******************************************************************************/
+int findLocalPPM( char **&filenames )
+{
+	// namelist holds a list of file names
+	struct dirent **namelist;
+
+	// n is the number of files total in the local directory
+	int n;
+
+	// holds the length of various strings
+	int len;
+
+	// count keeps track of the number of .pgm files found
+	int count = 0;
+
+	// store the string values of the local files into namelist in alpha order
+	n = scandir( IMAGELOC, &namelist, 0, alphasort );
+
+	// if there are files...
+	if ( n > 0 )
+	{
+		// go through checking for files ending in ".pgm"
+		for ( int i = 0; i < n; i++ )
+		{
+			len = strlen( namelist[i]->d_name );
+			if ( len > 5 )
+				// compare the last four characters to ".pgm"
+				if ( strcmp( ".ppm", &(namelist[i]->d_name[len-4]) ) == 0 )
+					// increase count
+					count++;
+		}
+		
+		// if any .pgm files are found
+		if ( count > 0 )
+		{
+			// allocate space for each one
+			filenames = new char*[count];
+
+			// j is used as a counter for the filenames
+			int j = 0;
+
+			// this loop does the same as the previous except it allocates
+			// memory and copies names of .pgm files to filenames
+			for ( int i = 0; i < n; i++ )
+			{
+				// get the length of the filename
+				len = strlen( namelist[i]->d_name );
+				// compare the suffix to ".pgm" again
+				if ( len > 5 )
+					if ( strcmp( ".ppm", &(namelist[i]->d_name[len-4]) ) == 0 )
 					{
 						// this time allocate memory to store the name
 						filenames[j] = new char[strlen(namelist[i]->d_name) +

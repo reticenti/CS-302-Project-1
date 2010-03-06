@@ -2,6 +2,7 @@
 #define IMAGE_IO
 
 #include "image.h"
+#include "rgb.h"
 
 // These are the functions used to read and write images to .pgm files I just
 // added them to this header file to make linking easier to understand
@@ -18,11 +19,14 @@
 	// output : set image info to the ImageType object
 	// dependencies : image.h
 	void readImage( const char[], ImageType<int>& );
+	void readImage( const char[], ImageType<rgb>& );
 
 	// name : writeImage
 	// input : cstring of filename, and ImageType object to be store in file
 	// output : writes a pgm type file with ImageType stored as a RAW form
 	// dependencies : image.h
 	void writeImage( const char[], ImageType<int>& );
+	void writeImage( const char[], ImageType<rgb>& );
 
 #endif
+

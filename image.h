@@ -267,7 +267,9 @@ pType ImageType<pType>::getPixelVal(int i, int j) const
 template <class pType>
 pType ImageType<pType>::meanColor() const
 {
-	pType total = 0;
+	pType total;
+
+	total = 0;
 	
 	// sum the gray values
 	for ( int i = 0; i < N; i++ )
@@ -275,7 +277,14 @@ pType ImageType<pType>::meanColor() const
 			total += pixelValue[i][j];
 
 	// return 0 if there are no pixels, otherwise divide gray by total pixels
-	return ( M*N == 0 ? 0 : total/(M*N) );
+	if ( M*N == 0 )
+	{
+		total = 0;
+	} else
+	{
+		total = total/(M*N);
+	}
+	return total;
 }
 
 /******************************************************************************\
