@@ -656,18 +656,18 @@ void ImageType<pType>::rotateImage( int theta, const ImageType<pType>& old )
 				RSlope = LR - UR;
 	
 				// get the intermediate value corresponding with desired r/c val
-				U = UL + USlope*(c-(int)c);//slope(UL, USlope, c);
-				D = LL + DSlope*(c-(int)c);//slope(LL, DSlope, c);
-				L = UL + LSlope*(r-(int)r);//slope(UL, LSlope, r);
-				R = UR + RSlope*(r-(int)r);//slope(UR, RSlope, r);
+				U = UL + USlope*(c-(int)c);
+				D = LL + DSlope*(c-(int)c);
+				L = UL + LSlope*(r-(int)r);
+				R = UR + RSlope*(r-(int)r);
 
 				// get the slop between intermediate values
 				HSlope = D - U;
 				VSlope = R - L;
 
 				// find 2 different color estimations of the desired pixel
-				Hval = U + HSlope*(r-(int)r);//slope(U, HSlope, r);
-				Vval = L + VSlope*(c-(int)c);//slope(L, VSlope, c);
+				Hval = U + HSlope*(r-(int)r);
+				Vval = L + VSlope*(c-(int)c);
 
 				// average the estimations
 				final = (Hval + Vval) / 2;
@@ -681,7 +681,7 @@ void ImageType<pType>::rotateImage( int theta, const ImageType<pType>& old )
 				LSlope = LL - UL;
 
 				// get value of final point
-				final = UL + LSlope*(r-(int)r);//slope(UL, LSlope, r);
+				final = UL + LSlope*(r-(int)r);
 			}
 			else if ( r > 0 && r < N && c > 0 && ceil(c) < M ) { // bottom edge
 				// get left and right values
@@ -692,7 +692,7 @@ void ImageType<pType>::rotateImage( int theta, const ImageType<pType>& old )
 				USlope = UR - UL;
 
 				// get value of final point
-				final = UL + USlope*(c-(int)c);//slope(UL, USlope, c);
+				final = UL + USlope*(c-(int)c);
 			}
 			else if ( r > 0 && r < N && c > 0 && c < M ) { // lower right
 				// no slopes, just set value

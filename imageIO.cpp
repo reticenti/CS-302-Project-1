@@ -2,7 +2,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <stdio.h>
-#include "image.h"
+#include "imageIO.h"
 
 using namespace std;
 
