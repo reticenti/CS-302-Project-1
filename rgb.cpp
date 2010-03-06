@@ -150,14 +150,6 @@ rgb rgb::operator*(const rgb& rhs){
 
 	return temp;
 }
-rgb::rgb& operator*(const double& rhs){
-
-	r *= rhs;
-	g *= rhs;
-	b *= rhs;
-
-	return *this
-}
 
 //operator +=
 void rgb::operator+=(const rgb& rhs){
