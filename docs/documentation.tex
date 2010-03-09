@@ -990,7 +990,7 @@ void negateImage();
 
 				See figure~\ref{fig:negative} on page~\pageref{fig:negative}
 
-				\begin{figure}[h!]
+				\begin{figure}[p]
 					\centering
 					\caption{negateImage Example}
 				\includegraphics{images/outnegative.png}
@@ -1075,7 +1075,7 @@ void negateImage();
 				\begin{figure}[p]
 					\centering
 					\caption{The Main Menu}
-					\includegraphics{images/menu.png}
+					\includegraphics[scale=0.6]{images/menu.png}
 					\label{fig:menu}
 				\end{figure}
 
@@ -1771,8 +1771,11 @@ void negateImage();
 	\item{\textsc{loadimage}}
 
 		\begin{lstlisting}
-	void loadImage( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void loadImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void loadImage( ImageType<int>[],
+			bool[], char[][NAME_LEN] );
+
+	void loadImage( ImageType<rgb>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1819,8 +1822,11 @@ void negateImage();
 	\item{\textsc{saveimage}}
 
 		\begin{lstlisting}
-	void saveImage( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void saveImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void saveImage( ImageType<int>[], 
+			bool[], char[][NAME_LEN] );
+
+	void saveImage( ImageType<rgb>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1867,8 +1873,11 @@ void negateImage();
 	\item{\textsc{getimageinfo}}
 
 		\begin{lstlisting}
-	void getImageInfo( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void getImageInfo( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void getImageInfo( ImageType<int>[], 
+			bool[], char[][NAME_LEN] );
+
+	void getImageInfo( ImageType<rgb>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1916,8 +1925,11 @@ void negateImage();
 	\item{\textsc{setpixel}}
 
 		\begin{lstlisting}
-	void setPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void setPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void setPixel( ImageType<int>[], 
+			bool[], char[][NAME_LEN] );
+
+	void setPixel( ImageType<rgb>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1964,8 +1976,11 @@ void negateImage();
 	\item{\textsc{getpixel}}
 
 		\begin{lstlisting}
-	void getPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
-	void getPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void getPixel( ImageType<int>[], 
+			bool[], char[][NAME_LEN] );
+
+	void getPixel( ImageType<rgb>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2011,7 +2026,8 @@ void negateImage();
 	\item{\textsc{extractsub}}
 
 		\begin{lstlisting}
-	void extractSub( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void extractSub( ImageType<pType>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2059,7 +2075,8 @@ void negateImage();
 	\item{\textsc{enlargeimg}}
 
 		\begin{lstlisting}
-	void enlargeImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void enlargeImg( ImageType<pType>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2107,7 +2124,8 @@ void negateImage();
 	\item{\textsc{shrinkimg}}
 
 		\begin{lstlisting}
-	void shrinkImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void shrinkImg( ImageType<pType>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2155,7 +2173,8 @@ void negateImage();
 	\item{\textsc{reflectimg}}
 
 		\begin{lstlisting}
-	void reflectImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void reflectImg( ImageType<pType>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2202,7 +2221,8 @@ void negateImage();
 	\item{\textsc{translateimg}}
 
 		\begin{lstlisting}
-	void translateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void translateImg( ImageType<pType>[],
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2251,7 +2271,8 @@ void negateImage();
 	\item{\textsc{rotateimg}}
 
 		\begin{lstlisting}
-	void rotateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void rotateImg( ImageType<pType>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2299,7 +2320,8 @@ void negateImage();
 	\item{\textsc{sumimg}}
 
 		\begin{lstlisting}
-	void sumImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void sumImg( ImageType<pType>[], 
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2347,7 +2369,8 @@ void negateImage();
 	\item{\textsc{subtractimg}}
 
 		\begin{lstlisting}
-	void subtractImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void subtractImg( ImageType<pType>[], 	
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2394,7 +2417,8 @@ void negateImage();
 	\item{\textsc{negate img}}
 
 		\begin{lstlisting}
-	void negateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void negateImg( ImageType<pType>[], 	
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2440,7 +2464,8 @@ void negateImage();
 	\item{\textsc{clearregister}}
 
 		\begin{lstlisting}
-	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void clearRegister( ImageType<pType>[], 	
+			bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -3289,15 +3314,15 @@ bugs while writing the image class, there was a huge amount of testing done to t
 possible given the time limitation.
 
 	There was another bug the students ran into when rotating color images holes were appearing in the image.  After
-spending quite some time searching the probelm was finally discovered;  Apparently the implementation of the opperator
-overloads for the rgb class were actually changing the calling object, so if the same value was used in an equation more
+spending quite some time searching the problem was finally discovered;  Apparently the implementation of the operator
+overloads for the RGB class were actually changing the calling object, so if the same value was used in an equation more
 than once it was returning incorrect results.  This problem helped both of the students understand operator overloading
 much better, and once this was discovered the rest of the program went smoothly.
 
 \section{What was Learned}
 
 	The most important thing learned in this assignment was the use of templates. This was taught briefly in the previous
-semester of CS, so the concept of it was fairly new to the students. This challenge did not sway them though. the
+semester of CS, so the concept of it was fairly new to the students. This challenge did not sway them though. The
 students quickly grasped the concepts of templates and easily implemented it into the image class to use both ints and
 RGB values. The students were then able to design the functions that manipulated the 2D array of ints and RGB both, that
 in turn manipulated the image. This was an important concept to grasp because without understanding the concepts of a
@@ -3338,13 +3363,7 @@ Josiah wanted to go above the normal implementation of a standard documentation 
 made the writing of the documentation very easy and structured. Overall, the students contributed equally for their
 level of programming skill.
 
-\section{Extra Credit}
-
-	\subsection{Extras}
-
-		\begin{description}
-
-			\item{Final Thoughts}
+\section{Extras}
 
 				This section isn't required but we thought that it was important to explain all the
 				extra features that were added to this project.  The biggest addition to the project was
@@ -3369,6 +3388,5 @@ level of programming skill.
 				\begin{figure}[p] \centering \caption{difference image without noise}
 					\includegraphics{images/subclear.png} \label{fig:subclear} \end{figure}
 
-		\end{description}
 
 \end{document}
