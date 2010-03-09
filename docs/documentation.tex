@@ -3283,14 +3283,20 @@ highlight for the menu options it worked fine on one computer, but when it was u
 highlighting didn't show up.  The fix for this involved manually inverting the colors rather than just changing the
 attribute.  This is a good example of how a program may act differently on different computers.
 
-Another bug that we ran into was having trouble when enlarging images too much.  The way this was dealt with was to add a
+	Another bug that we ran into was having trouble when enlarging images too much.  The way this was dealt with was to add a
 global constant to the main driver which limited the size allowed to scale an image.  Although there weren't many actual
 bugs while writing the image class, there was a huge amount of testing done to try and make the program as robust as
 possible given the time limitation.
 
+	There was another bug the students ran into when rotating color images holes were appearing in the image.  After
+spending quite some time searching the probelm was finally discovered;  Apparently the implementation of the opperator
+overloads for the rgb class were actually changing the calling object, so if the same value was used in an equation more
+than once it was returning incorrect results.  This problem helped both of the students understand operator overloading
+much better, and once this was discovered the rest of the program went smoothly.
+
 \section{What was Learned}
 
-The most important thing learned in this assignment was the use of templates. This was taught briefly in the previous
+	The most important thing learned in this assignment was the use of templates. This was taught briefly in the previous
 semester of CS, so the concept of it was fairly new to the students. This challenge did not sway them though. the
 students quickly grasped the concepts of templates and easily implemented it into the image class to use both ints and
 RGB values. The students were then able to design the functions that manipulated the 2D array of ints and RGB both, that
@@ -3298,14 +3304,14 @@ in turn manipulated the image. This was an important concept to grasp because wi
 template, the students would not be able to correctly develop algorithms that correctly manipulate any type of image
 format.
 
-Another concept that the students learned was the knowledge of how images are stored. The students had first hand
+	Another concept that the students learned was the knowledge of how images are stored. The students had first hand
 experience with an image format and this knowledge allowed the students to have a greater understanding of how computers
 and the data structures associated with file formats intertwine with the software developer. The students have more of
 an appreciation for the necessity of data structures and the implications of designing easy to use and compact data
 structures for the end user. The students also learned how color images can be represented in computers and gained
 excellent hands on experience with how they work and how to manipulate them.
 
-One of the other concepts that the students learned was the ability to use ncurses in their program. This knowledge
+	One of the other concepts that the students learned was the ability to use ncurses in their program. This knowledge
 allowed the students to create a very easy-to-use menu that is capable of multiple floating and scrollable menus. While
 this part of the program was not needed, the students had a desire to learn more about C++ than what is being taught in
 the class and brought it upon themselves to learn about ncurses. This knowledge has greatly improved their knowledge of
@@ -3313,7 +3319,7 @@ pointers and correct program structure because ncurses utilizes many pointers. T
 very complex if there is not a clean program structure implemented. There are many facets of ncurses that are
 intertwined, so the students made a clean and modular ncurses driver that is able to be easily read.
 
-Since this was a group project, we felt that it would be fairly difficult to merge and maintain our code, so we decided
+	Since this was a group project, we felt that it would be fairly difficult to merge and maintain our code, so we decided
 to learn and use git. Git is a revision control program that focuses on software development. It was developed by Linus
 Torvalds for the development of the Linux kernel. Git has proved to be extremely useful in the management of the source
 code. It did have a small learning curve, but once that was crossed, it has become one of the most valuable tools that I
@@ -3321,7 +3327,7 @@ know of.
 
 \section{Division of Labor}
 
-For the requirements that were asked for, each student did an equal amount of work. The students met very early and
+	For the requirements that were asked for, each student did an equal amount of work. The students met very early and
 divided up the required functions equally. Each student then implemented each function of the image and RGB class. Since
 the students are at different levels of programming experience, one of the students went above the required
 implementation to challenge himself. Josh implemented some advanced methods of manipulating the image using knowledge
