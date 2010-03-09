@@ -3299,6 +3299,16 @@ void negateImage();
 
 \end{description}
 
+\subsection{RGB.h}
+
+For the RGB class, the implementation was quite simple. All that was required was
+a class with three ints, and operator overloads for $+ - * / += -= *= /= < > ==$
+abs( ) (absolute value). This was overall very easy to implement and is very
+intuitive and does not need to be spelled out for every function. Overall, each
+operator is overloaded for ints and rgb classes. For the rgb class comparison,
+each rgb value is compared against the other rgb value respectively. For the int
+overload, the rgb values are averaged and then compared to the int value.
+
 \section{Bugs and Errors}
 
 	During the creation of this program we ran into a multitude of bugs and errors.  Some of the biggest obstacles came
