@@ -1,0 +1,11 @@
+This is a simple PGM and PPM image editor. 
+
+Just run "make" and it should make a binary file for you called "main.out"
+
+You can pass images to it on the command line to be used in the file like so
+
+"./main.out images/image.pgm"
+
+This software requires g++ to compile along with some basic C++ libraries.
+
+Contact Josiah at dontdrinkh2so4 * gmail * com for troubleshooting and/or help.
