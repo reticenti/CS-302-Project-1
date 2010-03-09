@@ -64,48 +64,53 @@
 
 \section{Introduction}
 
-In this assignment, the students were asked to make an image class that manipulated a Portable Gray Map (PGM) image
-in various ways. This was to be accomplished using dynamic 2D arrays and other tools that were learned in previous CS courses.
+In this assignment, the students were asked to make an image class that manipulated a Portable Gray Map (PGM) and
+Portable Pixmap (PPM) images in various ways. The PPM format was to use a 2D array of a RGB class that the students were to
+implement, and the PGM format was stored using a 2D int array.
 
-One of the first problems faced was how to use the supplied read and write image files.
-These functions were provided to simplify the build process as they allowed the students to concentrate 
-on the manipulation of the images.
+One of the first problems faced was how to use the supplied read and write image files.  These functions were provided
+to simplify the build process as they allowed the students to concentrate on the manipulation of the images. These files
+were also changed slightly to accommodate the PPM and PGM file formats and were overloaded to accept either file.
 
-After reading and writing images was mastered, the students undertook the bulk of the assignment which was to
-manipulate the images that had been read in with the supplied read function. This required the knowledge of
-manipulating dynamic 2D arrays. Dynamic 2D arrays was a new tool for the students' C++ repertoire, but the
-students soon came to understand the benefits of dynamic 2D arrays.
+After reading and writing images was mastered, the students undertook the bulk of the assignment which was to manipulate
+the images that had been read in with the supplied read function. This required the knowledge of manipulating dynamic 2D
+arrays of both the RGB and int classes. 
 
-The assignment also required the use of constructors, destructors, copy constructors, and operator overloading,
-These topics were review from CS 202, but the use of them refreshed the students minds on how they work
-and to their purposes.
+The assignment also required the use of constructors, destructors, copy constructors, and operator overloading, These
+topics were review from CS 202, but the use of them refreshed the students minds on how they work and to their purposes.
+The students also ahd to implement these functions for the RGB class.
 
-The students also extensively documented their program and made it as easy as possible to understand what
-was happening in the various algorithms that were implemented. The students realize that commenting
-and documenting the source code for projects is extremely important and is essential to the success of
-a powerful programmer.
+The students also extensively documented their program and made it as easy as possible to understand what was happening
+in the various algorithms that were implemented. The students realize that commenting and documenting the source code
+for projects is extremely important and is essential to the success of a powerful programmer.
 
 \section{Use of Code}
 
 The use of the program should be very intuitive. The user must use the arrow keys to scroll in the menu and press enter
-to select some option. The menu will then pop up windows and message boxes depending on the user's selection and the
-user's input. This provides for a very effective setup and takes the burden out of trying to look at the keyboard and
-the menu for key choices in a simple menu. Our menu uses ncurses to accomplish the scrolling menu. The students adapted
-a ncurses API written by Micheal Leverington from CS 135 to implement a simple curses menu at the beginning, but after
-all of the functions were completed, the students decided to make a more robust menu capable of scrolling. This was not
-required, but was done for aesthetic reasons and for the experience that it allowed the students.
+to select some option. The main program will first have the student decide to choose if the user wants to edit color or
+gray scale images. This is a limitation and was done to prevent the code from becoming too complex. The menu will then
+pop up windows and message boxes depending on the user's selection and the user's input. This provides for a very
+effective setup and takes the burden out of trying to look at the keyboard and the menu for key choices in a simple
+menu. Our menu uses ncurses to accomplish the scrolling menu. The students adapted a ncurses API written by Micheal
+Leverington from CS 135 to implement a simple curses menu at the beginning, but after all of the functions were
+completed, the students decided to make a more robust menu capable of scrolling. This was not required, but was done for
+aesthetic reasons and for the experience that it allowed the students.
 
 The image class that was implemented has all of the requirements for the functions. Each function is defined exactly
 like Dr. Bebis wanted them to be defined and the coders adapted their coding style to match what Dr. Bebis expected. The
 code is built fairly modular and most of the time expects the class user to bounds and error check before information is
-sent to the class. There is some rudimentary error checking in the class itself, but it only prevents the most foul and
+sent to the class. The image class has also been templated. This allows the user to use any image type as long as there
+is a read and write function provided. The RGB class was also made to hold the data for the color images. As long as the
+read and write functions hold their info in a Red, Green, Blue setup, the image class should be able to handle the
+image. There is some rudimentary error checking in the class itself, but it only prevents the most foul and
 gross errors. The class is also setup to throw string objects in the case of an error. These thrown strings must be
 caught in the driver, so it is up to the class user to implement the catches for these thrown strings. Strings were used
-as the errors because of their ease of use and ease of manipulating them by the class user. 
+as the errors because of their ease of use and ease of manipulation by the class user. 
 
 The file IO functions that were provided by Dr. Bebis have been combined into a single file pair (.cpp and .h) called
 imageIO. This allows a much more unified and modular approach to the use of the image IO features. It also makes
-including the functions much easier to include into multiple source files.
+including the functions much easier to include into multiple source files. This file has been modified from the last lab
+to have the ability to read and write PPM and PGM files. The PPM functions depend on the RGB class to store the data.
 
 Whenever a new image is needed by the user of the class, the user should always use the setImageInfo function that is
 included in the image class. This function takes the rows, columns, and levels and creates a blank image to manipulate.
@@ -215,7 +220,7 @@ ImageType(int, int, int);
 		\begin{description}
 
 \begin{lstlisting}
-ImageType( const ImageType& );
+ImageType( const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -247,7 +252,7 @@ ImageType( const ImageType& );
 		\begin{description}
 
 \begin{lstlisting}
-ImageType& operator= ( const ImageType& );
+ImageType<pType>& operator= ( const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -328,7 +333,7 @@ void getImageInfo(int&, int&, int&) const;
 		\begin{description}
 
 \begin{lstlisting}
-void setImageInfo(int, int, int);
+void setImageInfo(int, int, pType);
 \end{lstlisting}
 
 			\item{Purpose}
@@ -412,7 +417,7 @@ int getPixelVal(int, int) const;
 		\begin{description}
 
 \begin{lstlisting}
-void setPixelVal(int, int, int);
+pType setPixelVal(int, int, int);
 \end{lstlisting}
 
 			\item{Purpose}
@@ -448,7 +453,7 @@ void setPixelVal(int, int, int);
 		\begin{description}
 
 \begin{lstlisting}
-void getSubImage( int, int, int, int, const ImageType& );
+void getSubImage( int, int, int, int, const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -549,7 +554,8 @@ double meanGray() const;
 		\begin{description}
 
 \begin{lstlisting}
-void enlargeImage( int, const ImageType&, bool=true );
+void enlargeImage( double, const ImageType<pType>& );
+void enlargeImage( int, const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -633,7 +639,7 @@ void enlargeImage( int, const ImageType&, bool=true );
 		\begin{description}
 
 \begin{lstlisting}
-void shrinkImage( int, const ImageType& );
+void shrinkImage( int, const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -683,7 +689,7 @@ void shrinkImage( int, const ImageType& );
 		\begin{description}
 
 \begin{lstlisting}
-void reflectImage( bool, const ImageType& );
+void reflectImage( bool, const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -736,7 +742,7 @@ void reflectImage( bool, const ImageType& );
 		\begin{description}
 
 \begin{lstlisting}
-void translateImage( int, const ImageType& );
+void translateImage( int, const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -789,7 +795,7 @@ void translateImage( int, const ImageType& );
 		\begin{description}
 
 \begin{lstlisting}
-void rotateImage( int, const ImageType& );
+void rotateImage( int, const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -850,7 +856,7 @@ void rotateImage( int, const ImageType& );
 		\begin{description}
 
 \begin{lstlisting}
-ImageType& operator+ ( const ImageType& );
+ImageType& operator+ ( const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -905,7 +911,7 @@ ImageType& operator+ ( const ImageType& );
 		\begin{description}
 
 \begin{lstlisting}
-ImageType& operator- ( const ImageType& );
+ImageType& operator- ( const ImageType<pType>& );
 \end{lstlisting}
 
 			\item{Purpose}
@@ -1214,8 +1220,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void processEntry( ImageType[], bool[], 
-	char[][NAME_LEN], int );
+	void processEntry( ImageType<pType>[], bool[],
+		char[][NAME_LEN], int );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1408,7 +1414,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void promptForLoc( const char[], ImageType&, int&, int& );
+	void promptForLoc( const char[], ImageType<pType>&, 
+			int&, int& );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1662,8 +1669,8 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void fillRegs( ImageType[], bool[], char[][NAME_LEN], 
-		int, char** );
+	void fillRegs( ImageType<pType>[], bool[], 
+			char[][NAME_LEN], int, char** );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1764,15 +1771,15 @@ void negateImage();
 	\item{\textsc{loadimage}}
 
 		\begin{lstlisting}
-
-	void loadImage( ImageType[], bool[], char[][NAME_LEN] );
+	void loadImage( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void loadImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 
 				Prompt the user for a register to load to, then let them choose from a list
-				of the .pgm files in the local images directory (defined as a constant).
+				of the .pgm or .ppm files in the local images directory (defined as a constant).
 
 			\item{Input}
 
@@ -1812,8 +1819,8 @@ void negateImage();
 	\item{\textsc{saveimage}}
 
 		\begin{lstlisting}
-
-	void saveImage( ImageType[], bool[], char[][NAME_LEN] );
+	void saveImage( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void saveImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1860,8 +1867,8 @@ void negateImage();
 	\item{\textsc{getimageinfo}}
 
 		\begin{lstlisting}
-
-	void getImageInfo( ImageType[], bool[], char[][NAME_LEN] );
+	void getImageInfo( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void getImageInfo( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -1869,7 +1876,7 @@ void negateImage();
 
 				Simply retrieve image information and display to a window below the registers
 				The data being displayed is the Register number, Image Height, Width, Q value,
-				and average gray value.
+				and average color value.
 
 			\item{Input}
 
@@ -1909,15 +1916,15 @@ void negateImage();
 	\item{\textsc{setpixel}}
 
 		\begin{lstlisting}
-
-	void setPixel( ImageType[], bool[], char[][NAME_LEN] );
+	void setPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void setPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 
 				Prompt user for a register then a pixel location (row, col) and then the pixel
-				value to change that pixel to.
+				value(s) to change that pixel to.
 
 			\item{Input}
 
@@ -1957,14 +1964,14 @@ void negateImage();
 	\item{\textsc{getpixel}}
 
 		\begin{lstlisting}
-
-	void getPixel( ImageType[], bool[], char[][NAME_LEN] );
+	void getPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void getPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 
-				Return the value of a pixel in a selected image to the user.
+				Return the value(s) of a pixel in a selected image to the user.
 
 			\item{Input}
 
@@ -2004,8 +2011,7 @@ void negateImage();
 	\item{\textsc{extractsub}}
 
 		\begin{lstlisting}
-
-	void extractSub( ImageType[], bool[], char[][NAME_LEN] );
+	void extractSub( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2053,8 +2059,7 @@ void negateImage();
 	\item{\textsc{enlargeimg}}
 
 		\begin{lstlisting}
-
-	void enlargeImg( ImageType[], bool[], char[][NAME_LEN] );
+	void enlargeImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2102,8 +2107,7 @@ void negateImage();
 	\item{\textsc{shrinkimg}}
 
 		\begin{lstlisting}
-
-	void shrinkImg( ImageType[], bool[], char[][NAME_LEN] );
+	void shrinkImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2151,8 +2155,7 @@ void negateImage();
 	\item{\textsc{reflectimg}}
 
 		\begin{lstlisting}
-
-	void reflectImg( ImageType[], bool[], char[][NAME_LEN] );
+	void reflectImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2199,8 +2202,7 @@ void negateImage();
 	\item{\textsc{translateimg}}
 
 		\begin{lstlisting}
-
-	void translateImg( ImageType[], bool[], char[][NAME_LEN] );
+	void translateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2249,8 +2251,7 @@ void negateImage();
 	\item{\textsc{rotateimg}}
 
 		\begin{lstlisting}
-
-	void rotateImg( ImageType[], bool[], char[][NAME_LEN] );
+	void rotateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2298,8 +2299,7 @@ void negateImage();
 	\item{\textsc{sumimg}}
 
 		\begin{lstlisting}
-
-	void sumImg( ImageType[], bool[], char[][NAME_LEN] );
+	void sumImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2347,8 +2347,7 @@ void negateImage();
 	\item{\textsc{subtractimg}}
 
 		\begin{lstlisting}
-
-	void subtractImg( ImageType[], bool[], char[][NAME_LEN] );
+	void subtractImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2395,8 +2394,7 @@ void negateImage();
 	\item{\textsc{negate img}}
 
 		\begin{lstlisting}
-
-	void negateImg( ImageType[], bool[], char[][NAME_LEN] );
+	void negateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 		\end{lstlisting}
 
 		\begin{description}
@@ -2439,6 +2437,47 @@ void negateImage();
 
 
 
+	\item{\textsc{clearregister}}
+
+		\begin{lstlisting}
+	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+
+ 				Prompt for a register that is filled and then clear it.
+
+
+			\item{Input}
+
+				\begin{itemize}
+
+					\item{img[]}
+
+						The array with the images loaded
+
+					\item{loaded[]}
+
+						The bool array to set that the array is empty
+
+					\item{name[][NAME\_LEN]}
+
+						The array with the names of the images
+						
+
+				\end{itemize}
+
+			\item{Output}
+
+				None
+
+			\item{Assumptions}
+
+				Nothing is assumed, but it makes sense to call this only if there is something to clear.
+
+		\end{description}
+
 	\item{\textsc{findlocalpgm}}
 
 		\begin{lstlisting}
@@ -2476,6 +2515,47 @@ void negateImage();
 				this means it needs to be de-allocated later.
 
 		\end{description}
+
+
+
+	\item{\textsc{findlocalppm}}
+
+		\begin{lstlisting}
+
+	int findLocalPPM( char **&filenames );
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+
+				A somewhat brittle function that reads all the .ppm files from a local
+				directory (defined as a constant) and places them into a dynamically
+				allocated c style string array.
+
+			\item{Input}
+
+				\begin{itemize}
+
+					\item{**filenames}
+						
+						A double char pointer that is uninitialized.
+
+				\end{itemize}
+
+			\item{Output}
+
+				Allocates enough memory for a list of all the ".ppm" files
+				in the local path specified by the FILELOC constant.  It
+				then copies the file names to the array and returns the
+				number of rows in the array.
+
+			\item{Assumptions}
+
+				Pointer parameter is not initialized, but will be in the function
+				this means it needs to be de-allocated later.
+
+		\end{description}
+
 
 
 \end{description}
@@ -2789,14 +2869,16 @@ void negateImage();
 	\item{\textsc{readimage}}
 
 		\begin{lstlisting}
+	void readImage(const char fname[], ImageType<int>& image)
 
-	void readImage( const char[], ImageType& );
+	void readImage(const char fname[], ImageType<int>& image)
+	
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 
-				Reads the image into the image object from a file
+				Reads the image (PGM or PPM) into the image object from a file
 
 			\item{Input}
 
@@ -2830,13 +2912,14 @@ void negateImage();
 
 		\begin{lstlisting}
 
-	void writeImage( const char[], ImageType& );
+	void writeImage(const char fname[], ImageType<int>& image)
+	void writeImage(const char fname[], ImageType<rgb>& image)
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 
-				Writes the image to disk
+				Writes the image (PGM or PPM) to disk
 
 			\item{Input}
 
@@ -3207,18 +3290,20 @@ possible given the time limitation.
 
 \section{What was Learned}
 
-The most important thing learned in this assignment was the use of dynamic 2D arrays. This was not taught in the previous
-semester of CS, so the concept of it was new to the students. This challenge did not sway them though. the students
-quickly grasped the concepts of a dynamic 2D array and easily implemented it into the image class. The students were
-then able to design the functions that manipulated the 2D array that in turn manipulated the image. This was an
-important concept to grasp because without understanding the concepts of a 2D array, the students would not be able to
-correctly develop algorithms that correctly manipulated the image. 
+The most important thing learned in this assignment was the use of templates. This was taught briefly in the previous
+semester of CS, so the concept of it was fairly new to the students. This challenge did not sway them though. the
+students quickly grasped the concepts of templates and easily implemented it into the image class to use both ints and
+RGB values. The students were then able to design the functions that manipulated the 2D array of ints and RGB both, that
+in turn manipulated the image. This was an important concept to grasp because without understanding the concepts of a
+template, the students would not be able to correctly develop algorithms that correctly manipulate any type of image
+format.
 
 Another concept that the students learned was the knowledge of how images are stored. The students had first hand
 experience with an image format and this knowledge allowed the students to have a greater understanding of how computers
 and the data structures associated with file formats intertwine with the software developer. The students have more of
 an appreciation for the necessity of data structures and the implications of designing easy to use and compact data
-structures for the end user. 
+structures for the end user. The students also learned how color images can be represented in computers and gained
+excellent hands on experience with how they work and how to manipulate them.
 
 One of the other concepts that the students learned was the ability to use ncurses in their program. This knowledge
 allowed the students to create a very easy-to-use menu that is capable of multiple floating and scrollable menus. While
@@ -3237,129 +3322,46 @@ know of.
 \section{Division of Labor}
 
 For the requirements that were asked for, each student did an equal amount of work. The students met very early and
-divided up the required functions equally. Each student then implemented each function of the image class. Since the
-students are at different levels of programming experience, one of the students went above the required implementation
-to challenge himself. Josh implemented some advanced methods of manipulating the image using knowledge from a numerical
-methods class that he has taken in the past. Josh also wrote the driver with the help of Josiah for feedback on how to
-design the menu system. Both students studied and learned how the curses environment works and equally experimented with
-the functionality of curses and its implementation into a menu system. For the documentation, Josiah wanted to go above
-the normal implementation of a standard documentation and implemented a \LaTeX document that made the writing of the
-documentation very easy and structured. Overall, the students contributed equally for their level of programming skill.
+divided up the required functions equally. Each student then implemented each function of the image and RGB class. Since
+the students are at different levels of programming experience, one of the students went above the required
+implementation to challenge himself. Josh implemented some advanced methods of manipulating the image using knowledge
+from a numerical methods class that he has taken in the past. Josh also wrote the driver with the help of Josiah for
+feedback on how to design the menu system. Both students studied and learned how the curses environment works and
+equally experimented with the functionality of curses and its implementation into a menu system. For the documentation,
+Josiah wanted to go above the normal implementation of a standard documentation and implemented a \LaTeX document that
+made the writing of the documentation very easy and structured. Overall, the students contributed equally for their
+level of programming skill.
 
 \section{Extra Credit}
 
-	\subsection{Question 1}	
-
-		\begin{description}
-
-			\item{QUESTION:}
-
-				The algorithm that you have to implement in this assignment to shrink an image
-				is actually very simple and might not always produce good results. Can you think of a more
-				effective solution?
-			
-			\item{ANSWER:}
-
-				We used a method where instead of just taking samples we actually averaged all the pixel in each
-				block that is truncated, that way no pixel is unaccounted for.  For example if the scale value was
-				5, then blocks of 5x5 would be shrunk to 1x1.  The original method made it so that only the upper
-				left corner of the 5x5 block would be sampled. 
-
-				
-		\end{description}
-
-	\subsection{Question 2}	
-
-		\begin{description}
-
-			\item{QUESTION:}
-
-				We have already discussed in class two practical difficulties associated with rotation: (a) the
-				case where the transformed pixel coordinates fall outside the image and (b) the case
-				where the transformed pixel coordinates are not integers. In the first case, we suggested simply
-				ignoring the transformed pixel coordinates which fall outside the range. This is probably enough
-				in most cases. In the second case, we suggested finding the nearest integer neighbors to r′ and c′.
-				This approach, however, will not produce a value for every pixel in the output image. In other
-				words, it will produce numerous "holes" in the rotated image where no value was computed. Can
-				you suggest a way for dealing with this problem?
-
-			\item{ANSWER:}
-
-				To make up for holes in our images, did the opposite of what was originally suggested.  Instead of
-				going from the source to the new location we took the new locations and went back to the original
-				to see where that point should fall.  This is actually much easier than it sounds as only the
-				index values of the pixel's needed to be reversed.  The one issue with this method is that instead
-				of a counter-clockwise rotation, a clockwise rotation happens.  We fixed this problem by reversing
-				the angle before making the calculation.  Another feature we added to rotate was that it estimates
-				intermediate values so if the destination is looking for a value at (23.234, 43.23) a simple
-				bi-linear algorithm is implemented to obtain the estimated value for that point based on the four
-				points it falls around.
-
-		\end{description}
-
-	\subsection{Question 3}	
-
-		\begin{description}
-
-			\item{QUESTION:}
-			
-				This question is regarding image subtraction. By examining the difference image,
-				you will notice some rather small non-zero values in image areas where there is not really any
-				change (e.g., subtract "backg1.pgm" from "backg2.pgm" and look at the values of the difference
-				image). These differences are due to sensor noise, slight changes in illumination and various
-				other factors. Can you suggest of a way to deal with this problem?
-
-			\item{ANSWER:}
-
-				For image subtraction there were a few idea's that we had to reduce the amount of noise, but the
-				one we ended up going with was to simply add a difference threshold.  This basically means that
-				we made all pixels that differed by at least 43 (which is $\approx$ 255 $\div$ 6).  This does
-				show some improvements for noticing differences in images without a lot of noise, although some
-				noise is still there.
-				
-				See figures~\ref{fig:subnoisy} and~\ref{fig:subclear} on pages~\pageref{fig:subnoisy}
-				and~\pageref{fig:subclear}
-				
-				An idea that we had, but didn't have time to implement was to look at each pixel after the threshold
-				is made and remove any white pixel that doesn't have 3 neighbors, then run this over the image until
-				no changes are made.  I don't know how this would react but we thought it was an interesting idea.
-
-		\end{description}
-	
 	\subsection{Extras}
 
 		\begin{description}
 
 			\item{Final Thoughts}
 
-				This section isn't required but we thought that it was important to explain all the extra features that
-				were added to this project.  The biggest addition to the project was the addition of bi-cubic interpolation
-				for enlargeImage().  This was done by Josh as more of a coding challenge, but worked out pretty well.  The
-				type of spline used is a natural spline calculated using a Lagrange polynomial.  This method was chosen
-				because it only has n-1 unknowns, rather than a normal polynomial interpolation which has 4 times as many
-				unknowns.  It also allows a tridiagonal matrix to solve for all the unknowns, which is much faster than
-				a normal matrix solving algorithm.
+				This section isn't required but we thought that it was important to explain all the
+				extra features that were added to this project.  The biggest addition to the project was
+				the addition of bi-cubic interpolation for enlargeImage().  This was done by Josh as
+				more of a coding challenge, but worked out pretty well.  The type of spline used is a
+				natural spline calculated using a Lagrange polynomial.  This method was chosen because
+				it only has n-1 unknowns, rather than a normal polynomial interpolation which has 4
+				times as many unknowns.  It also allows a tridiagonal matrix to solve for all the
+				unknowns, which is much faster than a normal matrix solving algorithm.
 
-				Another addition to the project was the curses driver program.  This was done to make using the program a
-				little more enjoyable and also to show some of the things that can be done with curses.  All in all these
-				extra additions were an enjoyable challenge and I hope you enjoy them.
+				Another addition to the project was the curses driver program.  This was done to make
+				using the program a little more enjoyable and also to show some of the things that can
+				be done with curses.  All in all these extra additions were an enjoyable challenge and I
+				hope you enjoy them.
 
-				See figure~\ref{fig:enlargecubic} and~\ref{fig:enlargestd} on page~\pageref{fig:enlargecubic}
-				and~\pageref{fig:enlargestd}
+				See figure~\ref{fig:enlargecubic} and~\ref{fig:enlargestd} on
+				page~\pageref{fig:enlargecubic} and~\pageref{fig:enlargestd}
 				
-				\begin{figure}[p]
-					\centering
-					\caption{difference image with noise}
-					\includegraphics{images/subnoisy.png}
-					\label{fig:subnoisy}
-				\end{figure}
+				\begin{figure}[p] \centering \caption{difference image with noise}
+					\includegraphics{images/subnoisy.png} \label{fig:subnoisy} \end{figure}
 				
-				\begin{figure}[p]
-					\centering
-					\caption{difference image without noise}
-					\includegraphics{images/subclear.png}
-					\label{fig:subclear}
-				\end{figure}
+				\begin{figure}[p] \centering \caption{difference image without noise}
+					\includegraphics{images/subclear.png} \label{fig:subclear} \end{figure}
 
 		\end{description}
 
