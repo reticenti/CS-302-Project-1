@@ -263,8 +263,8 @@ using namespace std;
 	void negateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 	template <class pType>
 	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
-    template <class pType>
-    void countRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void countRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
 
 	// name        : findLocalPGM/PPM
 	// input       : one un-intialized double pointer of chars
@@ -1732,7 +1732,7 @@ void negateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 template <class pType>
 void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 {
-    // index of register to use
+	// index of register to use
 	int index, regions;
 
 	// holds the temp image
@@ -1743,7 +1743,7 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 	// if quit isn't choosen
 	if ( index != BAD_REG )
 	{
-        char msg[NAME_LEN];
+		char msg[NAME_LEN];
 
 		// holds temp image to be modified
 		ImageType<pType> temp = img[index];
@@ -1751,8 +1751,8 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 		// count regions
 		regions = img[index].countRegions(temp);
 
-        // display number of regions
-        sprintf(msg, "The number of regions is %i", regions);
+		// display number of regions
+		sprintf(msg, "The number of regions is %i", regions);
 		messageBox( "Number", msg );
 
 		// adds modified to register name
