@@ -54,7 +54,7 @@ using namespace std;
 	const char IMAGELOC[] = "./images/";
 
 	const int REGS = 5;				// values 1-9
-	const int MENU_OPTIONS = 16;	// number of main menu choices
+	const int MENU_OPTIONS = 17;	// number of main menu choices
 	const int BAD_REG = REGS;		// dont change this
 	const int NAME_LEN = 50;		// the max string length of names
 
@@ -263,6 +263,8 @@ using namespace std;
 	void negateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
 	template <class pType>
 	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
+    template <class pType>
+    void countRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
 
 	// name        : findLocalPGM/PPM
 	// input       : one un-intialized double pointer of chars
@@ -318,6 +320,7 @@ int main( int argc, char **argv )
 		"  Sum two images",
 		"  Subtract two images",
 		"  Compute negative of an image",
+        "  Count Regions",
 		"  Clear a register",
 		"  Exit" };
 
@@ -673,10 +676,13 @@ void processEntry( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN],
 		case 13:	// negative
 			negateImg( img, loaded, name );
 			break;
-		case 14:	// clear register
+        case 14:
+            countRegions( img, loaded, name );
+            break;
+		case 15:	// clear register
 			clearRegister( img, loaded, name );
 			break;
-		case 15:	// exit
+		case 16:	// exit
 			// do nothing lol ^_^ maybe later add an exit screen
 			break;
 	}
@@ -1529,7 +1535,7 @@ void reflectImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
  the screen.
 \******************************************************************************/
 template <class pType>
-void translateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
+void translateImg(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 {
 	// holds the image info and maximum t value
 	int index, N, M, Q, maxT;
@@ -1713,6 +1719,41 @@ void negateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 	{
 		// negate image
 		img[index].negateImage();
+
+		// adds modified to register name
+		if ( name[index][strlen(name[index])-1] != ')' )
+			strcat( name[index], " (modified)" );
+	}
+}
+
+/******************************************************************************\
+ Prompt user for which image to count regions then count them
+\******************************************************************************/
+template <class pType>
+void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
+{
+    // index of register to use
+	int index, regions;
+
+	// holds the temp image
+
+	// prompt for register number
+	index = promptForReg( loaded, name );
+
+	// if quit isn't choosen
+	if ( index != BAD_REG )
+	{
+        char msg[NAME_LEN];
+
+		// holds temp image to be modified
+		ImageType<pType> temp = img[index];
+
+		// count regions
+		regions = img[index].countRegions(temp);
+
+        // display number of regions
+        sprintf(msg, "The number of regions is %i", regions);
+		messageBox( "Number", msg );
 
 		// adds modified to register name
 		if ( name[index][strlen(name[index])-1] != ')' )
