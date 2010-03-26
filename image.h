@@ -102,7 +102,7 @@ public:
 ////// Josiah's functions //////////////////////////////////////////////////////
     void erode();
     void findComponentsBFS(ImageType<pType>, ImageType<pType>, int, int, pType);
-    void threshold(int);
+    void threshold();
 
 private:
 	int N; // # of rows
@@ -163,6 +163,7 @@ ImageType<pType>::ImageType( const ImageType<pType>& rhs )
 {
 	N = 0;
 	M = 0;
+    Q = 0;
 	pixelValue = NULL;
 
 	// set the info to the new image data
@@ -751,6 +752,13 @@ ImageType<pType>& ImageType<pType>::operator+ ( const ImageType<pType>& rhs )
 template <class pType>
 int ImageType<pType>::countRegions(ImageType<pType> inputImage)
 {
+    threshold();
+
+    dilate();
+    erode();
+    dilate();
+    erode();
+
     return 0;   // stub return value
 }
 
@@ -761,6 +769,8 @@ int ImageType<pType>::countRegions(ImageType<pType> inputImage)
 \******************************************************************************/
 template <class pType>
 void ImageType<pType>::erode(){
+
+    ImageType<pType> temp = *this;
 
 	for(int i = 0; i < N; i++)
 		for(int j = 0; j < M; j++){
@@ -774,36 +784,87 @@ void ImageType<pType>::erode(){
 			// doesnt exist. 
 			if( (i - 1 != -1) && (j - 1 != -1))
 				if(pixelValue[i - 1][j - 1] == 0)
-					pixelValue[i][j] = 0;
+					temp.pixelValue[i][j] = 0;
 
 			if(j - 1 != -1)
 				if(pixelValue[i][j - 1] == 0)
-					pixelValue[i][j] = 0;
+					temp.pixelValue[i][j] = 0;
 
-			if( (i + 1 != N + 1) && (j - 1 != -1))
+			if( (i + 1 != N) && (j - 1 != -1))
 				if(pixelValue[i + 1][j - 1] == 0)
-					pixelValue[i][j] = 0;
+					temp.pixelValue[i][j] = 0;
 
 			if(i - 1 != -1)
 				if(pixelValue[i - 1][j] == 0)
-					pixelValue[i][j] = 0;
+					temp.pixelValue[i][j] = 0;
 
-			if(i + 1 != N + 1)
+			if(i + 1 != N)
 				if(pixelValue[i + 1][j] == 0)
-					pixelValue[i][j] = 0;
+					temp.pixelValue[i][j] = 0;
 
-			if( (i - 1 != -1) && (j + 1 != M + 1))
+			if( (i - 1 != -1) && (j + 1 != M))
 				if(pixelValue[i - 1][j + 1] == 0)
-					pixelValue[i][j] = 0;
+					temp.pixelValue[i][j] = 0;
 
-			if(j + 1 != M + 1)
+			if(j + 1 != M)
 				if(pixelValue[i][j + 1] == 0)
-					pixelValue[i][j] = 0;
+					temp.pixelValue[i][j] = 0;
 
-			if( (i + 1 != N + 1) && (j + 1 != M + 1))
+			if( (i + 1 != N) && (j + 1 != M))
 				if(pixelValue[i + 1][j + 1] == 0)
-					pixelValue[i][j] = 0;
+					temp.pixelValue[i][j] = 0;
 		}
+
+    *this = temp;
+}
+
+/******************************************************************************\
+ Any pixels that are black, change the surrounding pixels to black as well
+\******************************************************************************/
+template <class pType>
+void ImageType<pType>::dilate()
+{
+    ImageType<pType> temp = *this;
+
+	for(int i = 0; i < N; i++)
+		for(int j = 0; j < M; j++){
+
+			// modified version of errode, except i check for black
+            // and then change the surroundings to that value as well
+			if( (i - 1 != -1) && (j - 1 != -1))
+				if(pixelValue[i - 1][j - 1] == Q)
+					temp.pixelValue[i][j] = Q;
+
+			if(j - 1 != -1)
+				if(pixelValue[i][j - 1] == Q)
+					temp.pixelValue[i][j] = Q;
+
+			if( (i + 1 != N) && (j - 1 != -1))
+				if(pixelValue[i + 1][j - 1] == Q)
+					temp.pixelValue[i][j] = Q;
+
+			if(i - 1 != -1)
+				if(pixelValue[i - 1][j] == Q)
+					temp.pixelValue[i][j] = Q;
+
+			if(i + 1 != N)
+				if(pixelValue[i + 1][j] == Q)
+					temp.pixelValue[i][j] = Q;
+
+			if( (i - 1 != -1) && (j + 1 != M))
+				if(pixelValue[i - 1][j + 1] == Q)
+					temp.pixelValue[i][j] = Q;
+
+			if(j + 1 != M)
+				if(pixelValue[i][j + 1] == Q)
+					temp.pixelValue[i][j] = Q;
+
+			if( (i + 1 != N) && (j + 1 != M))
+				if(pixelValue[i + 1][j + 1] == Q)
+					temp.pixelValue[i][j] = Q;
+		}
+    
+    *this = temp;
 }
 
 /******************************************************************************\
@@ -820,24 +881,24 @@ void ImageType<pType>::findComponentsBFS(ImageType<pType>, ImageType<pType>, int
   in the entire image.
 \******************************************************************************/
 template <class pType>
-void ImageType<pType>::threshold(int){
+void ImageType<pType>::threshold(){
 
 	pType T;
 
 	pType avg;
 
-	int x;
+	double x = 5.5;
 
 	//Lets try to find a good number to use for an automatic threshold
 	avg = meanColor();
 
-	T = avg/x;
+	T = avg*x;
 
 	for(int i = 0; i < N; i++)
 		for(int j = 0; j < M; j++){
 		
 			if(pixelValue[i][j] > T)
-				pixelValue[i][j] = 255;
+				pixelValue[i][j] = Q;
 			else pixelValue[i][j] = 0;
 
 		}
