@@ -54,8 +54,6 @@ public:
 	// return the pixel value at the desired location
 	pType getPixelVal(int, int) const;
 
-////// Josh's functions ////////////////////////////////////////////////////////
-
 	// returns the mean value of all the pixels
 	pType meanColor() const;
 
@@ -76,8 +74,6 @@ public:
 	// calculate the negative of every pixel (Q - current value)
 	void negateImage();
 
-////// Josiah's functions //////////////////////////////////////////////////////
-
 	// calculate a sub image given the row,col for the upper left and lower
 	// right corners
 	void getSubImage( int, int, int, int, const ImageType<pType>& );
@@ -97,6 +93,16 @@ public:
 	// sum two images giving no particular bias to one or the other
 	ImageType& operator+ ( const ImageType<pType>& );
 
+////// Josh's functions ////////////////////////////////////////////////////////
+    void dilate();
+    void findComponentsDFS(ImageType<pType>, ImageType<pType>, int, int, pType);
+
+    int countRegions(ImageType<pType>);
+
+////// Josiah's functions //////////////////////////////////////////////////////
+    void erode();
+    void findComponentsBFS(ImageType<pType>, ImageType<pType>, int, int, pType);
+    void threshold(int);
 
 private:
 	int N; // # of rows
@@ -155,6 +161,10 @@ ImageType<pType>::ImageType(int tmpN, int tmpM, int tmpQ)
 template <class pType>
 ImageType<pType>::ImageType( const ImageType<pType>& rhs )
 {
+	N = 0;
+	M = 0;
+	pixelValue = NULL;
+
 	// set the info to the new image data
 	setImageInfo( rhs.N, rhs.M, rhs.Q );
 
@@ -733,6 +743,12 @@ ImageType<pType>& ImageType<pType>::operator+ ( const ImageType<pType>& rhs )
 			pixelValue[i][j] = pixelValue[i][j]*a+rhs.pixelValue[i][j]*(1.0-a);
 
 	return *this;	// return current object
+}
+
+template <class pType>
+int ImageType<pType>::countRegions(ImageType<pType> inputImage)
+{
+    return 0;   // stub return value
 }
 
 #endif /* IMAGE */
