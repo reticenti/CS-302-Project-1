@@ -15,7 +15,10 @@ class rgb{
 		rgb(int, int, int);
 
 		// copy allocates memory and copies info from the right hand side
-		rgb( const rgb& );
+		rgb( const rgb& );	
+
+		// allows to be initialized as integer
+		rgb( const int& );
 
 		// same as copy 
 		rgb& operator= ( const rgb& );

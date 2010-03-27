@@ -41,11 +41,20 @@
 #include <cstdio>
 #include <dirent.h>
 #include <cstring>
+#include <stack>
+#include <queue>
 #include "comp_curses.h"
 #include "imageIO.h"
 #include "image.h"
 
 using namespace std;
+
+// This struct is used to store locations of pixels in a stack or queue
+struct location
+{
+	int r;							// holds row value
+	int c;							// holds column value
+};
 
 /******************************************************************************\
                                    CONSTANTS
@@ -265,6 +274,25 @@ using namespace std;
 	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
 	template <class pType>
 	void countRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
+
+// Functions used for Count Regions	////////////////////////////////////////////
+
+	// Josh's Functions ////////////////////////////////////////////////////////
+
+	template <class pType>
+	int computeComponents( ImageType<pType>, ImageType<pType>& );
+    
+	template <class pType>
+	void findComponentsDFS( ImageType<pType>, ImageType<pType>&, int, int,
+	    pType );
+
+	// Josiah's Functions //////////////////////////////////////////////////////
+
+	template <class pType>
+    void findComponentsBFS( ImageType<pType>, ImageType<pType>&, int, int,
+	    pType );
+
+////////////////////////////////////////////////////////////////////////////////
 
 	// name        : findLocalPGM/PPM
 	// input       : one un-intialized double pointer of chars
@@ -1745,11 +1773,13 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 	{
 		char msg[NAME_LEN];
 
-		// holds temp image to be modified
-		ImageType<pType> temp = img[index];
+		ImageType<pType> temp;
 
 		// count regions
-		regions = img[index].countRegions(temp);
+		regions = computeComponents(img[index], temp);
+
+		// set image to the counted image
+		img[index] = temp;
 
 		// display number of regions
 		sprintf(msg, "The number of regions is %i", regions);
@@ -2278,5 +2308,115 @@ int findLocalPPM( char **&filenames )
 
 	// return the number of rows in filenames
 	return count;
+}
+
+/******************************************************************************\
+ Labels each region in the image with a different color.
+\******************************************************************************/
+template <class pType>
+int computeComponents( ImageType<pType> input, ImageType<pType>& output )
+{
+	// holds the loop values and the regions
+	int N, M, Q, regions = 0;
+
+	// label value
+	pType lbl;
+
+	// retrieve image info (rows, columns, color depth)
+	input.getImageInfo(N, M, Q);
+
+	// set the output image equal to input image to start
+	output = input;
+
+	// run threshold
+	output.threshold(128);
+
+	// dilate then erode image
+	output.dilate();
+	output.erode();
+
+	// loop through looking for white pixels and flooding area with a color
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
+			if ( output.getPixelVal(i, j) == Q )	// pixel is white
+			{
+				regions++;			// count regions
+				lbl = regions*8;
+				findComponentsDFS(output, output, i, j, lbl);
+				// findComponentsBFS(output, output, i, j, lbl);
+			}
+	
+	// return number of regions
+	return regions;
+}
+
+/******************************************************************************\
+  Depth first search, fills regions starting at the deepest point and working
+  back (uses a stack)
+\******************************************************************************/
+template <class pType>
+void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
+   int startRow, int startCol, pType label)
+{
+	// used to hold limits for the loop
+	int N, M, Q;
+
+	// first thing set the output image equal to the input image
+	outputImg = inputImg;
+
+	// set up N, M, and Q
+	outputImg.getImageInfo(N, M, Q);
+
+	// declare the stack of locations
+	stack<location> stk;
+
+	// a couple temporary location types to hold information
+	location loc, loc2;
+
+	// push the first location to the stack
+	loc.r = startRow;
+	loc.c = startCol;
+
+	stk.push(loc);
+
+	// temporary pixel value used as placeholder value
+	pType negOne = -1;
+
+	while (!stk.empty())
+	{
+		// hold the value on top of the stack
+		loc = stk.top();
+		
+		// pop the top of the stack off
+		stk.pop();
+
+		// set value at location to label value
+		outputImg.setPixelVal(loc.r, loc.c, label);
+
+		for ( int i = loc.r-1; i <= loc.r+1; i++ )
+			for ( int j = loc.c-1; j <= loc.c+1; j++ )
+				if ( i >= 0 && i < N && j >= 0 && j < M )
+					if ( inputImg.getPixelVal(i, j) == Q
+					     && outputImg.getPixelVal(i, j) == Q )
+					{
+						// "touch" the location on output
+						outputImg.setPixelVal(i, j, negOne);
+
+						// push to stack because location is "untouched"
+						loc2.r = i;
+						loc2.c = j;
+						stk.push( loc2 );
+					}
+	}
+}
+	
+/******************************************************************************\
+  Breadth first search. searches for regions using enslaved gnomes
+\******************************************************************************/
+template <class pType>
+void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
+   int startRow, int startCol, pType label)
+{
+
 }
 

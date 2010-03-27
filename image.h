@@ -95,14 +95,11 @@ public:
 
 ////// Josh's functions ////////////////////////////////////////////////////////
     void dilate();
-    void findComponentsDFS(ImageType<pType>, ImageType<pType>, int, int, pType);
-
-    int countRegions(ImageType<pType>);
 
 ////// Josiah's functions //////////////////////////////////////////////////////
     void erode();
-    void findComponentsBFS(ImageType<pType>, ImageType<pType>, int, int, pType);
     void threshold();
+    void threshold(int);
 
 private:
 	int N; // # of rows
@@ -747,22 +744,6 @@ ImageType<pType>& ImageType<pType>::operator+ ( const ImageType<pType>& rhs )
 }
 
 /******************************************************************************\
-  Counts the regions using magic
-\******************************************************************************/
-template <class pType>
-int ImageType<pType>::countRegions(ImageType<pType> inputImage)
-{
-    threshold();
-
-    dilate();
-    erode();
-    dilate();
-    erode();
-
-    return 0;   // stub return value
-}
-
-/******************************************************************************\
   Erodes the image. The image needs to be thresholded first for this to make
   any sense. Erode occurs when i,j touches any pixel on its 8 edges that is
   equal to 0. If the pixel touches a 0, i,j is set to 0
@@ -824,13 +805,15 @@ void ImageType<pType>::erode(){
 template <class pType>
 void ImageType<pType>::dilate()
 {
-    ImageType<pType> temp = *this;
+	ImageType<pType> temp = *this;
+
+	bool endloop;
 
 	for(int i = 0; i < N; i++)
 		for(int j = 0; j < M; j++){
 
 			// modified version of errode, except i check for black
-            // and then change the surroundings to that value as well
+			// and then change the surroundings to that value as well
 			if( (i - 1 != -1) && (j - 1 != -1))
 				if(pixelValue[i - 1][j - 1] == Q)
 					temp.pixelValue[i][j] = Q;
@@ -862,19 +845,12 @@ void ImageType<pType>::dilate()
 			if( (i + 1 != N) && (j + 1 != M))
 				if(pixelValue[i + 1][j + 1] == Q)
 					temp.pixelValue[i][j] = Q;
+
 		}
-    
-    *this = temp;
+
+	*this = temp;
 }
 
-/******************************************************************************\
-  Breadth first search. searches for regions using enslaved gnomes
-\******************************************************************************/
-template <class pType>
-void ImageType<pType>::findComponentsBFS(ImageType<pType>, ImageType<pType>, int, int, pType){
-
-}
-    
 /******************************************************************************\
   Thresholds an image. If > T, i,j = 255 | if <= T, i,j = 0
   T is found automatically using a variation of the mean value of gray value
@@ -894,10 +870,19 @@ void ImageType<pType>::threshold(){
 
 	T = avg*x;
 
+	threshold( T );
+}
+
+/******************************************************************************\
+ Simple threshold that doesn't do auto thresholding
+\******************************************************************************/
+template <class pType>
+void ImageType<pType>::threshold( int L ){
+
 	for(int i = 0; i < N; i++)
 		for(int j = 0; j < M; j++){
-		
-			if(pixelValue[i][j] > T)
+
+			if(pixelValue[i][j] > L)
 				pixelValue[i][j] = Q;
 			else pixelValue[i][j] = 0;
 

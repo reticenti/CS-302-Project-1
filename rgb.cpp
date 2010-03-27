@@ -28,6 +28,16 @@ rgb::rgb( const rgb& rhs){
 
 }
 
+//allows to be intialized like an integer
+rgb::rgb( const int& rhs){
+
+
+	r = rhs;
+	g = rhs;
+	b = rhs;
+
+}
+
 // same as copy 
 rgb& rgb::operator= ( const rgb& rhs){
 
