@@ -311,3 +311,12 @@ rgb abs( const rgb& rhs )
 	return retVal;
 }
 
+int toInt( const rgb& rhs )
+{
+	return (rhs.r + rhs.g + rhs.b)/3;
+}
+
+int toInt( const int& rhs )
+{
+	return rhs;
+}

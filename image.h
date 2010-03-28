@@ -99,7 +99,7 @@ public:
 ////// Josiah's functions //////////////////////////////////////////////////////
     void erode();
     void threshold();
-    void threshold(int);
+    void threshold(pType);
 
 private:
 	int N; // # of rows
@@ -852,32 +852,47 @@ void ImageType<pType>::dilate()
 }
 
 /******************************************************************************\
-  Thresholds an image. If > T, i,j = 255 | if <= T, i,j = 0
-  T is found automatically using a variation of the mean value of gray value
-  in the entire image.
+ This selects threshold value T automatically then calls the parameterized
+ threshold.  The selection involes taking the average of the pixels greater
+ than the mean value of the whole image then adding 2/5 the difference to Q to
+ the result.
 \******************************************************************************/
 template <class pType>
 void ImageType<pType>::threshold(){
 
-	pType T;
-
-	pType avg;
-
-	double x = 5.5;
+	pType T, avg;
+	int divisor = 0;
 
 	//Lets try to find a good number to use for an automatic threshold
 	avg = meanColor();
+	T = 0;
 
-	T = avg*x;
+	// take the average of the values greate than the images average
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
+		{
+			if ( pixelValue[i][j] > avg )
+			{
+				T = T + pixelValue[i][j];
+				divisor++;
+			}
+		}
+		
+	// this is the average value of the pixels greater than old average
+	T = T / divisor;
 
+	// take the value 2/5 of the way to Q from the current location
+	T = T + (Q - toInt(T)) / 2.5;
+
+	// run the actual threshold with the correct data
 	threshold( T );
 }
 
 /******************************************************************************\
- Simple threshold that doesn't do auto thresholding
+ Thresholds an image. If > T, i,j = 255 | if <= T, i,j = 0
 \******************************************************************************/
 template <class pType>
-void ImageType<pType>::threshold( int L ){
+void ImageType<pType>::threshold( pType L ){
 
 	for(int i = 0; i < N; i++)
 		for(int j = 0; j < M; j++){

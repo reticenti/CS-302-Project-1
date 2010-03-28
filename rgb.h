@@ -81,5 +81,8 @@ class rgb{
 
 rgb abs( const rgb& );
 
+int toInt( const rgb& );
+int toInt( const int& );
+
 #endif
 

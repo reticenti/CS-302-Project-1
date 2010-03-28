@@ -292,6 +292,11 @@ struct location
     void findComponentsBFS( ImageType<pType>, ImageType<pType>&, int, int,
 	    pType );
 
+	// Extra Functions /////////////////////////////////////////////////////////
+	template <class pType>
+	void findComponentsRec(const ImageType<pType>&, ImageType<pType>&, int,
+        int, pType);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 	// name        : findLocalPGM/PPM
@@ -2318,9 +2323,13 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 {
 	// holds the loop values and the regions
 	int N, M, Q, regions = 0;
+	int labelval=0;
 
 	// label value
 	pType lbl;
+
+	// temp image used to count regions initialialy
+	ImageType<pType> temp;
 
 	// retrieve image info (rows, columns, color depth)
 	input.getImageInfo(N, M, Q);
@@ -2329,22 +2338,36 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 	output = input;
 
 	// run threshold
-	output.threshold(128);
+	output.threshold();
 
 	// dilate then erode image
 	output.dilate();
 	output.erode();
 
-	// loop through looking for white pixels and flooding area with a color
+	// This only changes a temporary image used to count the regions to divide
+	// label values evenly
+	temp = output;
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
-			if ( output.getPixelVal(i, j) == Q )	// pixel is white
+			if ( temp.getPixelVal(i, j) == Q )    // pixel is white
 			{
 				regions++;			// count regions
-				lbl = regions*8;
-				findComponentsDFS(output, output, i, j, lbl);
-				// findComponentsBFS(output, output, i, j, lbl);
+				lbl = Q/2;
+				findComponentsDFS(temp, temp, i, j, lbl);
+				//findComponentsBFS(temp, temp, i, j, lbl);
+				//findComponentsRec(temp, temp, i, j, lbl);
 			}
+
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
+			if ( output.getPixelVal(i, j) == Q )    // pixel is white
+			{
+				labelval++;
+				// will split label values evenly from 2% of Q to 98% of Q
+				lbl = labelval*(Q-(Q*0.02))/regions;
+				findComponentsDFS(output, output, i, j, lbl);
+			}
+
 	
 	// return number of regions
 	return regions;
@@ -2360,9 +2383,6 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 {
 	// used to hold limits for the loop
 	int N, M, Q;
-
-	// first thing set the output image equal to the input image
-	outputImg = inputImg;
 
 	// set up N, M, and Q
 	outputImg.getImageInfo(N, M, Q);
@@ -2415,8 +2435,47 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 \******************************************************************************/
 template <class pType>
 void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
-   int startRow, int startCol, pType label)
+    int startRow, int startCol, pType label)
 {
 
 }
 
+/******************************************************************************\
+  Depth first RECURSIVE search. This recursively floods the current region with
+  the value of label.
+\******************************************************************************/
+template <class pType>
+void findComponentsRec(const ImageType<pType>& inputImg,
+    ImageType<pType>& outputImg, int startRow, int startCol, pType label)
+{
+	int N, M, Q;
+
+	inputImg.getImageInfo(N, M, Q);
+
+	// test for valid location
+	if ( startRow >= 0 && startCol >= 0 && startRow < N && startCol < M )
+		if ( outputImg.getPixelVal(startRow, startCol) != label &&
+			 outputImg.getPixelVal(startRow, startCol) != 0 )
+		{
+			// set pixel value
+			outputImg.setPixelVal(startRow, startCol, label);
+
+			// recursive calls
+			findComponentsRec(inputImg, outputImg, startRow-1, startCol-1,
+			    label);
+			findComponentsRec(inputImg, outputImg, startRow-1, startCol,
+			    label);
+			findComponentsRec(inputImg, outputImg, startRow-1, startCol+1,
+			    label);
+			findComponentsRec(inputImg, outputImg, startRow, startCol-1,
+			    label);
+			findComponentsRec(inputImg, outputImg, startRow, startCol+1,
+			    label);
+			findComponentsRec(inputImg, outputImg, startRow+1, startCol-1,
+			    label);
+			findComponentsRec(inputImg, outputImg, startRow+1, startCol,
+			    label);
+			findComponentsRec(inputImg, outputImg, startRow+1, startCol+1,
+			    label);
+		}
+}
