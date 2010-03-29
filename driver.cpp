@@ -2438,6 +2438,53 @@ void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
     int startRow, int startCol, pType label)
 {
 
+	// used to hold limits for the loop
+	int N, M, Q;
+
+	// set up N, M, and Q
+	outputImg.getImageInfo(N, M, Q);
+
+	// declare the queue of locations
+	queue<location> que;
+
+	// a couple temporary location types to hold information
+	location loc, loc2;
+
+	// push the first location to the queue
+	loc.r = startRow;
+	loc.c = startCol;
+
+	que.push(loc);
+
+	// temporary pixel value used as placeholder value
+	pType negOne = -1;
+
+	while (!que.empty())
+	{
+		// hold the value on top of the queue
+		loc = que.front();
+		
+		// pop the top of the queue off
+		stk.pop();
+
+		// set value at location to label value
+		outputImg.setPixelVal(loc.r, loc.c, label);
+
+		for ( int i = loc.r-1; i <= loc.r+1; i++ )
+			for ( int j = loc.c-1; j <= loc.c+1; j++ )
+				if ( i >= 0 && i < N && j >= 0 && j < M )
+					if ( inputImg.getPixelVal(i, j) == Q
+					     && outputImg.getPixelVal(i, j) == Q )
+					{
+						// "touch" the location on output
+						outputImg.setPixelVal(i, j, negOne);
+
+						// push to queue because location is "untouched"
+						loc2.r = i;
+						loc2.c = j;
+						stk.push( loc2 );
+					}
+	}
 }
 
 /******************************************************************************\
