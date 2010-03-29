@@ -58,8 +58,8 @@ struct location
 };
 
 /******************************************************************************\
-  CONSTANTS
-  \******************************************************************************/
+ CONSTANTS
+\******************************************************************************/
 // the folder with the images in it, (make it ./ for local) 
 const char IMAGELOC[] = "./images/";
 
@@ -91,8 +91,8 @@ const short MENU_FOREGROUND = COLOR_BLACK;	// window foregrounds
 
 
 /******************************************************************************\
-  FUNCTION PROTOTYPES
-  \******************************************************************************/
+ FUNCTION PROTOTYPES
+\******************************************************************************/
 // name        : showMenu
 // input       : an un-initialized window pointer, a string to be the title,
 //               height, width, xLoc, yLoc of the window, list of c-style
@@ -313,8 +313,8 @@ int findLocalPGM( char **&filenames );
 int findLocalPPM( char **&filenames );
 
 /******************************************************************************\
-  MAIN
-  \******************************************************************************/
+ MAIN
+\******************************************************************************/
 
 int main( int argc, char **argv )
 {
@@ -441,14 +441,14 @@ int main( int argc, char **argv )
 }
 
 /******************************************************************************\
-  |                           FUNCTION IMPLEMENTATION                            |
-  \******************************************************************************/
+|                           FUNCTION IMPLEMENTATION                            |
+\******************************************************************************/
 
 /******************************************************************************\
-  Overloaded showMenu that accepts static arrays of strings (length NAME_LEN)
-  and then creates a dynamic version and passes it to the other showMenu,
-  afterwards the memory is de-allocated
-  \******************************************************************************/
+ Overloaded showMenu that accepts static arrays of strings (length NAME_LEN)
+ and then creates a dynamic version and passes it to the other showMenu,
+ afterwards the memory is de-allocated
+\******************************************************************************/
 int showMenu( WINDOW *& menu, const char title[], int height, int width,
 		int locY, int locX, char menuStr[][NAME_LEN], int choices, bool erase )
 {
@@ -481,15 +481,15 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width,
 }
 
 /******************************************************************************\
-  This is the function which builds the scrolling menu system, this simply
-  creates a curses window and puts all the options stores in menuStr onto the
-  window, it then waits for the user to press UP, DOWN, or RETURN before
-  reacting.  The parameters allow menus to be different widths, heights, and
-  locations.  A few constants can be changed to change the colors of the window.
+ This is the function which builds the scrolling menu system, this simply
+ creates a curses window and puts all the options stores in menuStr onto the
+ window, it then waits for the user to press UP, DOWN, or RETURN before
+ reacting.  The parameters allow menus to be different widths, heights, and
+ locations.  A few constants can be changed to change the colors of the window.
 
-  !!!Beware the WINDOW pointer 'menu' is intialized here but is NOT deleted.
-  It is up to the calling function to take care of this object.
-  \******************************************************************************/
+ !!!Beware the WINDOW pointer 'menu' is intialized here but is NOT deleted.
+ It is up to the calling function to take care of this object.
+\******************************************************************************/
 int showMenu( WINDOW *& menu, const char title[], int height, int width,
 		int locY, int locX, char *menuStr[], int choices, bool eraseHighlight )
 {
@@ -592,12 +592,12 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width,
 }
 
 /******************************************************************************\
-  Display a window of registers next to the main menu (or wherever the constants
-  dictate)
+ Display a window of registers next to the main menu (or wherever the constants
+ dictate)
 
-  !!!Beware the WINDOW pointer 'regWin' is intialized here but is NOT deleted.
-  It is up to the calling function to take care of this object.
-  \******************************************************************************/
+ !!!Beware the WINDOW pointer 'regWin' is intialized here but is NOT deleted.
+ It is up to the calling function to take care of this object.
+\******************************************************************************/
 void showRegs( WINDOW *& regWin, const bool loaded[], 
 		const char names[][NAME_LEN] )
 {
@@ -614,9 +614,9 @@ void showRegs( WINDOW *& regWin, const bool loaded[],
 }
 
 /******************************************************************************\
-  This basically clears the entire screen after deleting the window that is
-  passed.
-  \******************************************************************************/
+ This basically clears the entire screen after deleting the window that is
+ passed.
+\******************************************************************************/
 void deleteMenu( WINDOW *& menu )
 {
 	// delete the menu object
@@ -628,10 +628,10 @@ void deleteMenu( WINDOW *& menu )
 }
 
 /******************************************************************************\
-  This function simply draws an empty window with a given title, height, width,
-  x, and y locations.  The colors have default values but can be changed if
-  oddly colored windows are wanted.
-  \******************************************************************************/
+ This function simply draws an empty window with a given title, height, width,
+ x, and y locations.  The colors have default values but can be changed if
+ oddly colored windows are wanted.
+\******************************************************************************/
 void drawWindow( WINDOW *& win, const char title[], int height, int width,
 		int y, int x, short bgColor, short fgColor )
 {
@@ -657,11 +657,11 @@ void drawWindow( WINDOW *& win, const char title[], int height, int width,
 }
 
 /******************************************************************************\
-  This is the function that decides where to go depending on the choice in the
-  main menu.  The reason it has all the parameters is for passing to the
-  subsequent functions that will be using them.
-  \******************************************************************************/
-	template <class pType>
+ This is the function that decides where to go depending on the choice in the
+ main menu.  The reason it has all the parameters is for passing to the
+ subsequent functions that will be using them.
+\******************************************************************************/
+template <class pType>
 void processEntry( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], 
 		int choice )
 {
@@ -723,9 +723,9 @@ void processEntry( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN],
 }
 
 /******************************************************************************\
-  Prompt for a register that is filled and then clear it.
-  \******************************************************************************/
-	template <class pType>
+ Prompt for a register that is filled and then clear it.
+\******************************************************************************/
+template <class pType>
 void clearRegister( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	int index;
@@ -745,12 +745,12 @@ void clearRegister( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN]
 }
 
 /******************************************************************************\
-  This is the function that reads the arguments passed to main by the terminal.
-  It compiles an error message for every read/write exception that throws a
-  string object.  It stores the values into the registers sequentially, if there
-  are no arguments relating to the register it is set to empty
-  \******************************************************************************/
-	template <class pType>
+ This is the function that reads the arguments passed to main by the terminal.
+ It compiles an error message for every read/write exception that throws a
+ string object.  It stores the values into the registers sequentially, if there
+ are no arguments relating to the register it is set to empty
+\******************************************************************************/
+template <class pType>
 void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], int argc,
 		char **argv )
 {
@@ -817,10 +817,10 @@ void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], int
 }
 
 /******************************************************************************\
-  Prompt the user for a register to load to, then let them choose from a list
-  of the .pgm files in the local images directory (defined as a constant). This
-  function is used for loading grayscale images only.
-  \******************************************************************************/
+ Prompt the user for a register to load to, then let them choose from a list
+ of the .pgm files in the local images directory (defined as a constant). This
+ function is used for loading grayscale images only.
+\******************************************************************************/
 void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the file names, menuChoices is a copy with "Back" added at the end
@@ -901,10 +901,10 @@ void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Prompt the user for a register to load to, then let them choose from a list
-  of the .pgm files in the local images directory (defined as a constant). This
-  function is used for loading color images only.
-  \******************************************************************************/
+ Prompt the user for a register to load to, then let them choose from a list
+ of the .pgm files in the local images directory (defined as a constant). This
+ function is used for loading color images only.
+\******************************************************************************/
 void loadImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the file names, menuChoices is a copy with "Back" added at the end
@@ -985,9 +985,9 @@ void loadImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Save image from a register to the local images directory, prompting user for
-  register and file name.  This is used only for saving grayscale images.
-  \******************************************************************************/
+ Save image from a register to the local images directory, prompting user for
+ register and file name.  This is used only for saving grayscale images.
+\******************************************************************************/
 void saveImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the file name
@@ -1026,9 +1026,9 @@ void saveImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Save image from a register to the local images directory, prompting user for
-  register and file name.  This is used only for saving color images.
-  \******************************************************************************/
+ Save image from a register to the local images directory, prompting user for
+ register and file name.  This is used only for saving color images.
+\******************************************************************************/
 void saveImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the file name
@@ -1067,10 +1067,10 @@ void saveImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Simply retrieve image information and display to a window below the registers
-  The data being displayed is the Register number, Image Height, Width, Q value,
-  and average gray value.  This displays the data for a grayscale image.
-  \******************************************************************************/
+ Simply retrieve image information and display to a window below the registers
+ The data being displayed is the Register number, Image Height, Width, Q value,
+ and average gray value.  This displays the data for a grayscale image.
+\******************************************************************************/
 void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// hold image info
@@ -1123,10 +1123,10 @@ void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 
 
 /******************************************************************************\
-  Simply retrieve image information and display to a window below the registers
-  The data being displayed is the Register number, Image Height, Width, Q value,
-  and average gray value.  This displays the data for a color image.
-  \******************************************************************************/
+ Simply retrieve image information and display to a window below the registers
+ The data being displayed is the Register number, Image Height, Width, Q value,
+ and average gray value.  This displays the data for a color image.
+\******************************************************************************/
 void getImageInfo( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// hold image info
@@ -1184,9 +1184,9 @@ void getImageInfo( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Prompt user for a register then a pixel location (row, col) and then the pixel
-  value to change that pixel to.  Used for grayscale images.
-  \******************************************************************************/
+ Prompt user for a register then a pixel location (row, col) and then the pixel
+ value to change that pixel to.  Used for grayscale images.
+\******************************************************************************/
 void setPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds various information about image
@@ -1227,9 +1227,9 @@ void setPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Prompt user for a register then a pixel location (row, col) and then the pixel
-  value to change that pixel to.  Used for color images.
-  \******************************************************************************/
+ Prompt user for a register then a pixel location (row, col) and then the pixel
+ value to change that pixel to.  Used for color images.
+\******************************************************************************/
 void setPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds various information about image
@@ -1279,8 +1279,8 @@ void setPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Return the value of a pixel in a selected image to the user(grayscale only).
-  \******************************************************************************/
+ Return the value of a pixel in a selected image to the user(grayscale only).
+\******************************************************************************/
 void getPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// self describing variables
@@ -1317,8 +1317,8 @@ void getPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Return the value of a pixel in a selected image to the user(color only).
-  \******************************************************************************/
+ Return the value of a pixel in a selected image to the user(color only).
+\******************************************************************************/
 void getPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// self describing variables
@@ -1362,11 +1362,11 @@ void getPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  After getting the image to manipulate, prompt for two corners to make a
-  subimage out of, if the lower right corner is above or left of the upper
-  right corner re-prompt for valid points
-  \******************************************************************************/
-	template <class pType>
+ After getting the image to manipulate, prompt for two corners to make a
+ subimage out of, if the lower right corner is above or left of the upper
+ right corner re-prompt for valid points
+\******************************************************************************/
+template <class pType>
 void extractSub( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// self documenting variables
@@ -1420,11 +1420,11 @@ void extractSub( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  This function prompts the user for a scale value to enlarge an image by, it
-  makes sure the scale value does not make the image larger than MAX_IMG value
-  because it may cause a stack overflow.
-  \******************************************************************************/
-	template <class pType>
+ This function prompts the user for a scale value to enlarge an image by, it
+ makes sure the scale value does not make the image larger than MAX_IMG value
+ because it may cause a stack overflow.
+\******************************************************************************/
+template <class pType>
 void enlargeImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds image info and maxS value
@@ -1469,11 +1469,11 @@ void enlargeImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  The same as enlarge except it shrinks the image making sure it never gets
-  smaller than MIN_IMG.  This is because some image viewers won't open images
-  as small as 2x2 (xv for example)
-  \******************************************************************************/
-	template <class pType>
+ The same as enlarge except it shrinks the image making sure it never gets
+ smaller than MIN_IMG.  This is because some image viewers won't open images
+ as small as 2x2 (xv for example)
+\******************************************************************************/
+template <class pType>
 void shrinkImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// image info and max s value
@@ -1518,10 +1518,10 @@ void shrinkImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Prompt user for a direction to reflect an image then reflect the image and
-  store it back in the original register image.
-  \******************************************************************************/
-	template <class pType>
+ Prompt user for a direction to reflect an image then reflect the image and
+ store it back in the original register image.
+\******************************************************************************/
+template <class pType>
 void reflectImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the index of the register
@@ -1563,12 +1563,12 @@ void reflectImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  This prompts the user for how far to translate the image, then calls the
-  translate function which moves the image down to the right 't' number of
-  pixels.  Also Won't let user choose t value that would move image totaly off
-  the screen.
-  \******************************************************************************/
-	template <class pType>
+ This prompts the user for how far to translate the image, then calls the
+ translate function which moves the image down to the right 't' number of
+ pixels.  Also Won't let user choose t value that would move image totaly off
+ the screen.
+\******************************************************************************/
+template <class pType>
 void translateImg(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 {
 	// holds the image info and maximum t value
@@ -1614,11 +1614,11 @@ void translateImg(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 }
 
 /******************************************************************************\
-  This prompts the user for an angle theta which will rotate the image counter 
-  clockwise by theta degrees.  The input is only valid from 0 to 360 which
-  should cover all possibilities.
-  \******************************************************************************/
-	template <class pType>
+ This prompts the user for an angle theta which will rotate the image counter 
+ clockwise by theta degrees.  The input is only valid from 0 to 360 which
+ should cover all possibilities.
+\******************************************************************************/
+template <class pType>
 void rotateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// holds the register index and angle theta
@@ -1654,11 +1654,11 @@ void rotateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Prompt for 2 images and attempt to sum them, there is no size checking because
-  operator+ will throw a string which will be handeled by main if sizes of the
-  two images are different.
-  \******************************************************************************/
-	template <class pType>
+ Prompt for 2 images and attempt to sum them, there is no size checking because
+ operator+ will throw a string which will be handeled by main if sizes of the
+ two images are different.
+\******************************************************************************/
+template <class pType>
 void sumImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of image 1 and 2
@@ -1696,10 +1696,10 @@ void sumImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Prompt for 2 images and attempt to calculate the difference, there's no size
-  checking here for the same reason sumImg doesn't do size checking
-  \******************************************************************************/
-	template <class pType>
+ Prompt for 2 images and attempt to calculate the difference, there's no size
+ checking here for the same reason sumImg doesn't do size checking
+\******************************************************************************/
+template <class pType>
 void subtractImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of image 1 and 2
@@ -1737,9 +1737,9 @@ void subtractImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Prompt user for which image to negate and negate it, pretty simple function.
-  \******************************************************************************/
-	template <class pType>
+ Prompt user for which image to negate and negate it, pretty simple function.
+\******************************************************************************/
+template <class pType>
 void negateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 {
 	// index of register to use
@@ -1761,9 +1761,9 @@ void negateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 }
 
 /******************************************************************************\
-  Prompt user for which image to count regions then count them
-  \******************************************************************************/
-	template <class pType>
+ Prompt user for which image to count regions then count them
+\******************************************************************************/
+template <class pType>
 void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 {
 	// index of register to use
@@ -1798,19 +1798,19 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 }
 
 /******************************************************************************\
-  This is the function that calls the menu for the register prompt, it can be
-  called in different locations (like in addImg and subImg) but has a default
-  defined by some global constants.  The function creates a list of registers
-  and adds the "Back" option as the final option, this way the user has the
-  option to cancel choosing a register.  Although in the program it looks like
-  the register display and register choosing window are the same, this menu
-  overlaps the other menu to make it seem like control is transfering to another
-  window.
+ This is the function that calls the menu for the register prompt, it can be
+ called in different locations (like in addImg and subImg) but has a default
+ defined by some global constants.  The function creates a list of registers
+ and adds the "Back" option as the final option, this way the user has the
+ option to cancel choosing a register.  Although in the program it looks like
+ the register display and register choosing window are the same, this menu
+ overlaps the other menu to make it seem like control is transfering to another
+ window.
 
-  The value check is true by default, if it is false it can return registers
-  that have not been loaded.  This feature is needed in functions like
-  loadImage.
-  \******************************************************************************/
+ The value check is true by default, if it is false it can return registers
+ that have not been loaded.  This feature is needed in functions like
+ loadImage.
+\******************************************************************************/
 int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check,
 		int y, int x )
 {
@@ -1856,9 +1856,9 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check,
 }
 
 /******************************************************************************\
-  This just builds the window used for message box, this function is just to
-  simplify the plethora of other functions that use this.
-  \******************************************************************************/
+ This just builds the window used for message box, this function is just to
+ simplify the plethora of other functions that use this.
+\******************************************************************************/
 void stdWindow( WINDOW *&newWin, const char title[] )
 {
 	// simply draw the standard msg box window
@@ -1867,8 +1867,8 @@ void stdWindow( WINDOW *&newWin, const char title[] )
 }
 
 /******************************************************************************\
-  Create a message box and prompt the user for a string value with given prompt
-  \******************************************************************************/
+ Create a message box and prompt the user for a string value with given prompt
+\******************************************************************************/
 int promptForFilename( const char title[], const char prompt[], char str[] )
 {
 	// holds the prompting window
@@ -1891,9 +1891,9 @@ int promptForFilename( const char title[], const char prompt[], char str[] )
 }
 
 /******************************************************************************\
-  Prompt user for a valid angle using a message box, make sure input is between
-  0 and 360, if not display a message box and then re-prompt.
-  \******************************************************************************/
+ Prompt user for a valid angle using a message box, make sure input is between
+ 0 and 360, if not display a message box and then re-prompt.
+\******************************************************************************/
 int promptForAngle( const char title[], const char prompt[] )
 {
 	// holds message box window
@@ -1930,9 +1930,9 @@ int promptForAngle( const char title[], const char prompt[] )
 }
 
 /******************************************************************************\
-  Prompt for a pixel value which is from 0 to maxVal, if not display message
-  box and re-prompt user until valid choice is made.
-  \******************************************************************************/
+ Prompt for a pixel value which is from 0 to maxVal, if not display message
+ box and re-prompt user until valid choice is made.
+\******************************************************************************/
 int promptForPixValue( const char title[], const char prompt[], int maxVal )
 {
 	// message box window
@@ -1973,9 +1973,9 @@ int promptForPixValue( const char title[], const char prompt[], int maxVal )
 }
 
 /******************************************************************************\
-  Prompt the user for the characters h, v, or c (not case sensitive) and return
-  the value as soon as one of the 3 is pressed.
-  \******************************************************************************/
+ Prompt the user for the characters h, v, or c (not case sensitive) and return
+ the value as soon as one of the 3 is pressed.
+\******************************************************************************/
 char promptForMirror( const char title[], const char prompt[] )
 {
 	// holds the prompting window
@@ -2006,10 +2006,10 @@ char promptForMirror( const char title[], const char prompt[] )
 }
 
 /******************************************************************************\
-  This function prompts the user for a scale value and checks to make sure it
-  is not greater than maxVal and not less than 2.  This is used in the enlarge
-  and shrink functions.
-  \******************************************************************************/
+ This function prompts the user for a scale value and checks to make sure it
+ is not greater than maxVal and not less than 2.  This is used in the enlarge
+ and shrink functions.
+\******************************************************************************/
 int promptForScaleValue( const char title[], const char prompt[], int maxVal )
 {
 	// points to the WINDOW that is our prompting window
@@ -2050,13 +2050,13 @@ int promptForScaleValue( const char title[], const char prompt[], int maxVal )
 }
 
 /******************************************************************************\
-  This function prompts the user for a location (both row and column) and sets
-  the valid points equal to row or col.  If -1 is returned in either location
-  it means user choose to cancel the prompt.  The validity of the points is
-  calculated by the image object it is passed.  The image properties are
-  calculated and then used to determine the bounds of row and column.
-  \******************************************************************************/
-	template <class pType>
+ This function prompts the user for a location (both row and column) and sets
+ the valid points equal to row or col.  If -1 is returned in either location
+ it means user choose to cancel the prompt.  The validity of the points is
+ calculated by the image object it is passed.  The image properties are
+ calculated and then used to determine the bounds of row and column.
+\******************************************************************************/
+template <class pType>
 void promptForLoc( const char title[], ImageType<pType>& img, int& row, int& col )
 {
 	// holds various image info
@@ -2131,10 +2131,10 @@ void promptForLoc( const char title[], ImageType<pType>& img, int& row, int& col
 }
 
 /******************************************************************************\
-  This displays a simple message box to the screen with the given title and msg
-  inside of it, it waits for the user to press RETURN before returning to
-  calling function
-  \******************************************************************************/
+ This displays a simple message box to the screen with the given title and msg
+ inside of it, it waits for the user to press RETURN before returning to
+ calling function
+\******************************************************************************/
 void messageBox( const char title[], const char msg[] )
 {
 	// message box window
@@ -2157,14 +2157,14 @@ void messageBox( const char title[], const char msg[] )
 }
 
 /******************************************************************************\
-  Couldn't find a good place to put this function, its a not so robust function
-  that reads all the .pgm files from a local directory (defined as a constant)
-  and places them into a dynamically allocated c style string array.
+ Couldn't find a good place to put this function, its a not so robust function
+ that reads all the .pgm files from a local directory (defined as a constant)
+ and places them into a dynamically allocated c style string array.
 
-  !!!Note this function allocates memory for a 2D array and returns the number
-  of rows.  This information is REQUIRED to properly de-allocate the memory in
-  the calling function.
-  \******************************************************************************/
+ !!!Note this function allocates memory for a 2D array and returns the number
+ of rows.  This information is REQUIRED to properly de-allocate the memory in
+ the calling function.
+\******************************************************************************/
 int findLocalPGM( char **&filenames )
 {
 	// namelist holds a list of file names
@@ -2237,14 +2237,14 @@ int findLocalPGM( char **&filenames )
 }
 
 /******************************************************************************\
-  Couldn't find a good place to put this function, its a not so robust function
-  that reads all the .pgm files from a local directory (defined as a constant)
-  and places them into a dynamically allocated c style string array.
+ Couldn't find a good place to put this function, its a not so robust function
+ that reads all the .pgm files from a local directory (defined as a constant)
+ and places them into a dynamically allocated c style string array.
 
-  !!!Note this function allocates memory for a 2D array and returns the number
-  of rows.  This information is REQUIRED to properly de-allocate the memory in
-  the calling function.
-  \******************************************************************************/
+ !!!Note this function allocates memory for a 2D array and returns the number
+ of rows.  This information is REQUIRED to properly de-allocate the memory in
+ the calling function.
+\******************************************************************************/
 int findLocalPPM( char **&filenames )
 {
 	// namelist holds a list of file names
@@ -2317,9 +2317,9 @@ int findLocalPPM( char **&filenames )
 }
 
 /******************************************************************************\
-  Labels each region in the image with a different color.
-  \******************************************************************************/
-	template <class pType>
+ Labels each region in the image with a different color.
+\******************************************************************************/
+template <class pType>
 int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 {
 	// holds the loop values and the regions
@@ -2361,19 +2361,9 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 
 				ImageType<pType> temp2;
 
-			
-				for ( int k = 0; k < 100; k++ )
-				{
-					temp2 = temp;
-					//findComponentsDFS(temp, temp, i, j, lbl);
-					findComponentsBFS(temp2, temp2, i, j, lbl);
-					//findComponentsRec(temp, temp, i, j, lbl);
-				}
-				
-
 				//findComponentsDFS(temp, temp, i, j, lbl);
-				findComponentsBFS(temp, temp, i, j, lbl);
-				//findComponentsRec(temp, temp, i, j, lbl);
+				//findComponentsBFS(temp, temp, i, j, lbl);
+				findComponentsRec(temp, temp, i, j, lbl);
 
 			}
 
@@ -2399,10 +2389,10 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 }
 
 /******************************************************************************\
-  Depth first search, fills regions starting at the deepest point and working
-  back (uses a stack)
-  \******************************************************************************/
-	template <class pType>
+ Depth first search, fills regions starting at the deepest point and working
+ back (uses a stack)
+\******************************************************************************/
+template <class pType>
 void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 		int startRow, int startCol, pType label)
 {
@@ -2456,9 +2446,9 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 }
 
 /******************************************************************************\
-  Breadth first search. searches for regions using enslaved gnomes
-  \******************************************************************************/
-	template <class pType>
+ Breadth first search. searches for regions using enslaved gnomes
+\******************************************************************************/
+template <class pType>
 void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 		int startRow, int startCol, pType label)
 {
@@ -2513,10 +2503,10 @@ void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 }
 
 /******************************************************************************\
-  Depth first RECURSIVE search. This recursively floods the current region with
-  the value of label.
-  \******************************************************************************/
-	template <class pType>
+ Depth first RECURSIVE search. This recursively floods the current region with
+ the value of label.
+\******************************************************************************/
+template <class pType>
 void findComponentsRec(const ImageType<pType>& inputImg,
 		ImageType<pType>& outputImg, int startRow, int startCol, pType label)
 {
