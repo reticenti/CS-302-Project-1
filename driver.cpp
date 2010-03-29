@@ -2353,9 +2353,25 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 			{
 				regions++;			// count regions
 				lbl = Q/2;
-				findComponentsDFS(temp, temp, i, j, lbl);
-				//findComponentsBFS(temp, temp, i, j, lbl);
-				//findComponentsRec(temp, temp, i, j, lbl);
+				
+				unsigned long t = 0, tt = 0;
+				t += clock();
+
+				WINDOW *msgBox;
+				for(int i = 0; i < 10; i++){
+					findComponentsDFS(temp, temp, i, j, lbl);
+					//findComponentsBFS(temp, temp, i, j, lbl);
+					//findComponentsRec(temp, temp, i, j, lbl);
+
+
+				}
+				tt= clock();
+				tt -= t;
+
+				char tmp[50];
+				sprintf(tmp, "Ticks: %lu", tt);
+				messageBox("time", tmp);
+				while ( wgetch( msgBox ) != KEY_RETURN );
 			}
 
 	for ( int i = 0; i < N; i++ )
@@ -2368,7 +2384,7 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 				findComponentsDFS(output, output, i, j, lbl);
 			}
 
-	
+
 	// return number of regions
 	return regions;
 }
@@ -2376,10 +2392,10 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 /******************************************************************************\
   Depth first search, fills regions starting at the deepest point and working
   back (uses a stack)
-\******************************************************************************/
-template <class pType>
+  \******************************************************************************/
+	template <class pType>
 void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
-   int startRow, int startCol, pType label)
+		int startRow, int startCol, pType label)
 {
 	// used to hold limits for the loop
 	int N, M, Q;
@@ -2406,7 +2422,7 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 	{
 		// hold the value on top of the stack
 		loc = stk.top();
-		
+
 		// pop the top of the stack off
 		stk.pop();
 
@@ -2417,7 +2433,7 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 			for ( int j = loc.c-1; j <= loc.c+1; j++ )
 				if ( i >= 0 && i < N && j >= 0 && j < M )
 					if ( inputImg.getPixelVal(i, j) == Q
-					     && outputImg.getPixelVal(i, j) == Q )
+							&& outputImg.getPixelVal(i, j) == Q )
 					{
 						// "touch" the location on output
 						outputImg.setPixelVal(i, j, negOne);
@@ -2429,13 +2445,13 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 					}
 	}
 }
-	
+
 /******************************************************************************\
   Breadth first search. searches for regions using enslaved gnomes
-\******************************************************************************/
-template <class pType>
+  \******************************************************************************/
+	template <class pType>
 void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
-    int startRow, int startCol, pType label)
+		int startRow, int startCol, pType label)
 {
 
 	// used to hold limits for the loop
@@ -2463,7 +2479,7 @@ void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 	{
 		// hold the value on top of the queue
 		loc = que.front();
-		
+
 		// pop the top of the queue off
 		que.pop();
 
@@ -2474,7 +2490,7 @@ void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 			for ( int j = loc.c-1; j <= loc.c+1; j++ )
 				if ( i >= 0 && i < N && j >= 0 && j < M )
 					if ( inputImg.getPixelVal(i, j) == Q
-					     && outputImg.getPixelVal(i, j) == Q )
+							&& outputImg.getPixelVal(i, j) == Q )
 					{
 						// "touch" the location on output
 						outputImg.setPixelVal(i, j, negOne);
@@ -2490,10 +2506,10 @@ void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 /******************************************************************************\
   Depth first RECURSIVE search. This recursively floods the current region with
   the value of label.
-\******************************************************************************/
-template <class pType>
+  \******************************************************************************/
+	template <class pType>
 void findComponentsRec(const ImageType<pType>& inputImg,
-    ImageType<pType>& outputImg, int startRow, int startCol, pType label)
+		ImageType<pType>& outputImg, int startRow, int startCol, pType label)
 {
 	int N, M, Q;
 
@@ -2502,27 +2518,27 @@ void findComponentsRec(const ImageType<pType>& inputImg,
 	// test for valid location
 	if ( startRow >= 0 && startCol >= 0 && startRow < N && startCol < M )
 		if ( outputImg.getPixelVal(startRow, startCol) != label &&
-			 outputImg.getPixelVal(startRow, startCol) != 0 )
+				outputImg.getPixelVal(startRow, startCol) != 0 )
 		{
 			// set pixel value
 			outputImg.setPixelVal(startRow, startCol, label);
 
 			// recursive calls
 			findComponentsRec(inputImg, outputImg, startRow-1, startCol-1,
-			    label);
+					label);
 			findComponentsRec(inputImg, outputImg, startRow-1, startCol,
-			    label);
+					label);
 			findComponentsRec(inputImg, outputImg, startRow-1, startCol+1,
-			    label);
+					label);
 			findComponentsRec(inputImg, outputImg, startRow, startCol-1,
-			    label);
+					label);
 			findComponentsRec(inputImg, outputImg, startRow, startCol+1,
-			    label);
+					label);
 			findComponentsRec(inputImg, outputImg, startRow+1, startCol-1,
-			    label);
+					label);
 			findComponentsRec(inputImg, outputImg, startRow+1, startCol,
-			    label);
+					label);
 			findComponentsRec(inputImg, outputImg, startRow+1, startCol+1,
-			    label);
+					label);
 		}
 }
