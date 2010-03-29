@@ -46,7 +46,7 @@ Many ncurses library functions however are used directly in this program.
 #include "comp_curses.h"
 #include "imageIO.h"
 #include "image.h"
-#include <time.h>
+#include <ctime>
 
 using namespace std;
 
@@ -2345,10 +2345,13 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 	output.dilate();
 	output.erode();
 
-	unsigned long t = 0, tt = 0;
+	long t;
 	// This only changes a temporary image used to count the regions to divide
 	// label values evenly
 	temp = output;
+
+	t = clock();
+
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 			if ( temp.getPixelVal(i, j) == Q )    // pixel is white
@@ -2356,25 +2359,30 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 				regions++;			// count regions
 				lbl = Q/2;
 
-				t += clock();
+				ImageType<pType> temp2;
+
+			
+				for ( int k = 0; k < 100; k++ )
+				{
+					temp2 = temp;
+					//findComponentsDFS(temp, temp, i, j, lbl);
+					findComponentsBFS(temp2, temp2, i, j, lbl);
+					//findComponentsRec(temp, temp, i, j, lbl);
+				}
+				
 
 				//findComponentsDFS(temp, temp, i, j, lbl);
-				//findComponentsBFS(temp, temp, i, j, lbl);
-				findComponentsRec(temp, temp, i, j, lbl);
-
-
-				tt= clock();
-				tt -= t;
+				findComponentsBFS(temp, temp, i, j, lbl);
+				//findComponentsRec(temp, temp, i, j, lbl);
 
 			}
 
-	/*
-	WINDOW *msgBox;
+	t = clock() - t;
+
 	char tmp[50];
-	sprintf(tmp, "Ticks: %lu", tt);
+	sprintf(tmp, "Time(seconds): %g", (double)t / CLOCKS_PER_SEC);
 	messageBox("time", tmp);
-	while ( wgetch( msgBox ) != KEY_RETURN );
-	*/
+
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 			if ( output.getPixelVal(i, j) == Q )    // pixel is white

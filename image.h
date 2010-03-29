@@ -210,7 +210,7 @@ template <class pType>
 void ImageType<pType>::setImageInfo(int rows, int cols, int levels)
 {
 	// re-allocate the integer array if the size changes
-	if ( N != rows && M != cols )
+	if ( N != rows || M != cols )
 	{
 		// delete memory if not NULL
 		if ( pixelValue != NULL )
