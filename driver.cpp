@@ -60,257 +60,257 @@ struct location
 /******************************************************************************\
  CONSTANTS
 \******************************************************************************/
-// the folder with the images in it, (make it ./ for local) 
-const char IMAGELOC[] = "./images/";
 
-const int REGS = 5;				// values 1-9
-const int MENU_OPTIONS = 17;	// number of main menu choices
-const int BAD_REG = REGS;		// dont change this
-const int NAME_LEN = 50;		// the max string length of names
+	// the folder with the images in it, (make it ./ for local) 
+	const char IMAGELOC[] = "./images/";
 
-const int MSGBOX_WIDTH = 60;	// message box width (also input box)
-const int MSGBOX_HEIGHT = 4;	// message box height
+	const int REGS = 5;				// values 1-9
+	const int MENU_OPTIONS = 17;	// number of main menu choices
+	const int BAD_REG = REGS;		// dont change this
+	const int NAME_LEN = 50;		// the max string length of names
 
-const int MENU_WIDTH = 40;		// holds the menu width and height
-const int MENU_HEIGHT = MENU_OPTIONS*2+3;
+	const int MSGBOX_WIDTH = 60;	// message box width (also input box)
+	const int MSGBOX_HEIGHT = 4;	// message box height
 
-const int REGWIN_WIDTH = 36;	// holds the register window width
-const int REGWIN_HEIGHT = REGS*2+5;
+	const int MENU_WIDTH = 40;		// holds the menu width and height
+	const int MENU_HEIGHT = MENU_OPTIONS*2+3;
 
-const int FILEWIN_WIDTH = 36;	// file window width and height
-const int FILEWIN_HEIGHT = MENU_HEIGHT-REGWIN_HEIGHT-1;
+	const int REGWIN_WIDTH = 36;	// holds the register window width
+	const int REGWIN_HEIGHT = REGS*2+5;
 
-const int MAX_IMG = 10000;		// the max size you can enlarge to
-const int MIN_IMG = 4;			// the min size you can reduce to
+	const int FILEWIN_WIDTH = 36;	// file window width and height
+	const int FILEWIN_HEIGHT = MENU_HEIGHT-REGWIN_HEIGHT-1;
 
-const short BG_COLOR = COLOR_BLUE;	// background color
-const short FG_COLOR = COLOR_BLACK;	// doesn't matter(must be dif than BG)
+	const int MAX_IMG = 10000;		// the max size you can enlarge to
+	const int MIN_IMG = 4;			// the min size you can reduce to
 
-const short MENU_BACKGROUND = COLOR_CYAN;	// window backgrounds
-const short MENU_FOREGROUND = COLOR_BLACK;	// window foregrounds
+	const short BG_COLOR = COLOR_BLUE;	// background color
+	const short FG_COLOR = COLOR_BLACK;	// doesn't matter(must be dif than BG)
 
+	const short MENU_BACKGROUND = COLOR_CYAN;	// window backgrounds
+	const short MENU_FOREGROUND = COLOR_BLACK;	// window foregrounds
 
 /******************************************************************************\
  FUNCTION PROTOTYPES
 \******************************************************************************/
-// name        : showMenu
-// input       : an un-initialized window pointer, a string to be the title,
-//               height, width, xLoc, yLoc of the window, list of c-style
-//               strings to be used in the menu, the number of menu options,
-//               and a bool value which says weather the last choice is
-//               left highlighted
-// output      : Display a window with menu options, let user choose and
-//               return the index of that choice
-// assumptions : assumes that window is un-intialized and will be destructed
-//               by calling function
-int showMenu( WINDOW *&, const char[], int, int, int, int, 
-		char[][NAME_LEN], int, bool=false );
+	// name        : showMenu
+	// input       : an un-initialized window pointer, a string to be the title,
+	//               height, width, xLoc, yLoc of the window, list of c-style
+	//               strings to be used in the menu, the number of menu options,
+	//               and a bool value which says weather the last choice is
+	//               left highlighted
+	// output      : Display a window with menu options, let user choose and
+	//               return the index of that choice
+	// assumptions : assumes that window is un-intialized and will be destructed
+	//               by calling function
+	int showMenu( WINDOW *&, const char[], int, int, int, int, 
+	    char[][NAME_LEN], int, bool=false );
 
-// name        : showMenu
-// input       : same as above function except with dynamic string list
-// output      : same as above function
-// assumptions : assumes the same about window as above, also assums the
-//               dynamic list of strings has been initialized to at least
-//               the number of window options.  The list of strings is not
-//               de-allocated by this function
-int showMenu( WINDOW *&, const char[], int, int, int, int, 
-		char*[], int, bool=false );
+	// name        : showMenu
+	// input       : same as above function except with dynamic string list
+	// output      : same as above function
+	// assumptions : assumes the same about window as above, also assums the
+	//               dynamic list of strings has been initialized to at least
+	//               the number of window options.  The list of strings is not
+	//               de-allocated by this function
+	int showMenu( WINDOW *&, const char[], int, int, int, int, 
+	    char*[], int, bool=false );
 
-// name        : showRegs
-// input       : an un-initialized window pointer, a title string, and a
-//               list of register names
-// output      : displays a window next to main of all the registers
-// assumptions : allocates but doesn't delete the WINDOW object
-void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );	
+	// name        : showRegs
+	// input       : an un-initialized window pointer, a title string, and a
+	//               list of register names
+	// output      : displays a window next to main of all the registers
+	// assumptions : allocates but doesn't delete the WINDOW object
+	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );	
 
-// name        : drawWindow
-// input       : an un-intialized window pointer, a title string, and then
-//               the window height, width, yLoc, and xLoc, plus the colors
-//               for the background and foreground which are defaulted
-// output      : displays a empty window with a border and title using the
-//               given parameters
-// assumptions : allocates but doesn't delete the WINDOW object
-void drawWindow( WINDOW *&, const char[], int, int, int, int, 
-		short=MENU_BACKGROUND, short=MENU_FOREGROUND );
+	// name        : drawWindow
+	// input       : an un-intialized window pointer, a title string, and then
+	//               the window height, width, yLoc, and xLoc, plus the colors
+	//               for the background and foreground which are defaulted
+	// output      : displays a empty window with a border and title using the
+	//               given parameters
+	// assumptions : allocates but doesn't delete the WINDOW object
+	void drawWindow( WINDOW *&, const char[], int, int, int, int, 
+	    short=MENU_BACKGROUND, short=MENU_FOREGROUND );
 
-// name        : deleteMenu
-// input       : a WINDOW pointer that is allocated
-// output      : de-allocate memory for the window pointer and refresh the
-//               main screen
-// assumptions : assumes WINDOW object is intialized before calling
-void deleteMenu( WINDOW *& );
+	// name        : deleteMenu
+	// input       : a WINDOW pointer that is allocated
+	// output      : de-allocate memory for the window pointer and refresh the
+	//               main screen
+	// assumptions : assumes WINDOW object is intialized before calling
+	void deleteMenu( WINDOW *& );
 
-// name        : processEntry
-// input       : List of register images, list of register bools, list of
-//               register names, and a value assumed to be choosen by user
-// output      : depending on the value, call a function to do some image
-//               manipulation
-// assumptions : assumes value >= 0 and < MENU_OPTIONS, not that anything
-//               will crash if its not true, but nothing will happen, also
-//               assumes that names contain valid c strings
-template <class pType>
-void processEntry( ImageType<pType>[], bool[], char[][NAME_LEN], int );
+	// name        : processEntry
+	// input       : List of register images, list of register bools, list of
+	//               register names, and a value assumed to be choosen by user
+	// output      : depending on the value, call a function to do some image
+	//               manipulation
+	// assumptions : assumes value >= 0 and < MENU_OPTIONS, not that anything
+	//               will crash if its not true, but nothing will happen, also
+	//               assumes that names contain valid c strings
+	template <class pType>
+	void processEntry( ImageType<pType>[], bool[], char[][NAME_LEN], int );
 
-// name        : stdWindow
-// input       : an un-initalized window and a title string
-// output      : displays a window in the standard text box location with
-//               the title and a border
-// assumptions : the window object is initalized here but not deleted, this
-//               is left up to the calling function
-void stdWindow( WINDOW *&, const char[] );
+	// name        : stdWindow
+	// input       : an un-initalized window and a title string
+	// output      : displays a window in the standard text box location with
+	//               the title and a border
+	// assumptions : the window object is initalized here but not deleted, this
+	//               is left up to the calling function
+	void stdWindow( WINDOW *&, const char[] );
 
-// name        : promptForReg
-// input       : list of register bools, list of regist names, a flag that
-//               indicates if registers that have not been loaded can be
-//               choosen, the yLoc, and xLoc of the menu
-// output      : Display a menu with the registers in it, allowing user to
-//               choose a register
-// assumptions : assumes that names are already set to valid c strings
-int promptForReg( bool[], char[][NAME_LEN], const bool = true, 
-		int=1, int=MENU_WIDTH+3 );
+	// name        : promptForReg
+	// input       : list of register bools, list of regist names, a flag that
+	//               indicates if registers that have not been loaded can be
+	//               choosen, the yLoc, and xLoc of the menu
+	// output      : Display a menu with the registers in it, allowing user to
+	//               choose a register
+	// assumptions : assumes that names are already set to valid c strings
+	int promptForReg( bool[], char[][NAME_LEN], const bool = true, 
+	    int=1, int=MENU_WIDTH+3 );
 
-// name        : promptForFilename
-// input       : title string, prompt string and char used to store user
-//               input
-// output      : sets the final parameter equal to the filename the user
-//               chooses and returns the length
-// assumptions : assumes first 2 parameters are valid c strings and that
-//               the final parameter is a string of at least length 16 +
-//               the length of the file path declared as a constant
-int promptForFilename( const char[], const char[], char[] );
+	// name        : promptForFilename
+	// input       : title string, prompt string and char used to store user
+	//               input
+	// output      : sets the final parameter equal to the filename the user
+	//               chooses and returns the length
+	// assumptions : assumes first 2 parameters are valid c strings and that
+	//               the final parameter is a string of at least length 16 +
+	//               the length of the file path declared as a constant
+	int promptForFilename( const char[], const char[], char[] );
 
-// name        : promptForLoc
-// input       : prompt string, image object, and 2 integers passed by ref
-// output      : sets two reference parameters equal to row and column of
-//               users choice
-// assumptions : assumes image is intialized and has a valid height/width
-//               also that first parameter is a valid c string
-template <class pType>
-void promptForLoc( const char[], ImageType<pType>&, int&, int& );
+	// name        : promptForLoc
+	// input       : prompt string, image object, and 2 integers passed by ref
+	// output      : sets two reference parameters equal to row and column of
+	//               users choice
+	// assumptions : assumes image is intialized and has a valid height/width
+	//               also that first parameter is a valid c string
+	template <class pType>
+	void promptForLoc( const char[], ImageType<pType>&, int&, int& );
 
-// name        : promptFor<Pix/Scale>Value
-// input       : title string, prompt string and max input value
-// output      : prompts user in message window and returns the value when
-//               the user inputs a valid value.  -1 indicates cancel
-// assumptions : for Pix the minimum value is 0 and for Scale its 2, thats
-//               the only difference.  Also assumes that first 2 parameters
-//               are valid c strings
-int promptForPixValue( const char[], const char[], int );
-int promptForScaleValue( const char[], const char[], int );
+	// name        : promptFor<Pix/Scale>Value
+	// input       : title string, prompt string and max input value
+	// output      : prompts user in message window and returns the value when
+	//               the user inputs a valid value.  -1 indicates cancel
+	// assumptions : for Pix the minimum value is 0 and for Scale its 2, thats
+	//               the only difference.  Also assumes that first 2 parameters
+	//               are valid c strings
+	int promptForPixValue( const char[], const char[], int );
+	int promptForScaleValue( const char[], const char[], int );
 
-// name        : promptForMirror
-// input       : title string, prompt string
-// output      : prompts user for a H, V, or C and doesn't let them cont
-//               until one is choosen, then returns input value to calling
-//               function
-// assumptions : both parameters are valid c strings
-char promptForMirror( const char[], const char[] );
+	// name        : promptForMirror
+	// input       : title string, prompt string
+	// output      : prompts user for a H, V, or C and doesn't let them cont
+	//               until one is choosen, then returns input value to calling
+	//               function
+	// assumptions : both parameters are valid c strings
+	char promptForMirror( const char[], const char[] );
 
-// name        : promptForAngle
-// input       : title string, prompt string
-// output      : prompts user for an angle 0-360 and returns the value when
-//               a valid number is sent.  -1 indicates cancel
-// assumptions : both parameters are valid c strings
-int promptForAngle( const char[], const char[] );
+	// name        : promptForAngle
+	// input       : title string, prompt string
+	// output      : prompts user for an angle 0-360 and returns the value when
+	//               a valid number is sent.  -1 indicates cancel
+	// assumptions : both parameters are valid c strings
+	int promptForAngle( const char[], const char[] );
 
-// name        : messageBox
-// input       : title string and message string
-// output      : displays a message box in the center of the screen with
-//               the message displayed in it.  Waits for user to press
-//               return before continueing
-// assumptions : assumes both parameters are valid c strings
-void messageBox( const char[], const char[] );
+	// name        : messageBox
+	// input       : title string and message string
+	// output      : displays a message box in the center of the screen with
+	//               the message displayed in it.  Waits for user to press
+	//               return before continueing
+	// assumptions : assumes both parameters are valid c strings
+	void messageBox( const char[], const char[] );
 
-// name        : fillRegs
-// input       : list of images, bools, and c strings all of length REGS
-//               also the number of arguments passed to main and the array
-//               of strings passed to main
-// output      : sets valid arguments to registers (loading images) and
-//               clears the rest of the registers
-// assumptions : assumes that char** is a valid list of strings with int
-//               rows
-template <class pType>
-void fillRegs( ImageType<pType>[], bool[], char[][NAME_LEN], int, char** );
+	// name        : fillRegs
+	// input       : list of images, bools, and c strings all of length REGS
+	//               also the number of arguments passed to main and the array
+	//               of strings passed to main
+	// output      : sets valid arguments to registers (loading images) and
+	//               clears the rest of the registers
+	// assumptions : assumes that char** is a valid list of strings with int
+	//               rows
+	template <class pType>
+	void fillRegs( ImageType<pType>[], bool[], char[][NAME_LEN], int, char** );
 
-// name        : Register manipulation functions
-// input       : List of images of length REGS, list of bools of length
-//               REGS, and list of c strings of length REGS.
-// output      : Each function prompts user for information pertaining
-//               to its manipulation function, these should be pretty
-//               obvious looking at each functions name.  All input is
-//               bounds checked to make sure no bad input is passed to an
-//               ImageType object
-// assumptions : assumes all names in the c string list are valid c
-//               c strings and bools coincide with wether image types are
-//               loaded of the same index
-void loadImage( ImageType<int>[], bool[], char[][NAME_LEN] );
-void loadImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
-void saveImage( ImageType<int>[], bool[], char[][NAME_LEN] );
-void saveImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
-void getImageInfo( ImageType<int>[], bool[], char[][NAME_LEN] );
-void getImageInfo( ImageType<rgb>[], bool[], char[][NAME_LEN] );
-void setPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
-void setPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
-void getPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
-void getPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void extractSub( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void enlargeImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void shrinkImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void reflectImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void translateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void rotateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void sumImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void subtractImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void negateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
-template <class pType>
-void countRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	// name        : Register manipulation functions
+	// input       : List of images of length REGS, list of bools of length
+	//               REGS, and list of c strings of length REGS.
+	// output      : Each function prompts user for information pertaining
+	//               to its manipulation function, these should be pretty
+	//               obvious looking at each functions name.  All input is
+	//               bounds checked to make sure no bad input is passed to an
+	//               ImageType object
+	// assumptions : assumes all names in the c string list are valid c
+	//               c strings and bools coincide with wether image types are
+	//               loaded of the same index
+	void loadImage( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void loadImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void saveImage( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void saveImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void getImageInfo( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void getImageInfo( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void setPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void setPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	void getPixel( ImageType<int>[], bool[], char[][NAME_LEN] );
+	void getPixel( ImageType<rgb>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void extractSub( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void enlargeImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void shrinkImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void reflectImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void translateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void rotateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void sumImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void subtractImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void negateImg( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void countRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
 
-// Functions used for Count Regions	////////////////////////////////////////////
+	// Functions used for Count Regions	////////////////////////////////////////////
 
-// Josh's Functions ////////////////////////////////////////////////////////
+	// Josh's Functions ////////////////////////////////////////////////////////
 
-template <class pType>
-int computeComponents( ImageType<pType>, ImageType<pType>& );
+	template <class pType>
+	int computeComponents( ImageType<pType>, ImageType<pType>& );
 
-template <class pType>
-void findComponentsDFS( ImageType<pType>, ImageType<pType>&, int, int,
-		pType );
+	template <class pType>
+	void findComponentsDFS( ImageType<pType>, ImageType<pType>&, int, int,
+	    pType );
 
-// Josiah's Functions //////////////////////////////////////////////////////
+	// Josiah's Functions //////////////////////////////////////////////////////
 
-template <class pType>
-void findComponentsBFS( ImageType<pType>, ImageType<pType>&, int, int,
-		pType );
+	template <class pType>
+	void findComponentsBFS( ImageType<pType>, ImageType<pType>&, int, int,
+	    pType );
 
-// Extra Functions /////////////////////////////////////////////////////////
-template <class pType>
-void findComponentsRec(const ImageType<pType>&, ImageType<pType>&, int,
-		int, pType);
+	// Extra Functions /////////////////////////////////////////////////////////
+	template <class pType>
+	void findComponentsRec(const ImageType<pType>&, ImageType<pType>&, int,
+	    int, pType);
 
-////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
 
-// name        : findLocalPGM/PPM
-// input       : one un-intialized double pointer of chars
-// output      : allocates enough memory for a list of all the .pgm or .ppm
-//               files in the local path specified by the FILELOC constant.
-//               It then copys the file names to the array and returns the
-//               number of rows in the array.
-// assumptions : filenames is not initialized, but will be in the function
-//               this means it needs to be de-allocated before it goes out
-//               of scope
-int findLocalPGM( char **&filenames );
-int findLocalPPM( char **&filenames );
+	// name        : findLocalPGM/PPM
+	// input       : one un-intialized double pointer of chars
+	// output      : allocates enough memory for a list of all the .pgm or .ppm
+	//               files in the local path specified by the FILELOC constant.
+	//               It then copys the file names to the array and returns the
+	//               number of rows in the array.
+	// assumptions : filenames is not initialized, but will be in the function
+	//               this means it needs to be de-allocated before it goes out
+	//               of scope
+	int findLocalPGM( char **&filenames );
+	int findLocalPPM( char **&filenames );
 
 /******************************************************************************\
  MAIN
