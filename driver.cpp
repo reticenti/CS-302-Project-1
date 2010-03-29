@@ -2465,7 +2465,7 @@ void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 		loc = que.front();
 		
 		// pop the top of the queue off
-		stk.pop();
+		que.pop();
 
 		// set value at location to label value
 		outputImg.setPixelVal(loc.r, loc.c, label);
@@ -2482,7 +2482,7 @@ void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 						// push to queue because location is "untouched"
 						loc2.r = i;
 						loc2.c = j;
-						stk.push( loc2 );
+						que.push( loc2 );
 					}
 	}
 }
