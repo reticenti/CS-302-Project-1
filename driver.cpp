@@ -2367,7 +2367,7 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 					temp2 = temp;
 					//findComponentsDFS(temp, temp, i, j, lbl);
 					findComponentsBFS(temp2, temp2, i, j, lbl);
-					//findComponentsRec(temp, temp, i, j, lbl);
+					//findComponentsRec(temp2, temp2, i, j, lbl);
 				}
 				
 
