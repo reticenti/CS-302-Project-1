@@ -2366,17 +2366,13 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 
 				findComponentsDFS(temp, temp, i, j, lbl);
 				//findComponentsBFS(temp, temp, i, j, lbl);
-			//	findComponentsRec(temp, temp, i, j, lbl);
+				//findComponentsRec(temp, temp, i, j, lbl);
 
 			}
 
-	long t;
-	t = clock();
+	//long t;
+	//t = clock();
 	
-	char tmp[50];
-	sprintf(tmp, "Time(seconds): %g", (double)t / CLOCKS_PER_SEC);
-	messageBox("time", tmp);
-
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 			if ( output.getPixelVal(i, j) == Q )    // pixel is white
@@ -2385,10 +2381,16 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 				// will split label values evenly from 2% of Q to 98% of Q
 				lbl = labelval*(Q-(Q*0.02))/regions;
 				findComponentsDFS(output, output, i, j, lbl);
+				//findComponentsBFS(output, output, i, j, lbl);
+				//findComponentsRec(output, output, i, j, lbl);
 			}
 
 
-	t = clock() - t;
+	//t = clock() - t;
+
+	//char tmp[50];
+	//sprintf(tmp, "Time(seconds): %g", (double)t / CLOCKS_PER_SEC);
+	//messageBox("time", tmp);
 
 	// return number of regions
 	return regions;
