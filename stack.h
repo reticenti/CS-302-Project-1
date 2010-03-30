@@ -17,7 +17,6 @@ struct node
 // used for NULL constant
 #include <cstddef>
 
-
 // simple linked stack class
 template <class T>
 class stack
