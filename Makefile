@@ -1,7 +1,7 @@
 main.out: driver.o cubicSpline.o imageIO.o comp_curses.o rgb.o
 	g++ -lncurses -g -o main.out driver.o imageIO.o cubicSpline.o comp_curses.o rgb.o
 
-driver.o: driver.cpp image.h comp_curses.h cubicSpline.h imageIO.h
+driver.o: driver.cpp image.h comp_curses.h cubicSpline.h imageIO.h queue.h
 	g++ -c -lncurses -g driver.cpp
 
 comp_curses.o: comp_curses.cpp comp_curses.h
