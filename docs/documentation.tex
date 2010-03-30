@@ -94,7 +94,7 @@ effective setup and takes the burden out of trying to look at the keyboard and t
 menu. Our menu uses ncurses to accomplish the scrolling menu. The students adapted a ncurses API written by Micheal
 Leverington from CS 135 to implement a simple curses menu at the beginning, but after all of the functions were
 completed, the students decided to make a more robust menu capable of scrolling. This was not required, but was done for
-aesthetic reasons and for the experience that it allowed the students.
+esthetic reasons and for the experience that it allowed the students.
 
 The image class that was implemented has all of the requirements for the functions. Each function is defined exactly
 like Dr. Bebis wanted them to be defined and the coders adapted their coding style to match what Dr. Bebis expected. The
@@ -890,24 +890,14 @@ T& top()const;
 		\end{description}
 \end{description}
 \section{Bugs and Errors}
+	During the creation of this program there were a multitude of bugs we ran into, both simple and complex.  The first
+	bug that we ran into was when we initially was actually in our old code and had to do with resizing a ImageType that
+	was already created.  There was a bug that if the width or height of the old image was equal to the new image the
+	but the other dimension was different, the program would crash by not resizing the pixelValue array.  This was fixed
+	by simply changing an OR to an AND.
 
-	During the creation of this program we ran into a multitude of bugs and errors.  Some of the biggest obstacles came
-while implementing the main driver program.  Learning how curses works and finding way to make it do what was needed was
-quite a challenge but also very rewarding.  One odd bug was that when the function wattron() was used to set to
-highlight for the menu options it worked fine on one computer, but when it was used on Josiah's computer the
-highlighting didn't show up.  The fix for this involved manually inverting the colors rather than just changing the
-attribute.  This is a good example of how a program may act differently on different computers.
-
-	Another bug that we ran into was having trouble when enlarging images too much.  The way this was dealt with was to add a
-global constant to the main driver which limited the size allowed to scale an image.  Although there weren't many actual
-bugs while writing the image class, there was a huge amount of testing done to try and make the program as robust as
-possible given the time limitation.
-
-	There was another bug the students ran into when rotating color images holes were appearing in the image.  After
-spending quite some time searching the problem was finally discovered;  Apparently the implementation of the operator
-overloads for the RGB class were actually changing the calling object, so if the same value was used in an equation more
-than once it was returning incorrect results.  This problem helped both of the students understand operator overloading
-much better, and once this was discovered the rest of the program went smoothly.
+	Another bug we ran into was when building the erode function we forgot to first save a temporary copy of the image
+	which caused very strange results.  Luckily the problem was quickly identified and fixed.
 
 \section{What was Learned}
 
@@ -927,7 +917,7 @@ structures for the end user. The students also learned how color images can be r
 excellent hands on experience with how they work and how to manipulate them.
 
 	One of the other concepts that the students learned was the ability to use ncurses in their program. This knowledge
-allowed the students to create a very easy-to-use menu that is capable of multiple floating and scrollable menus. While
+allowed the students to create a very easy-to-use menu that is capable of multiple floating and scroll-able menus. While
 this part of the program was not needed, the students had a desire to learn more about C++ than what is being taught in
 the class and brought it upon themselves to learn about ncurses. This knowledge has greatly improved their knowledge of
 pointers and correct program structure because ncurses utilizes many pointers. The implementation of ncurses also becomes
@@ -953,5 +943,37 @@ Josiah wanted to go above the normal implementation of a standard documentation 
 made the writing of the documentation very easy and structured. Overall, the students contributed equally for their
 level of programming skill.
 
+\section{Extra Credit}
+
+	\subsection{Template stack and queue}
+
+		Our program originally used the standard template library version of the stack and queue, so when we implemented
+		the data structures we used the same member function names so that we wouldn't have to change our driver
+		program.  The templating went very smoothly and was similar to the previous programming assignment.
+
+	\subsection{Auto Threshold}
+		
+		The algorithm we used for auto threshold first finds the mean value of the pixels using the meanValue function
+		written in the previous programming assignment.  After this the average value of pixels greater than the average
+		we calculated.  The final step adds two fifths the difference of that average and the maximum pixel values.
+		he last step was determined using trial and error but the first two steps make sense because by taking the
+		average of the values above average all the black and nearly black pixels aren't calculated in the next average
+		which dramatically increases the value.  This seems to work very well giving us counts we would expect to
+		receive from all the test images.
+	
+	\subsection{Recursive find component}
+
+		The recursive function for find components was implemented by first checking the bounds of the location in
+		question to make sure it is not out of bounds.  If this is the case the value of the pixel is checked and if it
+		does not already have the label value and it is white, then it recursively calls itself for all the surrounding
+		pixels.  This method has a base case of the pixel value is already set in which case it does nothing, and the
+		problem gets smaller because eventually the entire region is filled.
+
+		Timing the function we actually found that with a large test image with many small regions the recursive
+		function is actually faster than the BFS and DFS versions.  The recursive function ran in
+		approximately 0.24 seconds while the BFS/DFS searches took approximately 2.3 seconds.  The only explanation we
+		could come up with for this behavior is that the BFS and DFS need to constantly push and pop onto node based
+		stacks requiring constant memory allocation and de-allocation.  If we used an array based stack/queue then
+		perhaps the time for BFS and DFS would be much faster.
 
 \end{document}
