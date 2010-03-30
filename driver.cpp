@@ -48,7 +48,7 @@
 #include <cstdio>
 #include <dirent.h>
 #include <cstring>
-#include <stack>
+#include "stack.h"
 #include "queue.h"
 #include "comp_curses.h"
 #include "imageIO.h"
