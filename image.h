@@ -897,9 +897,9 @@ void ImageType<pType>::threshold( pType L ){
 	for(int i = 0; i < N; i++)
 		for(int j = 0; j < M; j++){
 
-			if(pixelValue[i][j] > L)
-				pixelValue[i][j] = Q;
-			else pixelValue[i][j] = 0;
+			if(pixelValue[i][j] < L)
+				pixelValue[i][j] = 0;
+			else pixelValue[i][j] = Q;
 
 		}
 }

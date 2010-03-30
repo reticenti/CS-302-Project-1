@@ -2356,8 +2356,6 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 	// label values evenly
 	temp = output;
 
-	//long t;
-	//t = clock();
 
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
@@ -2366,19 +2364,18 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 				regions++;			// count regions
 				lbl = Q/2;
 
-				ImageType<pType> temp2;
-
-				//findComponentsDFS(temp, temp, i, j, lbl);
-				findComponentsBFS(temp, temp, i, j, lbl);
-				//findComponentsRec(temp, temp, i, j, lbl);
+				findComponentsDFS(temp, temp, i, j, lbl);
+				//findComponentsBFS(temp, temp, i, j, lbl);
+			//	findComponentsRec(temp, temp, i, j, lbl);
 
 			}
 
-	//t = clock() - t;
-
-	//char tmp[50];
-	//sprintf(tmp, "Time(seconds): %g", (double)t / CLOCKS_PER_SEC);
-	//messageBox("time", tmp);
+	long t;
+	t = clock();
+	
+	char tmp[50];
+	sprintf(tmp, "Time(seconds): %g", (double)t / CLOCKS_PER_SEC);
+	messageBox("time", tmp);
 
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
@@ -2390,6 +2387,8 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 				findComponentsDFS(output, output, i, j, lbl);
 			}
 
+
+	t = clock() - t;
 
 	// return number of regions
 	return regions;
