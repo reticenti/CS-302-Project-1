@@ -1,31 +1,38 @@
 /******************************************************************************\
-Authors              : Josiah Humphrey and Joshua Gleason
+ Authors              : Josiah Humphrey and Joshua Gleason
 
-Date Started         : 2/02/2010
-Last Modified        : 3/08/2010
-Date Due For Review  : 03/09/2010
-Version              : 1.1
+ Date Started         : 2/02/2010
+ Last Modified        : 3/29/2010
+ Date Due For Review  : 03/30/2010
+ Version              : 1.2
 
-This program is designed to be a driver for the ImageType objects.  The
-user interface attempts to allow the objects to be throughly tested in a
-robust, simple environment.
+ This program is designed to be a driver for the ImageType objects.  The
+ user interface attempts to allow the objects to be throughly tested in a
+ robust, simple environment.
 
-The ImageType object (defined in image.h) is for manipulating grayscale
-images, it allows the user to easly enlarge, rotate, negate, etc... an image.
-The functions in imageIO.h are used to load and save images of type .pgm.
+ The ImageType object (defined in image.h) is for manipulating grayscale
+ images, it allows the user to easly enlarge, rotate, negate, etc... an image.
+ The functions in imageIO.h are used to load and save images of type .pgm.
 
-We choose to use curses library to make a more visually pleasing main
-driver, it implements our scrolling menu system.
+ We choose to use curses library to make a more visually pleasing main
+ driver, it implements our scrolling menu system.
 
-The dirent.h library is used to scan for files in the appropriate location,
-in our case we only list .pgm files located in the local images folder.  This
-is better understood by examining the findLocalPGM function.
+ The dirent.h library is used to scan for files in the appropriate location,
+ in our case we only list .pgm files located in the local images folder.  This
+ is better understood by examining the findLocalPGM function.
 
-comp_curses.h was written to make initializing curses easier, it also has
-some functions for obtaining user input as integers, doubles, and strings.
-Many ncurses library functions however are used directly in this program.
+ comp_curses.h was written to make initializing curses easier, it also has
+ some functions for obtaining user input as integers, doubles, and strings.
+ Many ncurses library functions however are used directly in this program.
 
  *Change Log*******************************************************************
+
+ Version 1.2
+ -added count regions
+ Count regions is a function that counts regions of an image and changes the
+ image to the thresholded image with each region labeled a different color.
+ A message box of the number of regions is displayed after running the
+ function.
 
  Version 1.1
  -added color image support (.ppm)
@@ -34,7 +41,7 @@ Many ncurses library functions however are used directly in this program.
  arithmatic operators overloaded to make this possible.  Anything that
  was done to a single int is now done to all 3 values (red, green, blue).
 
- \******************************************************************************/
+\******************************************************************************/
 
 #include <string>
 #include <cstdlib>
