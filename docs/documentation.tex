@@ -65,21 +65,20 @@
 
 \section{Introduction}
 
-In this assignment, the students were asked to make an image class that manipulated a Portable Gray Map (PGM) and
-Portable Pixmap (PPM) images in various ways. The PPM format was to use a 2D array of a RGB class that the students were to
-implement, and the PGM format was stored using a 2D int array.
+In this assignment, the students were asked to take an image of the night sky and count the number of regions, or
+galaxies, in the picture. This was to be done using stacks and queues. The students were also asked to implement the
+counting of th pixels in an iterative and recursive way and to see the difference that both methods take.
 
-One of the first problems faced was how to use the supplied read and write image files.  These functions were provided
-to simplify the build process as they allowed the students to concentrate on the manipulation of the images. These files
-were also changed slightly to accommodate the PPM and PGM file formats and were overloaded to accept either file.
+The first problem that the students ran into was the use of stacks and queues. The students wanted to get the core
+project done first, so they utilized the STL version of the stacks and queues first. After the core program was found to
+be complete, the students then implemented their own stack and queue templates for the assignment.
 
-After reading and writing images was mastered, the students undertook the bulk of the assignment which was to manipulate
-the images that had been read in with the supplied read function. This required the knowledge of manipulating dynamic 2D
-arrays of both the RGB and int classes. 
+Before the stacks and queues could be used, however, the students had to implement a breadth first and depth first
+search that would search for the regions in the image. One of the searches used stacks while the other used queues to
+implement the region finding. 
 
 The assignment also required the use of constructors, destructors, copy constructors, and operator overloading, These
 topics were review from CS 202, but the use of them refreshed the students minds on how they work and to their purposes.
-The students also ahd to implement these functions for the RGB class.
 
 The students also extensively documented their program and made it as easy as possible to understand what was happening
 in the various algorithms that were implemented. The students realize that commenting and documenting the source code
@@ -121,6 +120,12 @@ move them somehow. For instance, if an image was translated by 55 pixels, the pr
 squares that are uncovered, showing that the images has been translated 55 pixels. This was a design choice that came
 about as a result of how other image manipulation programs work and the students attempt at creating a robust image
 manipulation resource.
+
+The count regions functionality has been added to the menu and can be used quite easily. To use it, select its option
+from the menu and select which image to count the regions. After the counting has been done, the image is modified in
+the register so that the user has the option of saving the output file to the disk so that the user may view the regions
+in an external image viewer program. To choose between the different methods of searching for the regions, the user must
+uncomment the appropriate function in driver.cpp. 
 
 One last area that needs some mention to properly use is the function of operator+. This function includes a coefficient
 that determines the weight that each image has when adding them together. The students mimicked Dr. Bebis name for this
@@ -237,8 +242,8 @@ void ImageType<pType>::threshold(){
 	\item{\textsc{countregions}}
 
 		\begin{lstlisting}
-		void countRegions(ImageType<pType> img[], 
-			bool loaded[], char name[][NAME_LEN])
+void countRegions(ImageType<pType> img[], 
+	bool loaded[], char name[][NAME_LEN])
 		\end{lstlisting}
 
 		\begin{description}
@@ -261,7 +266,7 @@ void ImageType<pType>::threshold(){
 						or not the image has been
 						loaded.
 
-					\item{name[ ][NAME_LEN]}
+					\item{name[ ][NAME\_LEN]}
 
 						The char array that holds the
 						image name.
@@ -284,9 +289,9 @@ void ImageType<pType>::threshold(){
 
 		\begin{lstlisting}
 
-		void findComponentsDFS(ImageType<pType> inputImg, 
-			ImageType<pType>& outputImg, int startRow,
-			int startCol, pType label)
+void findComponentsDFS(ImageType<pType> inputImg, 
+	ImageType<pType>& outputImg, int startRow,
+	int startCol, pType label)
 		\end{lstlisting}
 
 		\begin{description}
@@ -345,9 +350,9 @@ void ImageType<pType>::threshold(){
 
 		\begin{lstlisting}
 
-			void findComponentsBFS(ImageType<pType> inputImg,
-				ImageType<pType>& outputImg, int startRow,
-				int startCol, pType label)
+void findComponentsBFS(ImageType<pType> inputImg,
+	ImageType<pType>& outputImg, int startRow,
+	int startCol, pType label)
 		\end{lstlisting}
 
 		\begin{description}
@@ -407,9 +412,9 @@ void ImageType<pType>::threshold(){
 	\item{\textsc{findcomponentsrec}}
 
 		\begin{lstlisting}
-			void findComponentsRec(const ImageType<pType>& inputImg,
-				ImageType<pType>& outputImg,int startRow, 
-				int startCol, pType label)
+void findComponentsRec(const ImageType<pType>& inputImg,
+	ImageType<pType>& outputImg,int startRow, 
+	int startCol, pType label)
 		\end{lstlisting}
 
 		\begin{description}
@@ -474,10 +479,10 @@ void ImageType<pType>::threshold(){
 
 \begin{description}
 
-	\item{\textsc{queue}}
+	\item{\textsc{constructor}}
 
 		\begin{lstlisting}
-			queue();
+queue();
 		\end{lstlisting}
 
 		\begin{description}
@@ -501,16 +506,211 @@ void ImageType<pType>::threshold(){
 		\end{description}
 
 
-	\item{\textsc{queue}}
+	\item{\textsc{destructor}}
 
 		\begin{lstlisting}
-			queue();
+~queue();
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 				
-				Constructs the queue by setting its two pointers
+				Calls makeEmpty in order to empty and destroy
+				the entire list.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+				
+				None
+
+			\item{Assumptions}
+
+				None
+
+		\end{description}
+	\item{\textsc{makeEmpty}}
+
+		\begin{lstlisting}
+void makeEmpty();
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+				
+				Deletes the nodes of the list until it reaches
+				the end of the queue.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+				
+				None
+
+			\item{Assumptions}
+
+				None
+
+		\end{description}
+	\item{\textsc{empty}}
+
+		\begin{lstlisting}
+bool empty( )const;
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+				
+				Returns a bool to show if the list has any
+				elements in it.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+				
+				Bool showing if the list is empty. False for not
+				empty, true for empty.
+
+			\item{Assumptions}
+
+				None
+
+		\end{description}
+	\item{\textsc{push}}
+
+		\begin{lstlisting}
+void push(const T&);
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+				
+				Pushes an element into the queue.
+
+			\item{Input}
+
+				\begin{itemize}
+					\item{item}
+						The item to be pushed into
+						queue. Since this is a template
+						queue, any data type can be
+						pushed into the queue as long as
+						it is homogeneous data.
+				\end{itemize}
+
+			\item{Output}
+				
+				None
+
+			\item{Assumptions}
+
+				Assumes that all of the data being pushed into
+				the queue are all the same data types. You
+				cannot mix and match data types.
+
+		\end{description}
+	\item{\textsc{pop}}
+
+		\begin{lstlisting}
+void pop( );
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+				
+				Deletes (pops) the front of the queue off.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+				
+				None
+
+			\item{Assumptions}
+
+				None
+
+		\end{description}
+	\item{\textsc{front}}
+
+		\begin{lstlisting}
+T& front()const;
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+				
+				Returns the value at the front of the queue. The
+				user is also allowed to change the value of the
+				item.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+				
+				The item is returned by reference so that the
+				queue is able to be changed.
+
+			\item{Assumptions}
+
+				None
+
+		\end{description}
+	\item{\textsc{back}}
+
+		\begin{lstlisting}
+T& back( );
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+
+				Returns the value at the rear of the queue. The
+				user is also allowed to change the value of the
+				item.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+				
+				The item is returned by reference so that the
+				queue is able to be changed.
+
+			\item{Assumptions}
+
+				None
+
+		\end{description}
+
+
+\end{description}
+
+\subsection{stack.h}
+
+\begin{description}
+
+	\item{\textsc{constructor}}
+
+		\begin{lstlisting}
+stack();
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+				
+				Constructs the stack by setting its pointer
 				to \texttt{NULL}
 
 			\item{Input}
@@ -526,17 +726,19 @@ void ImageType<pType>::threshold(){
 				None
 
 		\end{description}
-	\item{\textsc{queue}}
+
+
+	\item{\textsc{destructor}}
 
 		\begin{lstlisting}
-			queue();
+~stack();
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 				
-				Constructs the queue by setting its two pointers
-				to \texttt{NULL}
+				Calls makeEmpty in order to empty and destroy
+				the entire list.
 
 			\item{Input}
 
@@ -551,17 +753,17 @@ void ImageType<pType>::threshold(){
 				None
 
 		\end{description}
-	\item{\textsc{queue}}
+	\item{\textsc{makeEmpty}}
 
 		\begin{lstlisting}
-			queue();
+void makeEmpty();
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 				
-				Constructs the queue by setting its two pointers
-				to \texttt{NULL}
+				Deletes the nodes of the list until it reaches
+				the end of the stack.
 
 			\item{Input}
 
@@ -576,17 +778,75 @@ void ImageType<pType>::threshold(){
 				None
 
 		\end{description}
-	\item{\textsc{queue}}
+	\item{\textsc{empty}}
 
 		\begin{lstlisting}
-			queue();
+bool empty( )const;
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 				
-				Constructs the queue by setting its two pointers
-				to \texttt{NULL}
+				Returns a bool to show if the list has any
+				elements in it.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+				
+				Bool showing if the list is empty. False for not
+				empty, true for empty.
+
+			\item{Assumptions}
+
+				None
+
+		\end{description}
+	\item{\textsc{push}}
+
+		\begin{lstlisting}
+void push(const T&);
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+				
+				Pushes an element into the stack.
+
+			\item{Input}
+
+				\begin{itemize}
+					\item{item}
+						The item to be pushed into
+						stack. Since this is a template
+						stack, any data type can be
+						pushed into the stack as long as
+						it is homogeneous data.
+				\end{itemize}
+
+			\item{Output}
+				
+				None
+
+			\item{Assumptions}
+
+				Assumes that all of the data being pushed into
+				the stack are all the same data types. You
+				cannot mix and match data types.
+
+		\end{description}
+	\item{\textsc{pop}}
+
+		\begin{lstlisting}
+void pop( );
+		\end{lstlisting}
+
+		\begin{description}
+			\item{Purpose}
+				
+				Deletes (pops) the top of the stack off.
 
 			\item{Input}
 
@@ -601,17 +861,18 @@ void ImageType<pType>::threshold(){
 				None
 
 		\end{description}
-	\item{\textsc{queue}}
+	\item{\textsc{top}}
 
 		\begin{lstlisting}
-			queue();
+T& top()const;
 		\end{lstlisting}
 
 		\begin{description}
 			\item{Purpose}
 				
-				Constructs the queue by setting its two pointers
-				to \texttt{NULL}
+				Returns the value at the top of the stack. The
+				user is also allowed to change the value of the
+				item.
 
 			\item{Input}
 
@@ -619,115 +880,15 @@ void ImageType<pType>::threshold(){
 
 			\item{Output}
 				
-				None
+				The item is returned by reference so that the
+				stack is able to be changed.
 
 			\item{Assumptions}
 
 				None
 
 		\end{description}
-	\item{\textsc{queue}}
-
-		\begin{lstlisting}
-			queue();
-		\end{lstlisting}
-
-		\begin{description}
-			\item{Purpose}
-				
-				Constructs the queue by setting its two pointers
-				to \texttt{NULL}
-
-			\item{Input}
-
-				None
-
-			\item{Output}
-				
-				None
-
-			\item{Assumptions}
-
-				None
-
-		\end{description}
-	\item{\textsc{queue}}
-
-		\begin{lstlisting}
-			queue();
-		\end{lstlisting}
-
-		\begin{description}
-			\item{Purpose}
-				
-				Constructs the queue by setting its two pointers
-				to \texttt{NULL}
-
-			\item{Input}
-
-				None
-
-			\item{Output}
-				
-				None
-
-			\item{Assumptions}
-
-				None
-
-		\end{description}
-	\item{\textsc{queue}}
-
-		\begin{lstlisting}
-			queue();
-		\end{lstlisting}
-
-		\begin{description}
-			\item{Purpose}
-				
-				Constructs the queue by setting its two pointers
-				to \texttt{NULL}
-
-			\item{Input}
-
-				None
-
-			\item{Output}
-				
-				None
-
-			\item{Assumptions}
-
-				None
-
-		\end{description}
-	\item{\textsc{queue}}
-
-		\begin{lstlisting}
-			queue();
-		\end{lstlisting}
-
-		\begin{description}
-			\item{Purpose}
-				
-				Constructs the queue by setting its two pointers
-				to \texttt{NULL}
-
-			\item{Input}
-
-				None
-
-			\item{Output}
-				
-				None
-
-			\item{Assumptions}
-
-				None
-
-		\end{description}
-
-
+\end{description}
 \section{Bugs and Errors}
 
 	During the creation of this program we ran into a multitude of bugs and errors.  Some of the biggest obstacles came
@@ -773,6 +934,11 @@ pointers and correct program structure because ncurses utilizes many pointers. T
 very complex if there is not a clean program structure implemented. There are many facets of ncurses that are
 intertwined, so the students made a clean and modular ncurses driver that is able to be easily read.
 
+The students were also able to see how image processing can be very powerful in implementation. The students learned
+that it is possible to count objects in an image file very easily. This will be a powerful tool in their careers as they
+move on to other things. The students also got to see the difference of how the searches can be implemented and the
+various cost differences between them. 
+
 	Since this was a group project, we felt that it would be fairly difficult to merge and maintain our code, so we decided
 to learn and use git. Git is a revision control program that focuses on software development. It was developed by Linus
 Torvalds for the development of the Linux kernel. Git has proved to be extremely useful in the management of the source
@@ -782,40 +948,10 @@ know of.
 \section{Division of Labor}
 
 	For the requirements that were asked for, each student did an equal amount of work. The students met very early and
-divided up the required functions equally. Each student then implemented each function of the image and RGB class. Since
-the students are at different levels of programming experience, one of the students went above the required
-implementation to challenge himself. Josh implemented some advanced methods of manipulating the image using knowledge
-from a numerical methods class that he has taken in the past. Josh also wrote the driver with the help of Josiah for
-feedback on how to design the menu system. Both students studied and learned how the curses environment works and
-equally experimented with the functionality of curses and its implementation into a menu system. For the documentation,
+divided up the required functions equally. Each student worked equally on the implementation of the region counting. For the documentation,
 Josiah wanted to go above the normal implementation of a standard documentation and implemented a \LaTeX document that
 made the writing of the documentation very easy and structured. Overall, the students contributed equally for their
 level of programming skill.
-
-\section{Extras}
-
-				This section isn't required but we thought that it was important to explain all the
-				extra features that were added to this project.  The biggest addition to the project was
-				the addition of bi-cubic interpolation for enlargeImage().  This was done by Josh as
-				more of a coding challenge, but worked out pretty well.  The type of spline used is a
-				natural spline calculated using a Lagrange polynomial.  This method was chosen because
-				it only has n-1 unknowns, rather than a normal polynomial interpolation which has 4
-				times as many unknowns.  It also allows a tridiagonal matrix to solve for all the
-				unknowns, which is much faster than a normal matrix solving algorithm.
-
-				Another addition to the project was the curses driver program.  This was done to make
-				using the program a little more enjoyable and also to show some of the things that can
-				be done with curses.  All in all these extra additions were an enjoyable challenge and I
-				hope you enjoy them.
-
-				See figure~\ref{fig:enlargecubic} and~\ref{fig:enlargestd} on
-				page~\pageref{fig:enlargecubic} and~\pageref{fig:enlargestd}
-				
-				\begin{figure}[p] \centering \caption{difference image with noise}
-					\includegraphics{images/subnoisy.png} \label{fig:subnoisy} \end{figure}
-				
-				\begin{figure}[p] \centering \caption{difference image without noise}
-					\includegraphics{images/subclear.png} \label{fig:subclear} \end{figure}
 
 
 \end{document}
