@@ -414,8 +414,13 @@ int main( int argc, char **argv )
 		showRegs( regWin, imgLoaded, imgName );
 
 		// show and get input from menu
-		choice = showMenu( menu, "Main Menu", MENU_HEIGHT, MENU_WIDTH, 1, 1,
+		if ( MENU_HEIGHT > screenHeight() )
+			choice = showMenu( menu, "Main Menu",
+				screenHeight() - 2 - (screenHeight()+1) % 2, MENU_WIDTH, 1, 1,
 				choices, MENU_OPTIONS );
+		else
+			choice = showMenu( menu, "Main Menu", MENU_HEIGHT, MENU_WIDTH, 1,
+				1, choices, MENU_OPTIONS );
 
 		try
 		{
@@ -608,13 +613,26 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width,
 void showRegs( WINDOW *& regWin, const bool loaded[], 
 		const char names[][NAME_LEN] )
 {
-	// draw/initialize the window to display the 
-	drawWindow( regWin, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, 1, 
+	// draw/initialize the window to display the
+	if ( REGWIN_HEIGHT + 2 <= screenHeight() || screenHeight() < 7 )
+	{
+		drawWindow( regWin, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, 1, 
 			MENU_WIDTH+3 );
+		// add the register names to the window
+		for ( int i = 0; i < REGS; i++ )
+			mvwprintw( regWin, i*2+2, 2, "%-32.32s", names[i] );
+	}
+	else
+	{
+		drawWindow( regWin, "Registers", screenHeight() - 2 - (screenHeight()
+			+ 1) % 2, REGWIN_WIDTH, 1, MENU_WIDTH+3 );
+		// add the register names to the window
+		for ( int i = 0; i < (screenHeight() - 2 - (screenHeight() + 1) % 2
+		  - 3) / 2; i++ )
+			mvwprintw( regWin, i*2+2, 2, "%-32.32s", names[i] );
+	}
 
-	// add the register names to the window
-	for ( int i = 0; i < REGS; i++ )
-		mvwprintw( regWin, i*2+2, 2, "%-32.32s", names[i] );
+
 
 	// make sure the new characters are printed!
 	wrefresh( regWin );
@@ -870,10 +888,22 @@ void loadImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 	// if exit wasn't choosen then prompt for a file
 	if ( index != BAD_REG )
 	{	
-		// prompt for file
-		imageVal = showMenu( fileMenu, "Load Image", FILEWIN_HEIGHT,
+		// prompt for file (sizing window based on height)
+		if ( screenHeight() - 2 >= MENU_HEIGHT )
+			imageVal = showMenu( fileMenu, "Load Image", FILEWIN_HEIGHT,
 				FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 , menuChoices,
 				files+1 );
+		else if ( REGWIN_HEIGHT+7 < screenHeight() )
+			imageVal = showMenu( fileMenu, "Load Image",
+				screenHeight() - REGWIN_HEIGHT - 3 - (screenHeight() + 1)%2,
+				FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 , menuChoices,
+				files+1 );
+		else
+			imageVal = showMenu( fileMenu, "Load Image", screenHeight() - 2
+				- (screenHeight() + 1) % 2,	FILEWIN_WIDTH, 1, 1 ,
+				menuChoices, files+1 );
+
+
 
 		// if exit isn't choosen attempt to load image
 		if ( imageVal != files )
@@ -954,10 +984,21 @@ void loadImage( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 	// if exit wasn't choosen then prompt for a file
 	if ( index != BAD_REG )
 	{	
-		// prompt for file
-		imageVal = showMenu( fileMenu, "Load Image", FILEWIN_HEIGHT,
+		// prompt for file (sizing window based on height)
+		if ( screenHeight() - 2 >= MENU_HEIGHT )
+			imageVal = showMenu( fileMenu, "Load Image", FILEWIN_HEIGHT,
 				FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 , menuChoices,
 				files+1 );
+		else if ( REGWIN_HEIGHT+7 < screenHeight() )
+			imageVal = showMenu( fileMenu, "Load Image",
+				screenHeight() - REGWIN_HEIGHT - 3 - (screenHeight() + 1)%2,
+				FILEWIN_WIDTH, REGWIN_HEIGHT+2, MENU_WIDTH+3 , menuChoices,
+				files+1 );
+		else
+			imageVal = showMenu( fileMenu, "Load Image", screenHeight() - 2
+				- (screenHeight() + 1) % 2,	FILEWIN_WIDTH, 1, 1 ,
+				menuChoices, files+1 );
+
 
 		// if exit isn't choosen attempt to load image
 		if ( imageVal != files )
@@ -1096,8 +1137,16 @@ void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 		img[index].getImageInfo( N, M, Q );
 
 		// draw/intialize the info window
-		drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, REGWIN_HEIGHT+2,
+		if ( REGWIN_HEIGHT+17 < screenHeight() )
+			drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, REGWIN_HEIGHT + 2,
 				MENU_WIDTH+3 );
+		else if ( screenHeight() > 15 )
+			drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, screenHeight() / 2 - 7,
+				screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
+		else
+			drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, 1,
+				screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
+
 
 		// set the starting x/y values
 		x = 2;
@@ -1151,9 +1200,15 @@ void getImageInfo( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 		// retrieve image height, width, and color depth
 		img[index].getImageInfo( N, M, Q );
 
-		// draw/intialize the info window
-		drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, REGWIN_HEIGHT+2,
+		if ( REGWIN_HEIGHT+21 < screenHeight() )
+			drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, REGWIN_HEIGHT + 2,
 				MENU_WIDTH+3 );
+		else if ( screenHeight() > 19 )
+			drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, screenHeight() / 2 - 7,
+				screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
+		else
+			drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, 1,
+				screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
 
 		// set the starting x/y values
 		x = 2;
@@ -1843,8 +1898,12 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check,
 
 	// prompt for the register
 	do {
-		val = showMenu( regMenu, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH, y, x,
-				menuVals, REGS+1 );
+		if ( REGWIN_HEIGHT + y + 1 <= screenHeight() || screenHeight() < 7 )
+			val = showMenu( regMenu, "Registers", REGWIN_HEIGHT, REGWIN_WIDTH,
+				y, x, menuVals, REGS+1 );
+		else
+			val = showMenu( regMenu, "Registers", screenHeight() - (y+1) -
+			(screenHeight()	+ y) % 2, REGWIN_WIDTH, y, x, menuVals, REGS+1 );
 
 		// set the loop flag depending on val
 		if ( val == BAD_REG )
@@ -2380,8 +2439,8 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 				labelval++;
 				// will split label values evenly from 2% of Q to 98% of Q
 				lbl = labelval*(Q-(Q*0.02))/regions;
-				findComponentsDFS(output, output, i, j, lbl);
-				//findComponentsBFS(output, output, i, j, lbl);
+				//findComponentsDFS(output, output, i, j, lbl);
+				findComponentsBFS(output, output, i, j, lbl);
 				//findComponentsRec(output, output, i, j, lbl);
 			}
 
