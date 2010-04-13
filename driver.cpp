@@ -1882,7 +1882,7 @@ template <class pType>
 void regionProperties( ImageType<pType> img[], bool loaded[],
 		char name[][NAME_LEN] )
 {
-	int index, regions;
+	int index;
 
 	index = promptForReg( loaded, name );
 
@@ -1890,7 +1890,11 @@ void regionProperties( ImageType<pType> img[], bool loaded[],
 	{
 		ImageType<pType> temp;
 
-		regions = computeComponents(img[index], temp);
+		// define list of regions
+
+		// computeComponents
+
+		// show new menu and jump to new function
 	}
 }
 
