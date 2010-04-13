@@ -50,6 +50,7 @@
 #include <cstring>
 #include "stack.h"
 #include "queue.h"
+#include <list>
 #include "comp_curses.h"
 #include "imageIO.h"
 #include "image.h"
@@ -58,10 +59,24 @@
 using namespace std;
 
 // This struct is used to store locations of pixels in a stack or queue
-struct location
+struct PixelType
 {
 	int r;							// holds row value
 	int c;							// holds column value
+};
+
+struct RegionType
+{
+	int centroidR;					// centroid row
+	int centroidC;					// centroid col
+	int size;						// size of region (pixels)
+	double orientation;				// orientation of region
+	double eccentricity;			// eccentricity of region
+	int meanVal;					// mean pixel value
+	int minVal;						// minimum pixel value
+	int maxVal;						// maximum pixel value
+
+	list<PixelType> positions;		// positions of pixels in region
 };
 
 /******************************************************************************\
@@ -282,6 +297,8 @@ struct location
 	void clearRegister( ImageType<pType>[], bool[], char[][NAME_LEN] );
 	template <class pType>
 	void countRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	template <class pType>
+	void regionProperties( ImageType<pType>[], bool[], char[][NAME_LEN] );
 
 	// Functions used for Count Regions	////////////////////////////////////////////
 
@@ -1831,8 +1848,6 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 	// index of register to use
 	int index, regions;
 
-	// holds the temp image
-
 	// prompt for register number
 	index = promptForReg( loaded, name );
 
@@ -1856,6 +1871,26 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 		// adds modified to register name
 		if ( name[index][strlen(name[index])-1] != ')' )
 			strcat( name[index], " (modified)" );
+	}
+}
+
+/******************************************************************************\
+ This function calls another menu which allows the user to manipulate the
+ inside of an image.
+\******************************************************************************/
+template <class pType>
+void regionProperties( ImageType<pType> img[], bool loaded[],
+		char name[][NAME_LEN] )
+{
+	int index, regions;
+
+	index = promptForReg( loaded, name );
+
+	if ( index != BAD_REG )
+	{
+		ImageType<pType> temp;
+
+		regions = computeComponents(img[index], temp);
 	}
 }
 
@@ -2424,9 +2459,6 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 				lbl = Q/2;
 
 				findComponentsDFS(temp, temp, i, j, lbl);
-				//findComponentsBFS(temp, temp, i, j, lbl);
-				//findComponentsRec(temp, temp, i, j, lbl);
-
 			}
 
 	//long t;
@@ -2439,9 +2471,7 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 				labelval++;
 				// will split label values evenly from 2% of Q to 98% of Q
 				lbl = labelval*(Q-(Q*0.02))/regions;
-				//findComponentsDFS(output, output, i, j, lbl);
-				findComponentsBFS(output, output, i, j, lbl);
-				//findComponentsRec(output, output, i, j, lbl);
+				findComponentsDFS(output, output, i, j, lbl);
 			}
 
 
@@ -2470,10 +2500,10 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 	outputImg.getImageInfo(N, M, Q);
 
 	// declare the stack of locations
-	stack<location> stk;
+	stack<PixelType> stk;
 
 	// a couple temporary location types to hold information
-	location loc, loc2;
+	PixelType loc, loc2;
 
 	// push the first location to the stack
 	loc.r = startRow;
@@ -2512,99 +2542,3 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 	}
 }
 
-/******************************************************************************\
- Breadth first search. searches for regions using enslaved gnomes
-\******************************************************************************/
-template <class pType>
-void findComponentsBFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
-		int startRow, int startCol, pType label)
-{
-
-	// used to hold limits for the loop
-	int N, M, Q;
-
-	// set up N, M, and Q
-	outputImg.getImageInfo(N, M, Q);
-
-	// declare the queue of locations
-	queue<location> que;
-
-	// a couple temporary location types to hold information
-	location loc, loc2;
-
-	// push the first location to the queue
-	loc.r = startRow;
-	loc.c = startCol;
-
-	que.push(loc);
-
-	// temporary pixel value used as placeholder value
-	pType negOne = -1;
-
-	while (!que.empty())
-	{
-		// hold the value on top of the queue
-		loc = que.front();
-
-		// pop the top of the queue off
-		que.pop();
-
-		// set value at location to label value
-		outputImg.setPixelVal(loc.r, loc.c, label);
-
-		for ( int i = loc.r-1; i <= loc.r+1; i++ )
-			for ( int j = loc.c-1; j <= loc.c+1; j++ )
-				if ( i >= 0 && i < N && j >= 0 && j < M )
-					if ( inputImg.getPixelVal(i, j) == Q
-							&& outputImg.getPixelVal(i, j) == Q )
-					{
-						// "touch" the location on output
-						outputImg.setPixelVal(i, j, negOne);
-
-						// push to queue because location is "untouched"
-						loc2.r = i;
-						loc2.c = j;
-						que.push( loc2 );
-					}
-	}
-}
-
-/******************************************************************************\
- Depth first RECURSIVE search. This recursively floods the current region with
- the value of label.
-\******************************************************************************/
-template <class pType>
-void findComponentsRec(const ImageType<pType>& inputImg,
-		ImageType<pType>& outputImg, int startRow, int startCol, pType label)
-{
-	int N, M, Q;
-
-	inputImg.getImageInfo(N, M, Q);
-
-	// test for valid location
-	if ( startRow >= 0 && startCol >= 0 && startRow < N && startCol < M )
-		if ( outputImg.getPixelVal(startRow, startCol) != label &&
-				outputImg.getPixelVal(startRow, startCol) != 0 )
-		{
-			// set pixel value
-			outputImg.setPixelVal(startRow, startCol, label);
-
-			// recursive calls
-			findComponentsRec(inputImg, outputImg, startRow-1, startCol-1,
-					label);
-			findComponentsRec(inputImg, outputImg, startRow-1, startCol,
-					label);
-			findComponentsRec(inputImg, outputImg, startRow-1, startCol+1,
-					label);
-			findComponentsRec(inputImg, outputImg, startRow, startCol-1,
-					label);
-			findComponentsRec(inputImg, outputImg, startRow, startCol+1,
-					label);
-			findComponentsRec(inputImg, outputImg, startRow+1, startCol-1,
-					label);
-			findComponentsRec(inputImg, outputImg, startRow+1, startCol,
-					label);
-			findComponentsRec(inputImg, outputImg, startRow+1, startCol+1,
-					label);
-		}
-}
