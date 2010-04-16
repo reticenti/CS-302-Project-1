@@ -1,10 +1,10 @@
 /******************************************************************************\
  Authors              : Josiah Humphrey and Joshua Gleason
 
- Date Started         : 2/02/2010
- Last Modified        : 3/29/2010
- Date Due For Review  : 03/30/2010
- Version              : 1.2
+ Date Started         : 02/02/2010
+ Last Modified        : 04/17/2010
+ Date Due For Review  : 04/20/2010
+ Version              : 1.3
 
  This program is designed to be a driver for the ImageType objects.  The
  user interface attempts to allow the objects to be throughly tested in a
@@ -26,6 +26,9 @@
  Many ncurses library functions however are used directly in this program.
 
  *Change Log*******************************************************************
+
+ Version 1.3
+ -added region checking
 
  Version 1.2
  -added count regions
@@ -65,6 +68,7 @@ struct PixelType
 	int c;							// holds column value
 };
 
+// holds all data on a region
 struct RegionType
 {
 	int centroidR;					// centroid row
@@ -77,6 +81,19 @@ struct RegionType
 	int maxVal;						// maximum pixel value
 
 	list<PixelType> positions;		// positions of pixels in region
+
+	// operator overloads used for sorting
+	bool operator>(const RegionType &rhs) const
+	{ return (size > rhs.size); }
+	bool operator<(const RegionType &rhs) const
+	{ return (size < rhs.size); }
+	bool operator>=(const RegionType &rhs) const
+	{ return (size >= rhs.size); }
+	bool operator<=(const RegionType &rhs) const
+	{ return (size <= rhs.size); }
+	bool operator==(const RegionType &rhs) const
+	{ return (size == rhs.size); }
+
 };
 
 /******************************************************************************\
@@ -87,7 +104,7 @@ struct RegionType
 	const char IMAGELOC[] = "./images/";
 
 	const int REGS = 5;				// values 1-9
-	const int MENU_OPTIONS = 17;	// number of main menu choices
+	const int MENU_OPTIONS = 18;	// number of main menu choices
 	const int BAD_REG = REGS;		// dont change this
 	const int NAME_LEN = 50;		// the max string length of names
 
@@ -298,31 +315,18 @@ struct RegionType
 	template <class pType>
 	void countRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
 	template <class pType>
-	void regionProperties( ImageType<pType>[], bool[], char[][NAME_LEN] );
+	void classifyRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
 
-	// Functions used for Count Regions	////////////////////////////////////////////
-
-	// Josh's Functions ////////////////////////////////////////////////////////
+// Functions used for Count Regions	////////////////////////////////////////////
 
 	template <class pType>
-	int computeComponents( ImageType<pType>, ImageType<pType>& );
+	int computeComponents( ImageType<pType>, list<RegionType>& );
 
 	template <class pType>
 	void findComponentsDFS( ImageType<pType>, ImageType<pType>&, int, int,
-	    pType );
+	    pType, RegionType& );
 
-	// Josiah's Functions //////////////////////////////////////////////////////
-
-	template <class pType>
-	void findComponentsBFS( ImageType<pType>, ImageType<pType>&, int, int,
-	    pType );
-
-	// Extra Functions /////////////////////////////////////////////////////////
-	template <class pType>
-	void findComponentsRec(const ImageType<pType>&, ImageType<pType>&, int,
-	    int, pType);
-
-	////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 	// name        : findLocalPGM/PPM
 	// input       : one un-intialized double pointer of chars
@@ -379,6 +383,7 @@ int main( int argc, char **argv )
 		"  Subtract two images",
 		"  Compute negative of an image",
 		"  Count Regions",
+		"  Classify Regions",
 		"  Clear a register",
 		"  Exit" };
 
@@ -752,13 +757,16 @@ void processEntry( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN],
 		case 13:	// negative
 			negateImg( img, loaded, name );
 			break;
-		case 14:
+		case 14:	// count regions
 			countRegions( img, loaded, name );
 			break;
-		case 15:	// clear register
+		case 15:	// classify regions
+			classifyRegions( img, loaded, name );
+			break;
+		case 16:	// clear register
 			clearRegister( img, loaded, name );
 			break;
-		case 16:	// exit
+		case 17:	// exit
 			// do nothing lol ^_^ maybe later add an exit screen
 			break;
 	}
@@ -1845,8 +1853,9 @@ void negateImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 template <class pType>
 void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 {
-	// index of register to use
-	int index, regions;
+	// index of register to use plus some other variables
+	int index, count, N, M, Q;
+
 
 	// prompt for register number
 	index = promptForReg( loaded, name );
@@ -1854,18 +1863,52 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 	// if quit isn't choosen
 	if ( index != BAD_REG )
 	{
+		// this will hold the list of regions
+		list<RegionType> regions;
+
+		// hold the message to be displayed
 		char msg[NAME_LEN];
 
-		ImageType<pType> temp;
+		// label color for the image
+		pType lbl;
+
+		// need to use Q
+		img[index].getImageInfo(N, M, Q);
+	
+		// temp image to hold labeled galaxies
+		ImageType<pType> temp(N, M, Q);
+
+		// black out image
+		temp.blackOut();
 
 		// count regions
-		regions = computeComponents(img[index], temp);
+		count = computeComponents(img[index], regions);
+
+		// color in regions
+		///////////////TEMP///////////////////////////////////////
+
+		PixelType loc;
+		int i = 0;
+		while ( !regions.empty() )
+		{
+			i++;
+			while ( !(regions.front()).positions.empty() )
+			{
+				loc = (regions.front()).positions.front();
+				(regions.front()).positions.pop_front();
+
+				temp.setPixelVal(loc.r, loc.c, (Q-Q/10)*i/count);
+			}
+			regions.pop_front();
+		}
+
+		///////////////////////////////////////////////////////////
 
 		// set image to the counted image
 		img[index] = temp;
 
 		// display number of regions
-		sprintf(msg, "The number of regions is %i", regions);
+		sprintf(msg, "The number of regions is %i", count);
 		messageBox( "Number", msg );
 
 		// adds modified to register name
@@ -1879,22 +1922,64 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
  inside of an image.
 \******************************************************************************/
 template <class pType>
-void regionProperties( ImageType<pType> img[], bool loaded[],
+void classifyRegions( ImageType<pType> img[], bool loaded[],
 		char name[][NAME_LEN] )
 {
-	int index;
+	// register to use and a few other parameters
+	int index, N, M, Q, count;
 
+	// prompt user for a register to use
 	index = promptForReg( loaded, name );
 
 	if ( index != BAD_REG )
 	{
-		ImageType<pType> temp;
+		// obtain image dimesions
+		img[index].getImageInfo(M,N,Q);
+
+		// create an image with same dimensions as original
+		ImageType<pType> newImage(M,N,Q);
+
+		// turn image black
+		newImage.blackOut();
 
 		// define list of regions
+		list<RegionType> regions;
 
 		// computeComponents
+		count = computeComponents(img[index], regions);
+
+		/////////TEMP/////////////////////////////////////////////////////
+
+		// this block prints the list of regions to the screen
+
+		// iterators to traverse the list
+		list<PixelType>::iterator locs;
+		list<RegionType>::iterator regs = regions.begin();
+
+		// go through each region and the list of registers inside it
+		while ( regs != regions.end() )
+		{
+			locs = (*regs).positions.begin();
+			while ( locs != (*regs).positions.end() )
+			{
+				newImage.setPixelVal((*locs).r, (*locs).c,
+				    img[index].getPixelVal((*locs).r,(*locs).c));
+				locs++;
+			}
+			regs++;
+		}
+
+		////////////////////////////////////////////////////////////////////
 
 		// show new menu and jump to new function
+		
+
+		// set image to the new image
+		img[index] = newImage;
+
+		// adds modified to register name
+		if ( name[index][strlen(name[index])-1] != ')' )
+			strcat( name[index], " (modified)" );
 	}
 }
 
@@ -2422,71 +2507,43 @@ int findLocalPPM( char **&filenames )
 }
 
 /******************************************************************************\
- Labels each region in the image with a different color.
+ Generate a list of regions with specific properties, return the number
+ of regions found
 \******************************************************************************/
 template <class pType>
-int computeComponents( ImageType<pType> input, ImageType<pType>& output )
+int computeComponents( ImageType<pType> input, list<RegionType> &regions )
 {
 	// holds the loop values and the regions
-	int N, M, Q, regions = 0;
+	int N, M, Q, count = 0;
 	int labelval=0;
 
 	// label value
 	pType lbl;
 
 	// temp image used to count regions initialialy
-	ImageType<pType> temp;
+	ImageType<pType> temp = input;
 
 	// retrieve image info (rows, columns, color depth)
 	input.getImageInfo(N, M, Q);
 
-	// set the output image equal to input image to start
-	output = input;
-
 	// run threshold
-	output.threshold();
+	temp.threshold();
 
 	// dilate then erode image
-	output.dilate();
-	output.erode();
-
-	// This only changes a temporary image used to count the regions to divide
-	// label values evenly
-	temp = output;
-
+	temp.dilate();
+	temp.erode();
 
 	for ( int i = 0; i < N; i++ )
 		for ( int j = 0; j < M; j++ )
 			if ( temp.getPixelVal(i, j) == Q )    // pixel is white
 			{
-				regions++;			// count regions
+				count++;			// count regions
 				lbl = Q/2;
-
-				findComponentsDFS(temp, temp, i, j, lbl);
+				findComponentsDFS(temp, temp, i, j, lbl, regions);
 			}
-
-	//long t;
-	//t = clock();
-	
-	for ( int i = 0; i < N; i++ )
-		for ( int j = 0; j < M; j++ )
-			if ( output.getPixelVal(i, j) == Q )    // pixel is white
-			{
-				labelval++;
-				// will split label values evenly from 2% of Q to 98% of Q
-				lbl = labelval*(Q-(Q*0.02))/regions;
-				findComponentsDFS(output, output, i, j, lbl);
-			}
-
-
-	//t = clock() - t;
-
-	//char tmp[50];
-	//sprintf(tmp, "Time(seconds): %g", (double)t / CLOCKS_PER_SEC);
-	//messageBox("time", tmp);
 
 	// return number of regions
-	return regions;
+	return count;
 }
 
 /******************************************************************************\
@@ -2495,10 +2552,13 @@ int computeComponents( ImageType<pType> input, ImageType<pType>& output )
 \******************************************************************************/
 template <class pType>
 void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
-		int startRow, int startCol, pType label)
+		int startRow, int startCol, pType label, list<RegionType> &regions)
 {
 	// used to hold limits for the loop
 	int N, M, Q;
+
+	// region to be added
+	RegionType region;
 
 	// set up N, M, and Q
 	outputImg.getImageInfo(N, M, Q);
@@ -2529,6 +2589,9 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 		// set value at location to label value
 		outputImg.setPixelVal(loc.r, loc.c, label);
 
+		// add location to list of locations
+		region.positions.push_front(loc);
+
 		for ( int i = loc.r-1; i <= loc.r+1; i++ )
 			for ( int j = loc.c-1; j <= loc.c+1; j++ )
 				if ( i >= 0 && i < N && j >= 0 && j < M )
@@ -2544,5 +2607,8 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 						stk.push( loc2 );
 					}
 	}
+
+	// push region to list of regions
+	regions.push_front(region);
 }
 
