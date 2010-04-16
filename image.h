@@ -96,6 +96,8 @@ public:
 ////// Josh's functions ////////////////////////////////////////////////////////
     void dilate();
 
+	void blackOut();
+
 ////// Josiah's functions //////////////////////////////////////////////////////
     void erode();
     void threshold();
@@ -148,6 +150,7 @@ ImageType<pType>::ImageType(int tmpN, int tmpM, int tmpQ)
 {
 	pixelValue = NULL;
 	N = M = Q = 0;
+
 	// set the new values of N, M and Q
 	setImageInfo( tmpN, tmpM, tmpQ );
 }
@@ -158,10 +161,8 @@ ImageType<pType>::ImageType(int tmpN, int tmpM, int tmpQ)
 template <class pType>
 ImageType<pType>::ImageType( const ImageType<pType>& rhs )
 {
-	N = 0;
-	M = 0;
-    Q = 0;
 	pixelValue = NULL;
+	N = M = Q = 0;
 
 	// set the info to the new image data
 	setImageInfo( rhs.N, rhs.M, rhs.Q );
@@ -902,6 +903,14 @@ void ImageType<pType>::threshold( pType L ){
 			else pixelValue[i][j] = Q;
 
 		}
+}
+
+template <class pType>
+void ImageType<pType>::blackOut()
+{
+	for ( int i = 0; i < N; i++ )
+		for ( int j = 0; j < M; j++ )
+			pixelValue[i][j] = 0;
 }
 
 #endif /* IMAGE */
