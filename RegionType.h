@@ -39,7 +39,7 @@ public:
 	bool operator==(const RegionType<pType> &rhs) const;
 	RegionType<pType>& operator=(const RegionType<pType> &rhs);
 
-	void setData();
+	void setData( const ImageType<pType>& );
 
 	double getCentroidR() const;
 	double getCentroidC() const;
@@ -202,7 +202,7 @@ void RegionType<pType>::theta(){
 
 template <class pType>
 void RegionType<pType>::epsilon(){
-
+		
 	if ( lambdaMin = 0 )
 		eccentricity = sqrt(lambdaMax/lambdaMin);
 	else
@@ -210,7 +210,7 @@ void RegionType<pType>::epsilon(){
 }
 
 template <class pType>
-void RegionType<pType>::setData(){
+void RegionType<pType>::setData( const ImageType<pType>& img ){
 
 	if(positions.isEmpty())
 		throw "There is not a region!";
@@ -230,14 +230,34 @@ void RegionType<pType>::setData(){
 	//set eccentricity
 	epsilon();
 
-	//set mean Val
-	
+	//set mean, min, maxVal
+	positions.reset();
+	PixelType tmp;
+	pType pixVal;
 
-	//set minVal
-	
+	bool first = true;
 
-	//set maxVal
+	while(!positions.atEnd()){
+		tmp = positions.getNextItem();
+		pixVal = img.getPixelVal(tmp.r, tmp.c);
+		if ( first )
+		{
+			minVal = pixVal;
+			maxVal = pixVal;
+			meanVal = meanVal + pixVal;
+			first = false;
+		}
+		else
+		{
+			if ( minVal > pixVal )
+				pixVal = minVal;
+			if ( maxVal < pixVal )
+				maxVal = pixVal;
+			meanVal = meanVal + pixVal;
+		}
+	}
 
+	meanVal = meanVal / size;
 }
 
 template <class pType>
