@@ -32,6 +32,7 @@ public:
 	void insertItem( T );
 	void deleteItem( T );
 	void reset() { currentPos = NULL; }
+	bool atEnd();
 	T getNextItem();
 
 	list<T>& operator=(const list<T>&);
@@ -196,6 +197,14 @@ list<T>& list<T>::operator=(const list<T>& rhs)
 	length = rhs.length;
 
 	return *this;
+}
+
+template <class T>
+bool list<T>::atEnd()
+{
+	if ( currentPos != NULL )
+		return ( currentPos->next == NULL );
+	return (length == 0);
 }
 
 #endif // LIST
