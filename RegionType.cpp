@@ -60,7 +60,7 @@ RegionType& RegionType::operator=(const RegionType &rhs)
 
 double RegionType::moment(int p, int q){
 
-	double total;
+	double total = 0;
 
 	positions.reset();
 	pixelType tmp = positions.getNextItem();
