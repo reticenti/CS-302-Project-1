@@ -28,7 +28,7 @@
  *Change Log*******************************************************************
 
  Version 1.3
- -added region checking
+ -added region classification and filtering
 
  Version 1.2
  -added count regions
@@ -217,6 +217,13 @@ using namespace std;
 	//               a valid number is sent.  -1 indicates cancel
 	// assumptions : both parameters are valid c strings
 	int promptForAngle( const char[], const char[] );
+
+	// name        : promptForIntValues
+	// input       : title string, min value, max value, and then low and high
+	// output      : prompts the user for two integer values, making certain low
+	//               is < high
+	// assumptions : first parameter is valid c string
+	void promptForIntValues( const char[], int, int, int&, int& );
 
 	// name        : messageBox
 	// input       : title string and message string
@@ -1851,23 +1858,7 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 		count = computeComponents(img[index], regions);
 
 		// color in regions
-		///////////////TEMP///////////////////////////////////////
-/*
-		PixelType loc;
-		int i = 0;
-		while ( !regions.empty() )
-		{
-			i++;
-			while ( !(regions.front()).positions.empty() )
-			{
-				loc = (regions.front()).positions.front();
-				(regions.front()).positions.pop_front();
-
-				temp.setPixelVal(loc.r, loc.c, (Q-Q/10)*i/count);
-			}
-			regions.pop_front();
-		} */
-
+		
 		// reset the list
 		regions.reset();
 
@@ -1896,7 +1887,6 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 				temp.setPixelVal(loc.r, loc.c, (Q-Q/10)*(i+1)/count);
 			}
 		}
-		///////////////////////////////////////////////////////////
 
 		// set image to the counted image
 		img[index] = temp;
@@ -1942,44 +1932,112 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 		// computeComponents
 		count = computeComponents(img[index], regions);
 
-		/////////TEMP/////////////////////////////////////////////////////
-
-		// this block prints the list of regions to the screen
-	
-		// reset the list
-		regions.reset();
-
+		// calculate all the values for the regions
+		
+		// temp values used to traverse lists
 		PixelType loc;
 		RegionType reg;
 
-		int size;
+		// reset list to begin traversal
+		regions.reset();
 
-		// go through each region and the list of registers inside it
-		for ( int i = 0; i < count; i++ )
+		while ( !regions.atEnd() )
 		{
-			// get the next region
+			// get next region
 			reg = regions.getNextItem();
 
-			// reset the positions list
-			reg.positions.reset();
-
-			// get the size of the region
-			size = reg.positions.getLength();
-
-			// make the new image of just the defined regions
-			for ( int j = 0; j < size; j++ )
-			{
-				loc = reg.positions.getNextItem();
-
-				newImage.setPixelVal(loc.r, loc.c, 
-				    img[index].getPixelVal(loc.r,loc.c) );
-			}
+			// calculate values
 		}
 
-		////////////////////////////////////////////////////////////////////
-
 		// show new menu and jump to new function
+		WINDOW *menu;
+
+		char choices[6][NAME_LEN] = {
+			"Regions of Specific Sizes",
+			"Regions with Particular Orientation",
+			"Regions having Certain Eccentricities",
+			"Regions amid Given Color Intensities",
+			"Save Changes",
+			"Cancel"
+		};
+
+		int choice,
+			menuHeight = 6*2+3,
+			menuWidth = 45,
+			xLoc,
+			yLoc,
+			len;
 		
+		if ( menuHeight > screenHeight() - 2 )
+			menuHeight = screenHeight() - 2;
+
+		if ( menuWidth > screenWidth() - 2 )
+			menuWidth = screenWidth() - 2;
+
+		xLoc = screenWidth() / 2 - menuWidth / 2;
+		yLoc = screenHeight() / 2 - menuHeight / 2;
+
+		choice = showMenu( menu, "Find Regions...", menuHeight, menuWidth, yLoc, xLoc,
+			choices, 6 );
+
+		switch ( choice )
+		{
+			case 0:
+				int A, B;
+				promptForIntValues( "Enter Size Bounds", 1, 2000, A, B );
+				if ( A != -1 && B != -1 )
+				{
+					regions.reset();
+
+					len = regions.getLength();
+
+					while ( !regions.atEnd() )
+					{
+						reg = regions.getNextItem();
+
+						if ( reg.size < A || reg.size > B )
+						{
+							// delete item from list
+							regions.deleteItem(reg);
+
+							// traverse again
+							regions.reset();
+						}
+					}
+				}
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				// reset the list
+				regions.reset();
+
+				// go through each region and the list of registers inside it
+				while ( !regions.atEnd() )
+				{
+					// get the next region
+					reg = regions.getNextItem();
+
+					// reset the positions list
+					reg.positions.reset();
+
+					// make the new image of just the defined regions
+					while ( !reg.positions.atEnd() )
+					{
+						loc = reg.positions.getNextItem();
+
+						newImage.setPixelVal(loc.r, loc.c, 
+							img[index].getPixelVal(loc.r,loc.c) );
+					}
+				}
+				break;
+			case 5:
+				break;
+		}
 
 		// set image to the new image
 		img[index] = newImage;
@@ -2322,6 +2380,76 @@ void promptForLoc( const char title[], ImageType<pType>& img, int& row, int& col
 	}
 
 	// at this point row and column should be set or should be -1 (cancel)
+
+	// de-allocate memory for WINDOW object
+	delwin( pixWin );
+}
+
+/******************************************************************************\
+ Prompts the user for two integer values, making certain val1 is <= val2
+\******************************************************************************/
+void promptForIntValues( const char title[], int min, int max, int& low,
+    int& high )
+{
+	// holds the error messages
+	char msg[NAME_LEN];
+
+	// this is the WINDOW pointer that points to the prompting window
+	WINDOW *pixWin;
+
+	// give high an initial value in case one isn't set of it
+	high = -1;
+
+	// draw message window
+	stdWindow( pixWin, title );
+
+	// gets user input for lower bound
+	low = promptForInt( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): " );
+
+	// if value is invalid, re-prompt
+	while ( (low < min || low > max) && low != -1 )
+	{
+		// show message box
+		sprintf( msg, "Invalid Value, must be (%i-%i)", min, max );
+		messageBox( "Invalid", msg );
+
+		// redraw the window
+		delwin( pixWin );
+		stdWindow( pixWin, title );
+
+		// re-prompt user
+		low = promptForInt( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): " );
+	}
+
+	// if user didn't choose to cancel
+	if ( low != -1 )
+	{
+		// prompt for upper bound
+		high = promptForInt( pixWin, 2, 2,
+				"Enter Upper Bound(-1 to cancel): " );
+
+		// if column input is not valid, display error and re-prompt
+		while ( (high < low || high > max) && high != -1 )
+		{
+			// show message box warning
+			sprintf( msg, "Invalid Value, must be (%i-%i)", low, max );
+			messageBox( "Invalid", msg );
+
+			// redraw the window
+			delwin( pixWin );
+			stdWindow( pixWin, title );
+
+			// reprint the upper line
+			mvwprintw( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): %i",
+					low );
+
+			// re-prompt user
+			high = promptForInt( pixWin, 2, 2,
+					"Enter Upper Bound(-1 to cancel): " );
+		}
+	}
+
+	// at this point low and high should be set or should be -1 (cancel)
 
 	// de-allocate memory for WINDOW object
 	delwin( pixWin );

@@ -33,6 +33,7 @@ public:
 	void deleteItem( T );
 	void reset() { currentPos = NULL; }
 	bool isEmpty() { return (listData == NULL); }
+	bool atEnd();
 	T getNextItem();
 
 	sortedList<T>& operator=(const sortedList<T>&);
@@ -148,7 +149,7 @@ void sortedList<T>::deleteItem( T item )
 	}
 	else
 	{
-		while ( item != (loc->next)->val )
+		while ( !(item == (loc->next)->val) )
 			loc = loc->next;
 
 		temp = loc->next;
@@ -220,6 +221,14 @@ sortedList<T>& sortedList<T>::operator=(const sortedList<T>& rhs)
 	length = rhs.length;
 
 	return *this;
+}
+
+template <class T>
+bool sortedList<T>::atEnd()
+{
+	if ( currentPos != NULL )
+		return ( currentPos->next == NULL );
+	return (length == 0);
 }
 
 #endif // SORTEDLIST
