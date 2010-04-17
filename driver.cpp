@@ -28,7 +28,7 @@
  *Change Log*******************************************************************
 
  Version 1.3
- -added region checking
+ -added region classification and filtering
 
  Version 1.2
  -added count regions
@@ -1851,23 +1851,7 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 		count = computeComponents(img[index], regions);
 
 		// color in regions
-		///////////////TEMP///////////////////////////////////////
-/*
-		PixelType loc;
-		int i = 0;
-		while ( !regions.empty() )
-		{
-			i++;
-			while ( !(regions.front()).positions.empty() )
-			{
-				loc = (regions.front()).positions.front();
-				(regions.front()).positions.pop_front();
-
-				temp.setPixelVal(loc.r, loc.c, (Q-Q/10)*i/count);
-			}
-			regions.pop_front();
-		} */
-
+		
 		// reset the list
 		regions.reset();
 
@@ -1896,7 +1880,6 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 				temp.setPixelVal(loc.r, loc.c, (Q-Q/10)*(i+1)/count);
 			}
 		}
-		///////////////////////////////////////////////////////////
 
 		// set image to the counted image
 		img[index] = temp;
@@ -1978,8 +1961,33 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 
 		////////////////////////////////////////////////////////////////////
 
+		// calculate all the values for the regions
+
 		// show new menu and jump to new function
+		WINDOW *menu;
+
+		char choices[6][NAME_LEN] = {
+			"Regions of Specific Sizes",
+			"Regions with Particular Orientation",
+			"Regions having Certain Eccentricities",
+			"Regions amid Given Color Intensities",
+			"Save Changes",
+			"Cancel"
+		};
+
+		int choice, menuHeight = 6*2+3, menuWidth = 45, xLoc, yLoc;
 		
+		if ( menuHeight > screenHeight() - 2 )
+			menuHeight = screenHeight() - 2;
+
+		if ( menuWidth > screenWidth() - 2 )
+			menuWidth = screenWidth() - 2;
+
+		xLoc = screenWidth() / 2 - menuWidth / 2;
+		yLoc = screenHeight() / 2 - menuHeight / 2;
+
+		choice = showMenu( menu, "Find Regions...", menuHeight, menuWidth, yLoc, xLoc,
+			choices, 6 );
 
 		// set image to the new image
 		img[index] = newImage;
