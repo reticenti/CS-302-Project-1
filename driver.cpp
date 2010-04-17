@@ -1999,10 +1999,67 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 					}
 					break;
 				case 1:
+					promptForIntValues( "Enter Orientation Bounds", 0, (4*3.14), A, B );
+					if ( A != -1 && B != -1 )
+					{
+						regions.reset();
+						
+						while ( !regions.atEnd() )
+						{
+							reg = regions.getNextItem();
+
+							if ( reg.getOrientation() < A || reg.getOrientation() > B )
+							{
+								// delete item from list
+								regions.deleteItem(reg);
+
+								// traverse again
+								regions.reset();
+							}
+						}
+					}
 					break;
 				case 2:
+					promptForIntValues( "Enter Eccentricity Bounds", 0, 50, A, B );
+					if ( A != -1 && B != -1 )
+					{
+						regions.reset();
+						
+						while ( !regions.atEnd() )
+						{
+							reg = regions.getNextItem();
+
+							if ( reg.getEccentricity() < A || reg.getEccentricity() > B )
+							{
+								// delete item from list
+								regions.deleteItem(reg);
+
+								// traverse again
+								regions.reset();
+							}
+						}
+					}
 					break;
 				case 3:
+					promptForIntValues( "Enter Intensity Bounds", 0, 100, A, B );
+					if ( A != -1 && B != -1 )
+					{
+						regions.reset();
+						
+						while ( !regions.atEnd() )
+						{
+							reg = regions.getNextItem();
+
+							if ( reg.getMeanVal() < A || reg.getMeanVal() > B )
+							{
+								// delete item from list
+								regions.deleteItem(reg);
+
+								// traverse again
+								regions.reset();
+							}
+						}
+					}
 					break;
 				case 4:
 					// reset the list
