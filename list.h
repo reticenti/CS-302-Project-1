@@ -32,6 +32,7 @@ public:
 	void insertItem( T );
 	void deleteItem( T );
 	void reset() { currentPos = NULL; }
+	bool isEmpty() { return (listData == NULL; }
 	T getNextItem();
 
 	list<T>& operator=(const list<T>&);
