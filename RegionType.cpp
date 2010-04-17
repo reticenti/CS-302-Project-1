@@ -92,6 +92,8 @@ double RegionType::mu(int p, int q){
 		total += ( pow(((double)tmp.c - (double)centroidC),p) 
 				* pow(((double)tmp.r - (double)centroidR),q));
 	}
+
+	return total;
 }
 
 void RegionType::lambda(){
@@ -104,14 +106,17 @@ void RegionType::lambda(){
 }
 
 void RegionType::theta(){
+	double mu11 = mu(1,1);
 
-	orientation = atan((lambdaMax - mu(2,0)) / (mu(1,1) ));
-
+	if ( mu11 != 0 )
+		orientation = atan((lambdaMax - mu(2,0)) / (mu(1,1) ));
+	else
+		orientation = 2.0 * atan(1.0);	// PI / 2
 }
 
 void RegionType::epsilon(){
 
-	if ( lambdaMin != 0 )
+	if ( lambdaMin = 0 )
 		eccentricity = sqrt(lambdaMax/lambdaMin);
 	else
 		eccentricity = 0;
@@ -128,11 +133,11 @@ void RegionType::setData(){
 	//set size
 	size = positions.getLength();
 	
-	//set orientation
-	theta();
-
 	//set lambda{max,min}
 	lambda();
+
+	//set orientation
+	theta();
 
 	//set eccentricity
 	epsilon();
