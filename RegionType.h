@@ -34,16 +34,16 @@ public:
 
 	void setData(const ImageType<int>&);
 
-	const int getCentroidR()const;
-	const int getCentroidC()const;
-	const int getSize()const;
-	const double getOrientation()const;
-	const double getEccentricity()const;
-	const int getMeanVal()const;
-	const int getMinVal()const;
-	const int getMaxVal()const;
+	int getCentroidR()const;
+	int getCentroidC()const;
+	int getSize()const;
+	double getOrientation()const;
+	double getEccentricity()const;
+	int getMeanVal()const;
+	int getMinVal()const;
+	int getMaxVal()const;
 
-
+	list<PixelType> positions;		// positions of pixels in region
 
 private:
 	double moment(int, int);
@@ -63,6 +63,5 @@ private:
 	int maxVal;						// maximum pixel value
 	double lambdaMax, lambdaMin; 		// lambda values
 
-	list<PixelType> positions;		// positions of pixels in region
 };
 

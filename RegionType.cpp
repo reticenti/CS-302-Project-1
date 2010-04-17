@@ -147,35 +147,35 @@ void RegionType::setData(const ImageType<int>& img){
 
 }
 
-const int RegionType::getCentroidR()const{
+int RegionType::getCentroidR()const{
 	return centroidR;
 }
 
-const int RegionType::getCentroidC()const{
+int RegionType::getCentroidC()const{
 	return centroidC;
 }
 
-const int RegionType::getSize()const{
+int RegionType::getSize()const{
 	return size;
 }
 
-const double RegionType::getOrientation()const{
+double RegionType::getOrientation()const{
 	return orientation;
 }
 
-const double RegionType::getEccentricity()const{
+double RegionType::getEccentricity()const{
 	return eccentricity;
 }
 
-const int RegionType::getMeanVal()const{
+int RegionType::getMeanVal()const{
 	return meanVal;
 }
 
-const int RegionType::getMinVal()const{
+int RegionType::getMinVal()const{
 	return minVal;
 }
 
-const int RegionType::getMaxVal()const{
+int RegionType::getMaxVal()const{
 	return maxVal;
 }
 
