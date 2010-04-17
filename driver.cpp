@@ -53,48 +53,14 @@
 #include <cstring>
 #include "stack.h"
 #include "queue.h"
-#include <list>
+#include "sortedList.h"
 #include "comp_curses.h"
 #include "imageIO.h"
 #include "image.h"
+#include "RegionType.h"	// list.h is included here
 #include <ctime>
 
 using namespace std;
-
-// This struct is used to store locations of pixels in a stack or queue
-struct PixelType
-{
-	int r;							// holds row value
-	int c;							// holds column value
-};
-
-// holds all data on a region
-struct RegionType
-{
-	int centroidR;					// centroid row
-	int centroidC;					// centroid col
-	int size;						// size of region (pixels)
-	double orientation;				// orientation of region
-	double eccentricity;			// eccentricity of region
-	int meanVal;					// mean pixel value
-	int minVal;						// minimum pixel value
-	int maxVal;						// maximum pixel value
-
-	list<PixelType> positions;		// positions of pixels in region
-
-	// operator overloads used for sorting
-	bool operator>(const RegionType &rhs) const
-	{ return (size > rhs.size); }
-	bool operator<(const RegionType &rhs) const
-	{ return (size < rhs.size); }
-	bool operator>=(const RegionType &rhs) const
-	{ return (size >= rhs.size); }
-	bool operator<=(const RegionType &rhs) const
-	{ return (size <= rhs.size); }
-	bool operator==(const RegionType &rhs) const
-	{ return (size == rhs.size); }
-
-};
 
 /******************************************************************************\
  CONSTANTS
@@ -1864,7 +1830,7 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 	if ( index != BAD_REG )
 	{
 		// this will hold the list of regions
-		list<RegionType> regions;
+		sortedList<RegionType> regions;
 
 		// hold the message to be displayed
 		char msg[NAME_LEN];
@@ -1886,7 +1852,7 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 
 		// color in regions
 		///////////////TEMP///////////////////////////////////////
-
+/*
 		PixelType loc;
 		int i = 0;
 		while ( !regions.empty() )
@@ -1900,8 +1866,36 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 				temp.setPixelVal(loc.r, loc.c, (Q-Q/10)*i/count);
 			}
 			regions.pop_front();
-		}
+		} */
 
+		// reset the list
+		regions.reset();
+
+		PixelType loc;
+		RegionType reg;
+
+		int size;
+
+		// go through each region and the list of registers inside it
+		for ( int i = 0; i < count; i++ )
+		{
+			// get the next region
+			reg = regions.getNextItem();
+
+			// reset the positions list
+			reg.positions.reset();
+
+			// get the size of the region
+			size = reg.positions.getLength();
+
+			// make the new image of just the defined regions
+			for ( int j = 0; j < size; j++ )
+			{
+				loc = reg.positions.getNextItem();
+
+				temp.setPixelVal(loc.r, loc.c, (Q-Q/10)*(i+1)/count);
+			}
+		}
 		///////////////////////////////////////////////////////////
 
 		// set image to the counted image
@@ -1943,7 +1937,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 		newImage.blackOut();
 
 		// define list of regions
-		list<RegionType> regions;
+		sortedList<RegionType> regions;
 
 		// computeComponents
 		count = computeComponents(img[index], regions);
@@ -1951,22 +1945,35 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 		/////////TEMP/////////////////////////////////////////////////////
 
 		// this block prints the list of regions to the screen
+	
+		// reset the list
+		regions.reset();
 
-		// iterators to traverse the list
-		list<PixelType>::iterator locs;
-		list<RegionType>::iterator regs = regions.begin();
+		PixelType loc;
+		RegionType reg;
+
+		int size;
 
 		// go through each region and the list of registers inside it
-		while ( regs != regions.end() )
+		for ( int i = 0; i < count; i++ )
 		{
-			locs = (*regs).positions.begin();
-			while ( locs != (*regs).positions.end() )
+			// get the next region
+			reg = regions.getNextItem();
+
+			// reset the positions list
+			reg.positions.reset();
+
+			// get the size of the region
+			size = reg.positions.getLength();
+
+			// make the new image of just the defined regions
+			for ( int j = 0; j < size; j++ )
 			{
-				newImage.setPixelVal((*locs).r, (*locs).c,
-				    img[index].getPixelVal((*locs).r,(*locs).c));
-				locs++;
+				loc = reg.positions.getNextItem();
+
+				newImage.setPixelVal(loc.r, loc.c, 
+				    img[index].getPixelVal(loc.r,loc.c) );
 			}
-			regs++;
 		}
 
 		////////////////////////////////////////////////////////////////////
@@ -2511,7 +2518,7 @@ int findLocalPPM( char **&filenames )
  of regions found
 \******************************************************************************/
 template <class pType>
-int computeComponents( ImageType<pType> input, list<RegionType> &regions )
+int computeComponents( ImageType<pType> input, sortedList<RegionType> &regions )
 {
 	// holds the loop values and the regions
 	int N, M, Q, count = 0;
@@ -2552,7 +2559,7 @@ int computeComponents( ImageType<pType> input, list<RegionType> &regions )
 \******************************************************************************/
 template <class pType>
 void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
-		int startRow, int startCol, pType label, list<RegionType> &regions)
+		int startRow, int startCol, pType label, sortedList<RegionType> &regions)
 {
 	// used to hold limits for the loop
 	int N, M, Q;
@@ -2590,7 +2597,7 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 		outputImg.setPixelVal(loc.r, loc.c, label);
 
 		// add location to list of locations
-		region.positions.push_front(loc);
+		region.positions.insertItem(loc);
 
 		for ( int i = loc.r-1; i <= loc.r+1; i++ )
 			for ( int j = loc.c-1; j <= loc.c+1; j++ )
@@ -2609,6 +2616,6 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 	}
 
 	// push region to list of regions
-	regions.push_front(region);
+	regions.insertItem(region);
 }
 
