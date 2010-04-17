@@ -84,14 +84,13 @@ double RegionType::mu(int p, int q){
 	double total = 0;
 
 	positions.reset();
-	PixelType tmp = positions.getNextItem();
+	PixelType tmp;
 
 	while(!positions.atEnd()){
 
+		tmp = positions.getNextItem();
 		total += ( pow(((double)tmp.c - (double)centroidC),p) 
 				* pow(((double)tmp.r - (double)centroidR),q));
-
-		tmp = positions.getNextItem();
 	}
 }
 
@@ -112,7 +111,10 @@ void RegionType::theta(){
 
 void RegionType::epsilon(){
 
-	eccentricity = sqrt(lambdaMax/lambdaMin);
+	if ( lambdaMin != 0 )
+		eccentricity = sqrt(lambdaMax/lambdaMin);
+	else
+		eccentricity = 0;
 }
 
 void RegionType::setData(){

@@ -1953,7 +1953,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 			"Cancel"
 		};
 
-		int choice,
+		int choice = 0,
 			menuHeight = 6*2+3,
 			menuWidth = 45,
 			xLoc,
@@ -1969,83 +1969,76 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 		xLoc = screenWidth() / 2 - menuWidth / 2;
 		yLoc = screenHeight() / 2 - menuHeight / 2;
 
-		choice = showMenu( menu, "Find Regions...", menuHeight, menuWidth, yLoc, xLoc,
-			choices, 6 );
-
-		switch ( choice )
+		while ( choice < 4 )
 		{
-			case 0:
-				int A, B;
-				promptForIntValues( "Enter Size Bounds", 1, 2000, A, B );
-				if ( A != -1 && B != -1 )
-				{
-					regions.reset();
-					
-					char MSG[100];
+			choice = showMenu( menu, "Find Regions...", menuHeight, menuWidth, yLoc, xLoc,
+				choices, 6 );
 
-					while ( !regions.atEnd() )
+			switch ( choice )
+			{
+				case 0:
+					int A, B;
+					promptForIntValues( "Enter Size Bounds", 1, 2000, A, B );
+					if ( A != -1 && B != -1 )
 					{
-						reg = regions.getNextItem();
-
-						sprintf(MSG,"%i - %i and size %i", A, B, reg.getSize() );
-
-						messageBox("Value", MSG);
-
-						if ( reg.getSize() < A || reg.getSize() > B )
+						regions.reset();
+						
+						while ( !regions.atEnd() )
 						{
-							messageBox("Value", "Deleting NODE");
-							// delete item from list
-							regions.deleteItem(reg);
+							reg = regions.getNextItem();
 
-							messageBox("Value", "Deleted Reseting" );
+							if ( reg.getSize() < A || reg.getSize() > B )
+							{
+								// delete item from list
+								regions.deleteItem(reg);
 
-							// traverse again
-							regions.reset();
-
-							messageBox("Value", "Done reseting" );
+								// traverse again
+								regions.reset();
+							}
 						}
 					}
-				}
-				break;
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
-			case 4:
-				// reset the list
-				regions.reset();
+					break;
+				case 1:
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				case 4:
+					// reset the list
+					regions.reset();
 
-				// go through each region and the list of registers inside it
-				while ( !regions.atEnd() )
-				{
-					// get the next region
-					reg = regions.getNextItem();
-
-					// reset the positions list
-					reg.positions.reset();
-
-					// make the new image of just the defined regions
-					while ( !reg.positions.atEnd() )
+					// go through each region and the list of registers inside it
+					while ( !regions.atEnd() )
 					{
-						loc = reg.positions.getNextItem();
+						// get the next region
+						reg = regions.getNextItem();
 
-						newImage.setPixelVal(loc.r, loc.c, 
-							img[index].getPixelVal(loc.r,loc.c) );
+						// reset the positions list
+						reg.positions.reset();
+
+						// make the new image of just the defined regions
+						while ( !reg.positions.atEnd() )
+						{
+							loc = reg.positions.getNextItem();
+
+							newImage.setPixelVal(loc.r, loc.c, 
+								img[index].getPixelVal(loc.r,loc.c) );
+						}
 					}
-				}
-				break;
-			case 5:
-				break;
+					// set image to the new image
+					img[index] = newImage;
+
+					// adds modified to register name
+					if ( name[index][strlen(name[index])-1] != ')' )
+						strcat( name[index], " (modified)" );
+					break;
+				case 5:
+					// exit (do nothing)
+					break;
+			}
 		}
 
-		// set image to the new image
-		img[index] = newImage;
-
-		// adds modified to register name
-		if ( name[index][strlen(name[index])-1] != ')' )
-			strcat( name[index], " (modified)" );
 	}
 }
 
