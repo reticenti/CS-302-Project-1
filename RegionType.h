@@ -32,10 +32,10 @@ public:
 	bool operator==(const RegionType &rhs) const;
 	RegionType& operator=(const RegionType &rhs);
 
-	void setData(const ImageType<int>&);
+	void setData();
 
-	int getCentroidR()const;
-	int getCentroidC()const;
+	double getCentroidR()const;
+	double getCentroidC()const;
 	int getSize()const;
 	double getOrientation()const;
 	double getEccentricity()const;
@@ -53,15 +53,15 @@ private:
 	void theta();
 	void epsilon();
 
-	int centroidR;					// centroid row
-	int centroidC;					// centroid col
+	double centroidR;				// centroid row
+	double centroidC;				// centroid col
 	int size;						// size of region (pixels)
 	double orientation;				// orientation of region
 	double eccentricity;			// eccentricity of region
 	int meanVal;					// mean pixel value
 	int minVal;						// minimum pixel value
 	int maxVal;						// maximum pixel value
-	double lambdaMax, lambdaMin; 		// lambda values
+	double lambdaMax, lambdaMin; 	// lambda values
 
 };
 

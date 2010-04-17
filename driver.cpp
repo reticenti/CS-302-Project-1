@@ -1941,14 +1941,6 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 		// reset list to begin traversal
 		regions.reset();
 
-		while ( !regions.atEnd() )
-		{
-			// get next region
-			reg = regions.getNextItem();
-
-			// calculate values
-		}
-
 		// show new menu and jump to new function
 		WINDOW *menu;
 
@@ -1988,20 +1980,29 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 				if ( A != -1 && B != -1 )
 				{
 					regions.reset();
-
-					len = regions.getLength();
+					
+					char MSG[100];
 
 					while ( !regions.atEnd() )
 					{
 						reg = regions.getNextItem();
 
-						if ( reg.size < A || reg.size > B )
+						sprintf(MSG,"%i - %i and size %i", A, B, reg.getSize() );
+
+						messageBox("Value", MSG);
+
+						if ( reg.getSize() < A || reg.getSize() > B )
 						{
+							messageBox("Value", "Deleting NODE");
 							// delete item from list
 							regions.deleteItem(reg);
 
+							messageBox("Value", "Deleted Reseting" );
+
 							// traverse again
 							regions.reset();
+
+							messageBox("Value", "Done reseting" );
 						}
 					}
 				}
@@ -2742,6 +2743,9 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 						stk.push( loc2 );
 					}
 	}
+
+	// set the data in the region
+	region.setData();
 
 	// push region to list of regions
 	regions.insertItem(region);

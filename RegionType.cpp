@@ -2,8 +2,8 @@
 
 RegionType::RegionType()
 {
-	centroidR = centroidC = size = meanVal = minVal = maxVal = 0;
-	orientation = eccentricity = 0.;
+	size = meanVal = minVal = maxVal = 0;
+	orientation = eccentricity = centroidR = centroidC = 0.0;
 }
 
 RegionType::RegionType(const RegionType& rhs)
@@ -39,10 +39,7 @@ bool RegionType::operator==(const RegionType &rhs) const
 			centroidC    == rhs.centroidC &&
 			size         == rhs.size &&
 			orientation  == rhs.orientation &&
-			eccentricity == rhs.eccentricity &&
-			meanVal      == rhs.meanVal &&
-			minVal       == rhs.minVal &&
-			maxVal       == rhs.maxVal );
+			eccentricity == rhs.eccentricity );
 }
 
 RegionType& RegionType::operator=(const RegionType &rhs)
@@ -63,12 +60,12 @@ double RegionType::moment(int p, int q){
 	double total = 0;
 
 	positions.reset();
-	PixelType tmp = positions.getNextItem();
+	PixelType tmp;
 
 	while(!positions.atEnd()){
 		
-		total += (pow((double)tmp.c,p))*(pow((double)tmp.r,q));
 		tmp = positions.getNextItem();
+		total += (pow((double)tmp.c,p))*(pow((double)tmp.r,q));
 	}
 
 	return total;
@@ -84,7 +81,7 @@ void RegionType::xyBar(){
 
 double RegionType::mu(int p, int q){
 
-	double total;
+	double total = 0;
 
 	positions.reset();
 	PixelType tmp = positions.getNextItem();
@@ -118,7 +115,7 @@ void RegionType::epsilon(){
 	eccentricity = sqrt(lambdaMax/lambdaMin);
 }
 
-void RegionType::setData(const ImageType<int>& img){
+void RegionType::setData(){
 
 	if(positions.isEmpty())
 		throw "There is not a region!";
@@ -127,13 +124,14 @@ void RegionType::setData(const ImageType<int>& img){
 	xyBar();
 
 	//set size
-	size = (int)moment(0,0);
+	size = positions.getLength();
 	
 	//set orientation
 	theta();
 
 	//set lambda{max,min}
 	lambda();
+
 	//set eccentricity
 	epsilon();
 
@@ -147,11 +145,11 @@ void RegionType::setData(const ImageType<int>& img){
 
 }
 
-int RegionType::getCentroidR()const{
+double RegionType::getCentroidR()const{
 	return centroidR;
 }
 
-int RegionType::getCentroidC()const{
+double RegionType::getCentroidC()const{
 	return centroidC;
 }
 
