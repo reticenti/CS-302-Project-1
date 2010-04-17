@@ -293,11 +293,11 @@ using namespace std;
 // Functions used for Count Regions	////////////////////////////////////////////
 
 	template <class pType>
-	int computeComponents( ImageType<pType>, list<RegionType>& );
+	int computeComponents( ImageType<pType>, list<RegionType<pType> >& );
 
 	template <class pType>
 	void findComponentsDFS( ImageType<pType>, ImageType<pType>&, int, int,
-	    pType, RegionType& );
+	    pType, RegionType<pType>& );
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1837,7 +1837,7 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 	if ( index != BAD_REG )
 	{
 		// this will hold the list of regions
-		sortedList<RegionType> regions;
+		sortedList<RegionType<pType> > regions;
 
 		// hold the message to be displayed
 		char msg[NAME_LEN];
@@ -1863,7 +1863,7 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 		regions.reset();
 
 		PixelType loc;
-		RegionType reg;
+		RegionType<pType> reg;
 
 		int size;
 
@@ -1927,7 +1927,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 		newImage.blackOut();
 
 		// define list of regions
-		sortedList<RegionType> regions;
+		sortedList<RegionType<pType> > regions;
 
 		// computeComponents
 		count = computeComponents(img[index], regions);
@@ -1936,7 +1936,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 		
 		// temp values used to traverse lists
 		PixelType loc;
-		RegionType reg;
+		RegionType<pType> reg;
 
 		// reset list to begin traversal
 		regions.reset();
@@ -2640,7 +2640,7 @@ int findLocalPPM( char **&filenames )
  of regions found
 \******************************************************************************/
 template <class pType>
-int computeComponents( ImageType<pType> input, sortedList<RegionType> &regions )
+int computeComponents( ImageType<pType> input, sortedList<RegionType<pType> > &regions )
 {
 	// holds the loop values and the regions
 	int N, M, Q, count = 0;
@@ -2681,13 +2681,13 @@ int computeComponents( ImageType<pType> input, sortedList<RegionType> &regions )
 \******************************************************************************/
 template <class pType>
 void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
-		int startRow, int startCol, pType label, sortedList<RegionType> &regions)
+		int startRow, int startCol, pType label, sortedList<RegionType<pType> > &regions)
 {
 	// used to hold limits for the loop
 	int N, M, Q;
 
 	// region to be added
-	RegionType region;
+	RegionType<pType> region;
 
 	// set up N, M, and Q
 	outputImg.getImageInfo(N, M, Q);
