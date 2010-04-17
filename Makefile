@@ -1,11 +1,8 @@
-main.out: driver.o cubicSpline.o imageIO.o comp_curses.o rgb.o RegionType.o
-	g++ -lncurses -g -o main.out driver.o imageIO.o cubicSpline.o comp_curses.o rgb.o RegionType.o
+main.out: driver.o cubicSpline.o imageIO.o comp_curses.o rgb.o
+	g++ -lncurses -g -o main.out driver.o imageIO.o cubicSpline.o comp_curses.o rgb.o
 
 driver.o: driver.cpp image.h comp_curses.h cubicSpline.h imageIO.h queue.h list.h sortedList.h RegionType.h
 	g++ -c -lncurses -g driver.cpp
-
-RegionType.o: RegionType.h RegionType.cpp list.h
-	g++ -c -g RegionType.cpp
 
 comp_curses.o: comp_curses.cpp comp_curses.h
 	g++ -c -lncurses -g comp_curses.cpp
