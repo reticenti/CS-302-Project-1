@@ -298,7 +298,7 @@ using namespace std;
 
 	template <class pType>
 	void findComponentsDFS( ImageType<pType>, ImageType<pType>&, int, int,
-	    pType, RegionType<pType>& );
+	    pType, RegionType<pType>&, const ImageType<pType>& );
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1972,7 +1972,9 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 
 		while ( choice < 4 )
 		{
+			// clear the screen
 			clearScreen();
+
 			choice = showMenu( menu, "Find Regions...", menuHeight, menuWidth, yLoc, xLoc,
 				choices, 6 );
 
@@ -2793,7 +2795,7 @@ int computeComponents( ImageType<pType> input, sortedList<RegionType<pType> > &r
 			{
 				count++;			// count regions
 				lbl = Q/2;
-				findComponentsDFS(temp, temp, i, j, lbl, regions);
+				findComponentsDFS(temp, temp, i, j, lbl, regions, input);
 			}
 
 	// return number of regions
@@ -2806,7 +2808,8 @@ int computeComponents( ImageType<pType> input, sortedList<RegionType<pType> > &r
 \******************************************************************************/
 template <class pType>
 void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
-		int startRow, int startCol, pType label, sortedList<RegionType<pType> > &regions)
+	int startRow, int startCol, pType label, sortedList<RegionType<pType> >
+	&regions, const ImageType<pType>& original )
 {
 	// used to hold limits for the loop
 	int N, M, Q;
@@ -2863,7 +2866,7 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 	}
 
 	// set the data in the region
-	region.setData();
+	region.setData( original );
 
 	// push region to list of regions
 	regions.insertItem(region);
