@@ -28,7 +28,7 @@
  *Change Log*******************************************************************
 
  Version 1.3
- -added region classification and filtering
+ -added region classification and filtering (classify regions)
 
  Version 1.2
  -added count regions
@@ -54,10 +54,11 @@
 #include "stack.h"
 #include "queue.h"
 #include "sortedList.h"
+#include "list.h"
 #include "comp_curses.h"
 #include "imageIO.h"
 #include "image.h"
-#include "RegionType.h"	// list.h is included here
+#include "RegionType.h"
 #include <ctime>
 
 using namespace std;
@@ -88,6 +89,8 @@ using namespace std;
 
 	const int MAX_IMG = 10000;		// the max size you can enlarge to
 	const int MIN_IMG = 4;			// the min size you can reduce to
+
+	const int MIN_REGION = 4;		// the threshold size for small components
 
 	const short BG_COLOR = COLOR_BLUE;	// background color
 	const short FG_COLOR = COLOR_BLACK;	// doesn't matter(must be dif than BG)
@@ -294,11 +297,16 @@ using namespace std;
 // Functions used for Count Regions	////////////////////////////////////////////
 
 	template <class pType>
-	int computeComponents( ImageType<pType>, list<RegionType<pType> >& );
+	int computeComponents( ImageType<pType>, sortedList<RegionType<pType> >& );
 
 	template <class pType>
 	void findComponentsDFS( ImageType<pType>, ImageType<pType>&, int, int,
 	    pType, RegionType<pType>&, const ImageType<pType>& );
+
+// Functions used for Classify Regions /////////////////////////////////////////
+
+	template <class pType>
+	void deleteSmallRegions( sortedList<RegionType<pType> >&, int );
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1932,6 +1940,9 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 
 		// computeComponents
 		count = computeComponents(img[index], regions);
+	
+		// remove regions under size MIN_REGION
+		deleteSmallRegions( regions, MIN_REGION );
 
 		// calculate all the values for the regions
 		
@@ -1984,7 +1995,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 			switch ( choice )
 			{
 				case 0:
-					promptForIntValues( "Enter Size Bounds", 1, 4000, A, B );
+					promptForIntValues( "Enter Size Bounds", MIN_REGION, M*N, A, B );
 					if ( A != -1 && B != -1 )
 					{
 						regions.reset();
@@ -2005,38 +2016,46 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 					}
 					break;
 				case 1:
-					promptForDoubleValues( "Enter Orientation Bounds", -2.0*atan(1), 2.0*atan(1.0), a, b );
-					regions.reset();
+					promptForDoubleValues( "Enter Orientation Bounds (Degrees)", 0.0, 180.0, a, b );
 					
-					while ( !regions.atEnd() )
+					if ( a != -1.0 && b != -1.0 )
 					{
-						reg = regions.getNextItem();
-
-						if ( reg.getOrientation() < a || reg.getOrientation() > b )
+						regions.reset();
+						
+						while ( !regions.atEnd() )
 						{
-							// delete item from list
-							regions.deleteItem(reg);
+							reg = regions.getNextItem();
 
-							// traverse again
-							regions.reset();
+							if ( reg.getOrientation() < a || reg.getOrientation() > b )
+							{
+								// delete item from list
+								regions.deleteItem(reg);
+
+								// traverse again
+								regions.reset();
+							}
 						}
 					}
 					break;
 				case 2:
-					promptForDoubleValues( "Enter Eccentricity Bounds", 1.0, 100.0, a, b );
-					regions.reset();
-					
-					while ( !regions.atEnd() )
+					promptForDoubleValues( "Enter Eccentricity Bounds", 1.0, (M>N?M:N), a, b );
+
+					if ( a != -1.0 && b != -1.0 )
 					{
-						reg = regions.getNextItem();
-
-						if ( reg.getEccentricity() < a || reg.getEccentricity() > b )
+						regions.reset();
+						
+						while ( !regions.atEnd() )
 						{
-							// delete item from list
-							regions.deleteItem(reg);
+							reg = regions.getNextItem();
 
-							// traverse again
-							regions.reset();
+							if ( reg.getEccentricity() < a || reg.getEccentricity() > b )
+							{
+								// delete item from list
+								regions.deleteItem(reg);
+
+								// traverse again
+								regions.reset();
+							}
 						}
 					}
 					break;
@@ -2518,17 +2537,17 @@ void promptForDoubleValues( const char title[], double min, double max,
 	// this is the WINDOW pointer that points to the prompting window
 	WINDOW *pixWin;
 
-	// give high an initial value in case one isn't set of it
+	// give an initial value to high
 	high = -1.0;
 
 	// draw message window
 	stdWindow( pixWin, title );
 
 	// gets user input for lower bound
-	low = promptForDouble( pixWin, 1, 2, "Enter Lower Bound: " );
+	low = promptForDouble( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): " );
 
 	// if value is invalid, re-prompt
-	while ( (low < min || low > max) )
+	while ( (low < min || low > max) && low != 1.0 )
 	{
 		// show message box
 		sprintf( msg, "Invalid Value, must be (%f-%f)", min, max );
@@ -2539,18 +2558,17 @@ void promptForDoubleValues( const char title[], double min, double max,
 		stdWindow( pixWin, title );
 
 		// re-prompt user
-		low = promptForDouble( pixWin, 1, 2, "Enter Lower Bound: " );
+		low = promptForDouble( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): " );
 	}
 
-	// if user didn't choose to cancel
-	if ( low != -1 )
+	if ( low != -1.0 )
 	{
 		// prompt for upper bound
 		high = promptForDouble( pixWin, 2, 2,
-				"Enter Upper Bound: " );
+				"Enter Upper Bound(-1 to cancel): " );
 
 		// if column input is not valid, display error and re-prompt
-		while ( (high < low || high > max) && high != -1 )
+		while ( (high < low || high > max) && high != -1.0 )
 		{
 			// show message box warning
 			sprintf( msg, "Invalid Value, must be (%f-%f)", low, max );
@@ -2561,15 +2579,14 @@ void promptForDoubleValues( const char title[], double min, double max,
 			stdWindow( pixWin, title );
 
 			// reprint the upper line
-			mvwprintw( pixWin, 1, 2, "Enter Lower Bound: %f",
+			mvwprintw( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): %f",
 					low );
 
 			// re-prompt user
 			high = promptForDouble( pixWin, 2, 2,
-					"Enter Upper Bound: " );
+					"Enter Upper Bound(-1 to cancel): " );
 		}
 	}
-
 	// at this point low and high should be set or should be -1 (cancel)
 
 	// de-allocate memory for WINDOW object
@@ -2870,5 +2887,32 @@ void findComponentsDFS(ImageType<pType> inputImg, ImageType<pType>& outputImg,
 
 	// push region to list of regions
 	regions.insertItem(region);
+}
+
+/******************************************************************************\
+ Remove all the regions in the list under a certain size (value of thresh)
+\******************************************************************************/
+template <class pType>
+void deleteSmallRegions( sortedList<RegionType<pType> >& regions, int thresh )
+{
+	RegionType<pType> reg;
+	regions.reset();
+	bool loop = (!regions.atEnd());
+
+	while ( loop )
+	{
+		reg = regions.getNextItem();
+		if ( reg.getSize() <= thresh )
+		{
+			regions.deleteItem( reg );
+			regions.reset();
+			loop = (!regions.atEnd());
+		}
+		else
+		{
+			// if size is larger stop looking because list is sorted
+			loop = false;
+		}
+	}
 }
 

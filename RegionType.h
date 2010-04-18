@@ -78,6 +78,7 @@ RegionType<pType>::RegionType()
 	meanVal = minVal = maxVal = 0;
 	size = 0;
 	orientation = eccentricity = centroidR = centroidC = 0.0;
+	lambdaMax = lambdaMin = 0.0;
 }
 
 template <class pType>
@@ -192,21 +193,30 @@ void RegionType<pType>::lambda(){
 
 template <class pType>
 void RegionType<pType>::theta(){
-	double mu11 = mu(1,1);
 
-	if ( mu11 != 0 )
-		orientation = atan((lambdaMax - mu(2,0)) / (mu(1,1) ));
+	double mu_1_1 = mu(1,1);
+
+	double halfpi = 2.0 * atan(1.0);
+
+	if ( mu_1_1 != 0 )
+		orientation = atan((lambdaMax - mu(2,0)) / (mu_1_1 ));
 	else
-		orientation = 2.0 * atan(1.0);	// PI / 2
+		orientation = halfpi;	// PI / 2
+
+	// this makes x axis axis of origin
+	orientation += halfpi;
+	
+	// convert to degrees
+	orientation *= 180.0 / (2.0 * halfpi);
 }
 
 template <class pType>
 void RegionType<pType>::epsilon(){
-		
-	if ( lambdaMin = 0 )
+
+	if ( lambdaMin != 0.0 )	
 		eccentricity = sqrt(lambdaMax/lambdaMin);
 	else
-		eccentricity = 0;
+		eccentricity = 1.0;
 }
 
 template <class pType>
