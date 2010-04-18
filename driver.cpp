@@ -218,12 +218,13 @@ using namespace std;
 	// assumptions : both parameters are valid c strings
 	int promptForAngle( const char[], const char[] );
 
-	// name        : promptForIntValues
+	// name        : promptForIntValues, promptForDoubleValues
 	// input       : title string, min value, max value, and then low and high
-	// output      : prompts the user for two integer values, making certain low
-	//               is < high
+	// output      : prompts the user for two int or double values, making certain
+	//               low is < high
 	// assumptions : first parameter is valid c string
 	void promptForIntValues( const char[], int, int, int&, int& );
+	void promptForDoubleValues(const char[], double, double, double&, double&);
 
 	// name        : messageBox
 	// input       : title string and message string
@@ -1971,14 +1972,17 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 
 		while ( choice < 4 )
 		{
+			clearScreen();
 			choice = showMenu( menu, "Find Regions...", menuHeight, menuWidth, yLoc, xLoc,
 				choices, 6 );
+
+			int A, B;
+			double a, b;
 
 			switch ( choice )
 			{
 				case 0:
-					int A, B;
-					promptForIntValues( "Enter Size Bounds", 1, 2000, A, B );
+					promptForIntValues( "Enter Size Bounds", 1, 4000, A, B );
 					if ( A != -1 && B != -1 )
 					{
 						regions.reset();
@@ -1999,49 +2003,43 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 					}
 					break;
 				case 1:
-					promptForIntValues( "Enter Orientation Bounds", 0, (4*3.14), A, B );
-					if ( A != -1 && B != -1 )
+					promptForDoubleValues( "Enter Orientation Bounds", -2.0*atan(1), 2.0*atan(1.0), a, b );
+					regions.reset();
+					
+					while ( !regions.atEnd() )
 					{
-						regions.reset();
-						
-						while ( !regions.atEnd() )
+						reg = regions.getNextItem();
+
+						if ( reg.getOrientation() < a || reg.getOrientation() > b )
 						{
-							reg = regions.getNextItem();
+							// delete item from list
+							regions.deleteItem(reg);
 
-							if ( reg.getOrientation() < A || reg.getOrientation() > B )
-							{
-								// delete item from list
-								regions.deleteItem(reg);
-
-								// traverse again
-								regions.reset();
-							}
+							// traverse again
+							regions.reset();
 						}
 					}
 					break;
 				case 2:
-					promptForIntValues( "Enter Eccentricity Bounds", 0, 50, A, B );
-					if ( A != -1 && B != -1 )
+					promptForDoubleValues( "Enter Eccentricity Bounds", 1.0, 100.0, a, b );
+					regions.reset();
+					
+					while ( !regions.atEnd() )
 					{
-						regions.reset();
-						
-						while ( !regions.atEnd() )
+						reg = regions.getNextItem();
+
+						if ( reg.getEccentricity() < a || reg.getEccentricity() > b )
 						{
-							reg = regions.getNextItem();
+							// delete item from list
+							regions.deleteItem(reg);
 
-							if ( reg.getEccentricity() < A || reg.getEccentricity() > B )
-							{
-								// delete item from list
-								regions.deleteItem(reg);
-
-								// traverse again
-								regions.reset();
-							}
+							// traverse again
+							regions.reset();
 						}
 					}
 					break;
 				case 3:
-					promptForIntValues( "Enter Intensity Bounds", 0, 100, A, B );
+					promptForIntValues( "Enter Intensity Bounds", 0, Q, A, B );
 					if ( A != -1 && B != -1 )
 					{
 						regions.reset();
@@ -2437,7 +2435,7 @@ void promptForLoc( const char title[], ImageType<pType>& img, int& row, int& col
 }
 
 /******************************************************************************\
- Prompts the user for two integer values, making certain val1 is <= val2
+ Prompts the user for two integer values, making certain low <= high
 \******************************************************************************/
 void promptForIntValues( const char title[], int min, int max, int& low,
     int& high )
@@ -2497,6 +2495,76 @@ void promptForIntValues( const char title[], int min, int max, int& low,
 			// re-prompt user
 			high = promptForInt( pixWin, 2, 2,
 					"Enter Upper Bound(-1 to cancel): " );
+		}
+	}
+
+	// at this point low and high should be set or should be -1 (cancel)
+
+	// de-allocate memory for WINDOW object
+	delwin( pixWin );
+}
+
+/******************************************************************************\
+ Prompts the user for two double values, making certain low <= high
+\******************************************************************************/
+void promptForDoubleValues( const char title[], double min, double max,
+    double &low, double& high )
+{
+	// holds the error messages
+	char msg[NAME_LEN];
+
+	// this is the WINDOW pointer that points to the prompting window
+	WINDOW *pixWin;
+
+	// give high an initial value in case one isn't set of it
+	high = -1.0;
+
+	// draw message window
+	stdWindow( pixWin, title );
+
+	// gets user input for lower bound
+	low = promptForDouble( pixWin, 1, 2, "Enter Lower Bound: " );
+
+	// if value is invalid, re-prompt
+	while ( (low < min || low > max) )
+	{
+		// show message box
+		sprintf( msg, "Invalid Value, must be (%f-%f)", min, max );
+		messageBox( "Invalid", msg );
+
+		// redraw the window
+		delwin( pixWin );
+		stdWindow( pixWin, title );
+
+		// re-prompt user
+		low = promptForDouble( pixWin, 1, 2, "Enter Lower Bound: " );
+	}
+
+	// if user didn't choose to cancel
+	if ( low != -1 )
+	{
+		// prompt for upper bound
+		high = promptForDouble( pixWin, 2, 2,
+				"Enter Upper Bound: " );
+
+		// if column input is not valid, display error and re-prompt
+		while ( (high < low || high > max) && high != -1 )
+		{
+			// show message box warning
+			sprintf( msg, "Invalid Value, must be (%f-%f)", low, max );
+			messageBox( "Invalid", msg );
+
+			// redraw the window
+			delwin( pixWin );
+			stdWindow( pixWin, title );
+
+			// reprint the upper line
+			mvwprintw( pixWin, 1, 2, "Enter Lower Bound: %f",
+					low );
+
+			// re-prompt user
+			high = promptForDouble( pixWin, 2, 2,
+					"Enter Upper Bound: " );
 		}
 	}
 
