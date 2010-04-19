@@ -212,7 +212,6 @@ void RegionType<pType>::theta(){
 
 template <class pType>
 void RegionType<pType>::epsilon(){
-
 	if ( lambdaMin != 0.0 )	
 		eccentricity = sqrt(lambdaMax/lambdaMin);
 	else
@@ -245,11 +244,18 @@ void RegionType<pType>::setData( const ImageType<pType>& img ){
 	PixelType tmp;
 	pType pixVal;
 
+	// set the values for the first element
 	bool first = true;
 
-	while(!positions.atEnd()){
+	while(!positions.atEnd())
+	{
+		// get the next item in the list
 		tmp = positions.getNextItem();
+		
+		// get the pixel value at that location
 		pixVal = img.getPixelVal(tmp.r, tmp.c);
+
+		// if the first set min = max = mean = pixVal
 		if ( first )
 		{
 			minVal = pixVal;
@@ -257,7 +263,7 @@ void RegionType<pType>::setData( const ImageType<pType>& img ){
 			meanVal = meanVal + pixVal;
 			first = false;
 		}
-		else
+		else // otherwise check to see if the values are greater
 		{
 			if ( minVal > pixVal )
 				pixVal = minVal;
@@ -267,6 +273,7 @@ void RegionType<pType>::setData( const ImageType<pType>& img ){
 		}
 	}
 
+	// divide by total to obtain mean
 	meanVal = meanVal / size;
 }
 
