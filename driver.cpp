@@ -2574,7 +2574,7 @@ void promptForDoubleValues( const char title[], double min, double max,
 	while ( low < 0.0 && low != -1.0 )
 	{
 		// show message box
-		sprintf( msg, "Invalid Value, must be (%.00f-%.00f)", min, max );
+		sprintf( msg, "Invalid Value, must be (%.2f-%.2f)", min, max );
 		messageBox( "Invalid", msg );
 
 		// redraw the window
@@ -2603,7 +2603,7 @@ void promptForDoubleValues( const char title[], double min, double max,
 		while ( high < low && high != -1.0 )
 		{
 			// show message box warning
-			sprintf( msg, "Invalid Value, must be (%.00f-%.00f)", low, max );
+			sprintf( msg, "Invalid Value, must be (%.2f-%.2f)", low, max );
 			messageBox( "Invalid", msg );
 
 			// redraw the window
@@ -2611,7 +2611,7 @@ void promptForDoubleValues( const char title[], double min, double max,
 			stdWindow( pixWin, title );
 
 			// reprint the upper line
-			mvwprintw( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): %.00f",
+			mvwprintw( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): %.2f",
 					low );
 
 			// re-prompt user
