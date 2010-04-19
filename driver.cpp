@@ -483,7 +483,7 @@ int main( int argc, char **argv )
  afterwards the memory is de-allocated
 \******************************************************************************/
 int showMenu( WINDOW *& menu, const char title[], int height, int width,
-		int locY, int locX, char menuStr[][NAME_LEN], int choices, bool erase )
+	int locY, int locX, char menuStr[][NAME_LEN], int choices, bool erase )
 {
 	// holds the new dynamic array of strings
 	char **menuStrPtr = new char*[choices];
@@ -524,7 +524,7 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width,
  It is up to the calling function to take care of this object.
 \******************************************************************************/
 int showMenu( WINDOW *& menu, const char title[], int height, int width,
-		int locY, int locX, char *menuStr[], int choices, bool eraseHighlight )
+	int locY, int locX, char *menuStr[], int choices, bool eraseHighlight )
 {
 	/* x, y variables hold location of cursor, choiceLoc is the current choice
 	   thats selected, menuLoc is the location on the menu, and input is the
@@ -632,7 +632,7 @@ int showMenu( WINDOW *& menu, const char title[], int height, int width,
  It is up to the calling function to take care of this object.
 \******************************************************************************/
 void showRegs( WINDOW *& regWin, const bool loaded[], 
-		const char names[][NAME_LEN] )
+	const char names[][NAME_LEN] )
 {
 	// draw/initialize the window to display the
 	if ( REGWIN_HEIGHT + 2 <= screenHeight() || screenHeight() < 7 )
@@ -679,7 +679,7 @@ void deleteMenu( WINDOW *& menu )
  oddly colored windows are wanted.
 \******************************************************************************/
 void drawWindow( WINDOW *& win, const char title[], int height, int width,
-		int y, int x, short bgColor, short fgColor )
+	int y, int x, short bgColor, short fgColor )
 {
 	// intialize window
 	win = newwin( height, width, y, x );
@@ -1927,19 +1927,18 @@ void countRegions(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 }
 
 /******************************************************************************\
- This function calls another menu which allows the user to manipulate the
+ This function creates another menu which allows the user to manipulate the
  inside of an image.
 \******************************************************************************/
 template <class pType>
 void classifyRegions( ImageType<pType> img[], bool loaded[],
-		char name[][NAME_LEN] )
+	char name[][NAME_LEN] )
 {
 	// register to use and a few other parameters
 	int index, N, M, Q, count, minRegion;
 
 	// prompt user for a register to use
 	index = promptForReg( loaded, name );
-
 
 	if ( index != BAD_REG )
 	{
@@ -1977,6 +1976,9 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 			// show new menu and jump to new function
 			WINDOW *menu;
 
+			// will be used for message box
+			char msg[NAME_LEN];
+
 			char choices[6][NAME_LEN] = {
 				"Regions of Specific Sizes",
 				"Regions with Particular Orientation",
@@ -2007,8 +2009,11 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 				// clear the screen
 				clearScreen();
 
-				choice = showMenu( menu, "Find Regions...", menuHeight,
-				    menuWidth, yLoc, xLoc, choices, 6 );
+				sprintf( msg, "%i Regions Remain - Find Regions...",
+					regions.getLength() );
+
+				choice = showMenu( menu, msg, menuHeight, menuWidth, yLoc, xLoc,
+					choices, 6 );
 
 				int A, B;
 				double a, b;
@@ -2178,7 +2183,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
  loadImage.
 \******************************************************************************/
 int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check,
-		int y, int x )
+	int y, int x )
 {
 	// this is the WINDOW that the menu is stored in
 	WINDOW *regMenu;
@@ -2227,7 +2232,7 @@ int promptForReg( bool loaded[], char name[][NAME_LEN], const bool check,
 
 /******************************************************************************\
  This just builds the window used for message box, this function is just to
- simplify the plethora of other functions that use this.
+ simplify the plethora of other functions that use this line.
 \******************************************************************************/
 void stdWindow( WINDOW *&newWin, const char title[] )
 {
@@ -2322,7 +2327,7 @@ int promptForIntValue( const char title[], const char prompt[], int minVal,
 	val = promptForInt( pixWin, 1, 2, prompt );
 
 	// check for valid input
-	while ( (val < minVal || val > maxVal) && val != -1 )
+	while ( val < 0 && val != -1 )
 	{
 		// display error
 		sprintf( msg, "Please input a value (0-%i)", maxVal );
@@ -2335,6 +2340,12 @@ int promptForIntValue( const char title[], const char prompt[], int minVal,
 		// re-prompt user
 		val = promptForInt( pixWin, 1, 2, prompt );
 	}
+
+	// clip val to be in correct range if nessessary
+	if ( val < minVal && val != -1 )
+		val = minVal;
+	if ( val > maxVal )
+		val = maxVal;
 
 	// delete this dynamic memory
 	delwin( pixWin );
@@ -2384,7 +2395,8 @@ char promptForMirror( const char title[], const char prompt[] )
  calculated and then used to determine the bounds of row and column.
 \******************************************************************************/
 template <class pType>
-void promptForLoc( const char title[], ImageType<pType>& img, int& row, int& col )
+void promptForLoc( const char title[], ImageType<pType>& img, int& row,
+	int& col )
 {
 	// holds various image info
 	int N, M, Q;
@@ -2479,7 +2491,7 @@ void promptForIntValues( const char title[], int min, int max, int& low,
 	low = promptForInt( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): " );
 
 	// if value is invalid, re-prompt
-	while ( (low < min || low > max) && low != -1 )
+	while ( low < 0 && low != -1 )
 	{
 		// show message box
 		sprintf( msg, "Invalid Value, must be (%i-%i)", min, max );
@@ -2493,6 +2505,12 @@ void promptForIntValues( const char title[], int min, int max, int& low,
 		low = promptForInt( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): " );
 	}
 
+	// if value is out of bounds default to min or max value
+	if ( low < min && low != -1 )
+		low = min;
+	if ( low > max )
+		low = max;
+
 	// if user didn't choose to cancel
 	if ( low != -1 )
 	{
@@ -2501,7 +2519,7 @@ void promptForIntValues( const char title[], int min, int max, int& low,
 				"Enter Upper Bound(-1 to cancel): " );
 
 		// if column input is not valid, display error and re-prompt
-		while ( (high < low || high > max) && high != -1 )
+		while ( high < low && high != -1 )
 		{
 			// show message box warning
 			sprintf( msg, "Invalid Value, must be (%i-%i)", low, max );
@@ -2519,6 +2537,10 @@ void promptForIntValues( const char title[], int min, int max, int& low,
 			high = promptForInt( pixWin, 2, 2,
 					"Enter Upper Bound(-1 to cancel): " );
 		}
+
+		// if value is out of bounds defulat to min or max value
+		if ( high > max )
+			high = max;
 	}
 
 	// at this point low and high should be set or should be -1 (cancel)
@@ -2549,7 +2571,7 @@ void promptForDoubleValues( const char title[], double min, double max,
 	low = promptForDouble( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): " );
 
 	// if value is invalid, re-prompt
-	while ( (low < min || low > max) && low != 1.0 )
+	while ( low < 0.0 && low != -1.0 )
 	{
 		// show message box
 		sprintf( msg, "Invalid Value, must be (%f-%f)", min, max );
@@ -2560,20 +2582,28 @@ void promptForDoubleValues( const char title[], double min, double max,
 		stdWindow( pixWin, title );
 
 		// re-prompt user
-		low = promptForDouble( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): " );
+		low = promptForDouble( pixWin, 1, 2,
+			"Enter Lower Bound(-1 to cancel): " );
 	}
 
+	// if value is out of bounds default to min or max value
+	if ( low < min && low != -1.0 )
+		low = min;
+	if ( low > max )
+		low = max;
+
+	// if user didn't choose to cancel
 	if ( low != -1.0 )
 	{
 		// prompt for upper bound
-		high = promptForDouble( pixWin, 2, 2,
+		high = promptForInt( pixWin, 2, 2,
 				"Enter Upper Bound(-1 to cancel): " );
 
 		// if column input is not valid, display error and re-prompt
-		while ( (high < low || high > max) && high != -1.0 )
+		while ( high < low && high != -1.0 )
 		{
 			// show message box warning
-			sprintf( msg, "Invalid Value, must be (%f-%f)", low, max );
+			sprintf( msg, "Invalid Value, must be (%i-%i)", low, max );
 			messageBox( "Invalid", msg );
 
 			// redraw the window
@@ -2581,14 +2611,19 @@ void promptForDoubleValues( const char title[], double min, double max,
 			stdWindow( pixWin, title );
 
 			// reprint the upper line
-			mvwprintw( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): %f",
+			mvwprintw( pixWin, 1, 2, "Enter Lower Bound(-1 to cancel): %i",
 					low );
 
 			// re-prompt user
-			high = promptForDouble( pixWin, 2, 2,
+			high = promptForInt( pixWin, 2, 2,
 					"Enter Upper Bound(-1 to cancel): " );
 		}
+
+		// if value is out of bounds defulat to min or max value
+		if ( high > max )
+			high = max;
 	}
+
 	// at this point low and high should be set or should be -1 (cancel)
 
 	// de-allocate memory for WINDOW object
@@ -2786,7 +2821,8 @@ int findLocalPPM( char **&filenames )
  of regions found
 \******************************************************************************/
 template <class pType>
-int computeComponents( ImageType<pType> input, sortedList<RegionType<pType> > &regions )
+int computeComponents( ImageType<pType> input, sortedList<RegionType<pType> >
+	&regions )
 {
 	// holds the loop values and the regions
 	int N, M, Q, count = 0;
