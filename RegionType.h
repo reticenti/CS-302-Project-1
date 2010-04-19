@@ -280,17 +280,11 @@ void RegionType<pType>::lambda(){
 template <class pType>
 void RegionType<pType>::theta(){
 
-	// pre calculate mu of (1,1)
-	double mu_1_1 = mu(1,1);
-
-	// calculate half pi
+	// half pi
 	double halfpi = 2.0 * atan(1.0);
 
-	// if this is zero we will get a divide by zero
-	if ( mu_1_1 != 0 )
-		orientation = atan((lambdaMax - mu(2,0)) / (mu_1_1 ));
-	else // instead set this to the limit of atan(x) as x goes to infinity
-		orientation = halfpi;
+	// calculate orientation
+	orientation = atan2((lambdaMax - mu(2,0)) ,mu(1,1) );
 
 	// this makes x axis axis of origin
 	orientation += halfpi;
