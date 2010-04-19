@@ -2001,14 +2001,21 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 				yLoc,
 				len;
 			
-			if ( menuHeight > screenHeight() - 2 )
-				menuHeight = (screenHeight()-5)/2+3;
-
-			if ( menuWidth > screenWidth() - 2 )
-				menuWidth = screenWidth() - 2;
-
 			xLoc = screenWidth() / 2 - menuWidth / 2;
 			yLoc = screenHeight() / 2 - menuHeight / 2;
+
+			if ( menuHeight > screenHeight() - 2 )
+			{
+				menuHeight = (screenHeight()-5)/2*2+3;
+				yLoc = 1;
+			}
+
+			if ( menuWidth > screenWidth() - 2 )
+			{
+				menuWidth = screenWidth() - 2;
+				xLoc = 1;
+			}
+
 
 			while ( choice < 5 )
 			{
