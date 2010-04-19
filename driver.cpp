@@ -28,7 +28,9 @@
  *Change Log*******************************************************************
 
  Version 1.3
- -added region classification and filtering (classify regions)
+ -added region classification and filtering (classify regions) and also cleaned
+ some functions up a little to make things more readable.  Also made menus self
+ sizing in case terminal window is not large enough
 
  Version 1.2
  -added count regions
@@ -59,7 +61,6 @@
 #include "imageIO.h"
 #include "image.h"
 #include "RegionType.h"
-#include <ctime>
 
 using namespace std;
 
@@ -90,8 +91,6 @@ using namespace std;
 	const int MAX_IMG = 10000;		// the max size you can enlarge to
 	const int MIN_IMG = 4;			// the min size you can reduce to
 
-	const int MIN_REGION = 4;		// the threshold size for small components
-
 	const short BG_COLOR = COLOR_BLUE;	// background color
 	const short FG_COLOR = COLOR_BLACK;	// doesn't matter(must be dif than BG)
 
@@ -103,14 +102,14 @@ using namespace std;
 \******************************************************************************/
 	// name        : showMenu
 	// input       : an un-initialized window pointer, a string to be the title,
-	//               height, width, xLoc, yLoc of the window, list of c-style
-	//               strings to be used in the menu, the number of menu options,
-	//               and a bool value which says weather the last choice is
-	//               left highlighted
+	//				 height, width, xLoc, yLoc of the window, list of c-style
+	//				 strings to be used in the menu, the number of menu options,
+	//				 and a bool value which says weather the last choice is
+	//				 left highlighted
 	// output      : Display a window with menu options, let user choose and
-	//               return the index of that choice
+	//				 return the index of that choice
 	// assumptions : assumes that window is un-intialized and will be destructed
-	//               by calling function
+	//				 by calling function
 	int showMenu( WINDOW *&, const char[], int, int, int, int, 
 	    char[][NAME_LEN], int, bool=false );
 
@@ -118,25 +117,25 @@ using namespace std;
 	// input       : same as above function except with dynamic string list
 	// output      : same as above function
 	// assumptions : assumes the same about window as above, also assums the
-	//               dynamic list of strings has been initialized to at least
-	//               the number of window options.  The list of strings is not
-	//               de-allocated by this function
+	//				 dynamic list of strings has been initialized to at least
+	//				 the number of window options.  The list of strings is not
+	//				 de-allocated by this function
 	int showMenu( WINDOW *&, const char[], int, int, int, int, 
 	    char*[], int, bool=false );
 
 	// name        : showRegs
 	// input       : an un-initialized window pointer, a title string, and a
-	//               list of register names
+	//				 list of register names
 	// output      : displays a window next to main of all the registers
 	// assumptions : allocates but doesn't delete the WINDOW object
 	void showRegs( WINDOW *&, const bool[], const char[][NAME_LEN] );	
 
 	// name        : drawWindow
 	// input       : an un-intialized window pointer, a title string, and then
-	//               the window height, width, yLoc, and xLoc, plus the colors
-	//               for the background and foreground which are defaulted
+	//				 the window height, width, yLoc, and xLoc, plus the colors
+	//				 for the background and foreground which are defaulted
 	// output      : displays a empty window with a border and title using the
-	//               given parameters
+	//				 given parameters
 	// assumptions : allocates but doesn't delete the WINDOW object
 	void drawWindow( WINDOW *&, const char[], int, int, int, int, 
 	    short=MENU_BACKGROUND, short=MENU_FOREGROUND );
@@ -144,121 +143,120 @@ using namespace std;
 	// name        : deleteMenu
 	// input       : a WINDOW pointer that is allocated
 	// output      : de-allocate memory for the window pointer and refresh the
-	//               main screen
+	//				 main screen
 	// assumptions : assumes WINDOW object is intialized before calling
 	void deleteMenu( WINDOW *& );
 
 	// name        : processEntry
 	// input       : List of register images, list of register bools, list of
-	//               register names, and a value assumed to be choosen by user
+	//				 register names, and a value assumed to be choosen by user
 	// output      : depending on the value, call a function to do some image
-	//               manipulation
+	//				 manipulation
 	// assumptions : assumes value >= 0 and < MENU_OPTIONS, not that anything
-	//               will crash if its not true, but nothing will happen, also
-	//               assumes that names contain valid c strings
+	//				 will crash if its not true, but nothing will happen, also
+	//				 assumes that names contain valid c strings
 	template <class pType>
 	void processEntry( ImageType<pType>[], bool[], char[][NAME_LEN], int );
 
 	// name        : stdWindow
 	// input       : an un-initalized window and a title string
 	// output      : displays a window in the standard text box location with
-	//               the title and a border
+	//				 the title and a border
 	// assumptions : the window object is initalized here but not deleted, this
-	//               is left up to the calling function
+	//				 is left up to the calling function
 	void stdWindow( WINDOW *&, const char[] );
 
 	// name        : promptForReg
 	// input       : list of register bools, list of regist names, a flag that
-	//               indicates if registers that have not been loaded can be
-	//               choosen, the yLoc, and xLoc of the menu
+	//				 indicates if registers that have not been loaded can be
+	//				 choosen, the yLoc, and xLoc of the menu
 	// output      : Display a menu with the registers in it, allowing user to
-	//               choose a register
+	//				 choose a register
 	// assumptions : assumes that names are already set to valid c strings
 	int promptForReg( bool[], char[][NAME_LEN], const bool = true, 
 	    int=1, int=MENU_WIDTH+3 );
 
 	// name        : promptForFilename
 	// input       : title string, prompt string and char used to store user
-	//               input
+	//				 input
 	// output      : sets the final parameter equal to the filename the user
-	//               chooses and returns the length
+	//				 chooses and returns the length
 	// assumptions : assumes first 2 parameters are valid c strings and that
-	//               the final parameter is a string of at least length 16 +
-	//               the length of the file path declared as a constant
+	//				 the final parameter is a string of at least length 16 +
+	//				 the length of the file path declared as a constant
 	int promptForFilename( const char[], const char[], char[] );
 
 	// name        : promptForLoc
 	// input       : prompt string, image object, and 2 integers passed by ref
 	// output      : sets two reference parameters equal to row and column of
-	//               users choice
+	//				 users choice
 	// assumptions : assumes image is intialized and has a valid height/width
-	//               also that first parameter is a valid c string
+	//				 also that first parameter is a valid c string
 	template <class pType>
 	void promptForLoc( const char[], ImageType<pType>&, int&, int& );
 
-	// name        : promptFor<Pix/Scale>Value
+	// name        : promptForIntValue
 	// input       : title string, prompt string and max input value
 	// output      : prompts user in message window and returns the value when
-	//               the user inputs a valid value.  -1 indicates cancel
-	// assumptions : for Pix the minimum value is 0 and for Scale its 2, thats
-	//               the only difference.  Also assumes that first 2 parameters
-	//               are valid c strings
-	int promptForPixValue( const char[], const char[], int );
-	int promptForScaleValue( const char[], const char[], int );
+	//				 the user inputs a valid value.  -1 indicates cancel
+	// assumptions : assumes that first 2 parameters are valid c strings and
+	//				 that range of [min,max] does not include -1
+	int promptForIntValue( const char[], const char[], int, int );
 
 	// name        : promptForMirror
 	// input       : title string, prompt string
 	// output      : prompts user for a H, V, or C and doesn't let them cont
-	//               until one is choosen, then returns input value to calling
-	//               function
+	//				 until one is choosen, then returns input value to calling
+	//				 function
 	// assumptions : both parameters are valid c strings
 	char promptForMirror( const char[], const char[] );
 
 	// name        : promptForAngle
 	// input       : title string, prompt string
 	// output      : prompts user for an angle 0-360 and returns the value when
-	//               a valid number is sent.  -1 indicates cancel
+	//				 a valid number is sent.  -1 indicates cancel
 	// assumptions : both parameters are valid c strings
 	int promptForAngle( const char[], const char[] );
 
 	// name        : promptForIntValues, promptForDoubleValues
 	// input       : title string, min value, max value, and then low and high
-	// output      : prompts the user for two int or double values, making certain
-	//               low is < high
-	// assumptions : first parameter is valid c string
+	// output      : prompts the user for two int or double values, making
+	//				 certain low is < high
+	// assumptions : first parameter is valid c string and the range of
+	//				 [min,max] does not include -1
 	void promptForIntValues( const char[], int, int, int&, int& );
 	void promptForDoubleValues(const char[], double, double, double&, double&);
 
 	// name        : messageBox
 	// input       : title string and message string
 	// output      : displays a message box in the center of the screen with
-	//               the message displayed in it.  Waits for user to press
-	//               return before continueing
+	//				 the message displayed in it.  Waits for user to press
+	//				 return before continueing
 	// assumptions : assumes both parameters are valid c strings
 	void messageBox( const char[], const char[] );
 
 	// name        : fillRegs
 	// input       : list of images, bools, and c strings all of length REGS
-	//               also the number of arguments passed to main and the array
-	//               of strings passed to main
+	//				 also the number of arguments passed to main and the array
+	//				 of strings passed to main
 	// output      : sets valid arguments to registers (loading images) and
-	//               clears the rest of the registers
+	//				 clears the rest of the registers
 	// assumptions : assumes that char** is a valid list of strings with int
-	//               rows
+	//				 rows
 	template <class pType>
 	void fillRegs( ImageType<pType>[], bool[], char[][NAME_LEN], int, char** );
 
 	// name        : Register manipulation functions
 	// input       : List of images of length REGS, list of bools of length
-	//               REGS, and list of c strings of length REGS.
+	//				 REGS, and list of c strings of length REGS.
 	// output      : Each function prompts user for information pertaining
-	//               to its manipulation function, these should be pretty
-	//               obvious looking at each functions name.  All input is
-	//               bounds checked to make sure no bad input is passed to an
-	//               ImageType object
+	//				 to its manipulation function, these should be pretty
+	//				 obvious looking at each functions name.  All input is
+	//				 bounds checked to make sure no bad input is passed to an
+	//				 ImageType object
 	// assumptions : assumes all names in the c string list are valid c
-	//               c strings and bools coincide with wether image types are
-	//               loaded of the same index
+	//				 c strings and bools coincide with wether image types are
+	//				 loaded of the same index
 	void loadImage( ImageType<int>[], bool[], char[][NAME_LEN] );
 	void loadImage( ImageType<rgb>[], bool[], char[][NAME_LEN] );
 	void saveImage( ImageType<int>[], bool[], char[][NAME_LEN] );
@@ -294,31 +292,50 @@ using namespace std;
 	template <class pType>
 	void classifyRegions( ImageType<pType>[], bool[], char[][NAME_LEN] );
 
-// Functions used for Count Regions	////////////////////////////////////////////
+// Functions used for Classify/Count Regions ///////////////////////////////////
 
+	// name        : computeComponents
+	// input       : A single image and a list of regions
+	// output      : fill the region list with all the regions in the image and
+	//				 return the total number of regions
+	// assumptions : assumes the the image is a valid image and sorted list is
+	//				 initialized
 	template <class pType>
 	int computeComponents( ImageType<pType>, sortedList<RegionType<pType> >& );
 
+	// name        : findComponentsDFS
+	// input       : input image, output image, location of a pixel in the
+	//				 region, a region to store the info in, and the original
+	//				 image which is used to calculate the mean, min, and max
+	//				 values of the region
+	// output      : fills the region object as well as flooding the region in
+	//				 the output image
+	// assumptions : assumes the input is already thresholded and the location
+	//				 value is part of the region
 	template <class pType>
 	void findComponentsDFS( ImageType<pType>, ImageType<pType>&, int, int,
 	    pType, RegionType<pType>&, const ImageType<pType>& );
 
-// Functions used for Classify Regions /////////////////////////////////////////
-
+	// name        : deleteSmallRegions
+	// input       : a list of regions and a threshold value
+	// output      : remove all values with size less than threshold value from
+	//				 list of regions
+	// assumptions : assumes list of regions is already intialized with a list
+	//				 of regions sorted by size from smallest to largest
 	template <class pType>
 	void deleteSmallRegions( sortedList<RegionType<pType> >&, int );
 
-////////////////////////////////////////////////////////////////////////////////
+// File Reading ////////////////////////////////////////////////////////////////
 
 	// name        : findLocalPGM/PPM
 	// input       : one un-intialized double pointer of chars
 	// output      : allocates enough memory for a list of all the .pgm or .ppm
-	//               files in the local path specified by the FILELOC constant.
-	//               It then copys the file names to the array and returns the
-	//               number of rows in the array.
+	//				 files in the local path specified by the FILELOC constant.
+	//				 It then copys the file names to the array and returns the
+	//				 number of rows in the array.
 	// assumptions : filenames is not initialized, but will be in the function
-	//               this means it needs to be de-allocated before it goes out
-	//               of scope
+	//				 this means it needs to be de-allocated before it goes out
+	//				 of scope
 	int findLocalPGM( char **&filenames );
 	int findLocalPPM( char **&filenames );
 
@@ -691,8 +708,8 @@ void drawWindow( WINDOW *& win, const char title[], int height, int width,
  subsequent functions that will be using them.
 \******************************************************************************/
 template <class pType>
-void processEntry( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], 
-		int choice )
+void processEntry( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN],
+	int choice )
 {
 	// enter switch statement evaluating choice
 	switch ( choice )
@@ -758,7 +775,7 @@ void processEntry( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN],
  Prompt for a register that is filled and then clear it.
 \******************************************************************************/
 template <class pType>
-void clearRegister( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
+void clearRegister(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 {
 	int index;
 
@@ -783,8 +800,8 @@ void clearRegister( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN]
  are no arguments relating to the register it is set to empty
 \******************************************************************************/
 template <class pType>
-void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN], int argc,
-		char **argv )
+void fillRegs( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN],
+	int argc, char **argv )
 {
 	char *msg = new char[1+(argc-1)*40];
 	int i, j, k;
@@ -1145,11 +1162,11 @@ void getImageInfo( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 
 		// draw/intialize the info window
 		if ( REGWIN_HEIGHT+17 < screenHeight() )
-			drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, REGWIN_HEIGHT + 2,
-				MENU_WIDTH+3 );
+			drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, REGWIN_HEIGHT
+			+ 2, MENU_WIDTH+3 );
 		else if ( screenHeight() > 15 )
-			drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, screenHeight() / 2 - 7,
-				screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
+			drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, screenHeight()
+			/ 2 - 7, screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
 		else
 			drawWindow( infoWin, name[index], 14, FILEWIN_WIDTH, 1,
 				screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
@@ -1208,14 +1225,14 @@ void getImageInfo( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 		img[index].getImageInfo( N, M, Q );
 
 		if ( REGWIN_HEIGHT+21 < screenHeight() )
-			drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, REGWIN_HEIGHT + 2,
-				MENU_WIDTH+3 );
+			drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, REGWIN_HEIGHT
+			+ 2, MENU_WIDTH+3 );
 		else if ( screenHeight() > 19 )
-			drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, screenHeight() / 2 - 7,
-				screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
+			drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, screenHeight()
+			/ 2 - 7, screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
 		else
 			drawWindow( infoWin, name[index], 18, FILEWIN_WIDTH, 1,
-				screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
+			screenWidth() / 2 - FILEWIN_WIDTH / 2 - 1 );
 
 		// set the starting x/y values
 		x = 2;
@@ -1278,8 +1295,8 @@ void setPixel( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 			img[index].getImageInfo( N, M, Q );
 
 			// prompt for the pixel with Q as the max value
-			val = promptForPixValue( "Set Pixel Value",
-					"Enter new pixel value(-1 to cancel): ", Q );
+			val = promptForIntValue( "Set Pixel Value",
+					"Enter new pixel value(-1 to cancel): ", 0, Q );
 
 			// if back isn't choosen
 			if ( val != -1 )
@@ -1322,16 +1339,16 @@ void setPixel( ImageType<rgb> img[], bool loaded[], char name[][NAME_LEN] )
 			img[index].getImageInfo( N, M, Q );
 
 			// prompt for the pixel with Q as the max value
-			val.r = promptForPixValue( "Set Pixel Value",
-					"Enter new red value(-1 to cancel): ", Q );
+			val.r = promptForIntValue( "Set Pixel Value",
+					"Enter new red value(-1 to cancel): ", 0, Q );
 			if ( val.r != -1 )
 			{
-				val.g = promptForPixValue( "Set Pixel Value",
-						"Enter new green value(-1 to cancel): ", Q );
+				val.g = promptForIntValue( "Set Pixel Value",
+						"Enter new green value(-1 to cancel): ", 0, Q );
 				if ( val.g != -1 )
 				{
-					val.b = promptForPixValue( "Set Pixel Value",
-							"Enter new blue value(-1 to cancel): ", Q );
+					val.b = promptForIntValue( "Set Pixel Value",
+							"Enter new blue value(-1 to cancel): ", 0, Q );
 					if ( val.b != -1 )
 					{
 						// change pixel value
@@ -1518,8 +1535,8 @@ void enlargeImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 		maxS = (N > M ? MAX_IMG/N : MAX_IMG/M);
 
 		// prompt for enlarge factor
-		s = promptForScaleValue( "Enlarge Image By Factor", 
-				"Enter enlargement multiplier(-1 to cancel): ", maxS );
+		s = promptForIntValue( "Enlarge Image By Factor", 
+				"Enter enlargement multiplier(-1 to cancel): ", 2, maxS );
 
 		// if back isn't choosen
 		if ( s != -1 )
@@ -1567,8 +1584,8 @@ void shrinkImg( ImageType<pType> img[], bool loaded[], char name[][NAME_LEN] )
 		maxS = (N > M ? N/MIN_IMG : M/MIN_IMG);
 
 		// prompt for the scale value
-		s = promptForScaleValue( "Shrink Image By Factor",
-				"Enter reduction factor(-1 to cancel): ", maxS );
+		s = promptForIntValue( "Shrink Image By Factor",
+				"Enter reduction factor(-1 to cancel): ", 2, maxS );
 
 		// if quit isn't choosen
 		if ( s != -1 )
@@ -1661,10 +1678,9 @@ void translateImg(ImageType<pType> img[], bool loaded[], char name[][NAME_LEN])
 		// calculate maxT value
 		maxT = (N > M ? N-1 : M-1);
 
-		// prompt for a valid T value (uses Pix because both pix or t can
-		// be (0-max$)
-		t = promptForPixValue( "Translate Image",
-				"Enter translation factor(-1 to cancel): ", maxT );
+		// prompt for a valid T value
+		t = promptForIntValue( "Translate Image",
+				"Enter translation factor(-1 to cancel): ", 0, maxT );
 
 		// if cancel isn't choosen
 		if ( t != -1 )
@@ -1919,10 +1935,11 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 		char name[][NAME_LEN] )
 {
 	// register to use and a few other parameters
-	int index, N, M, Q, count;
+	int index, N, M, Q, count, minRegion;
 
 	// prompt user for a register to use
 	index = promptForReg( loaded, name );
+
 
 	if ( index != BAD_REG )
 	{
@@ -1940,181 +1957,209 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 
 		// computeComponents
 		count = computeComponents(img[index], regions);
-	
-		// remove regions under size MIN_REGION
-		deleteSmallRegions( regions, MIN_REGION );
 
-		// calculate all the values for the regions
-		
-		// temp values used to traverse lists
-		PixelType loc;
-		RegionType<pType> reg;
+		// prompt for threshold value
+		minRegion = promptForIntValue( "Minimum size",
+		    "Enter Minimum size of Region(-1 to cancel): ", 0, M*N );	
 
-		// reset list to begin traversal
-		regions.reset();
-
-		// show new menu and jump to new function
-		WINDOW *menu;
-
-		char choices[6][NAME_LEN] = {
-			"Regions of Specific Sizes",
-			"Regions with Particular Orientation",
-			"Regions having Certain Eccentricities",
-			"Regions amid Given Color Intensities",
-			"Save Changes",
-			"Cancel"
-		};
-
-		int choice = 0,
-			menuHeight = 6*2+3,
-			menuWidth = 45,
-			xLoc,
-			yLoc,
-			len;
-		
-		if ( menuHeight > screenHeight() - 2 )
-			menuHeight = screenHeight() - 2;
-
-		if ( menuWidth > screenWidth() - 2 )
-			menuWidth = screenWidth() - 2;
-
-		xLoc = screenWidth() / 2 - menuWidth / 2;
-		yLoc = screenHeight() / 2 - menuHeight / 2;
-
-		while ( choice < 4 )
+		if ( minRegion != -1 )
 		{
-			// clear the screen
-			clearScreen();
+			// remove regions under size the user's defined size
+			deleteSmallRegions( regions, minRegion );
+			
+			// temp values used to traverse lists
+			PixelType loc;
+			RegionType<pType> reg;
 
-			choice = showMenu( menu, "Find Regions...", menuHeight, menuWidth, yLoc, xLoc,
-				choices, 6 );
+			// reset list to begin traversal
+			regions.reset();
 
-			int A, B;
-			double a, b;
+			// show new menu and jump to new function
+			WINDOW *menu;
 
-			switch ( choice )
+			char choices[6][NAME_LEN] = {
+				"Regions of Specific Sizes",
+				"Regions with Particular Orientation",
+				"Regions having Certain Eccentricities",
+				"Regions amid Given Color Intensities",
+				"Save Changes",
+				"Cancel"
+			};
+
+			int choice = 0,
+				menuHeight = 6*2+3,
+				menuWidth = 45,
+				xLoc,
+				yLoc,
+				len;
+			
+			if ( menuHeight > screenHeight() - 2 )
+				menuHeight = screenHeight() - 2;
+
+			if ( menuWidth > screenWidth() - 2 )
+				menuWidth = screenWidth() - 2;
+
+			xLoc = screenWidth() / 2 - menuWidth / 2;
+			yLoc = screenHeight() / 2 - menuHeight / 2;
+
+			while ( choice < 4 )
 			{
-				case 0:
-					promptForIntValues( "Enter Size Bounds", MIN_REGION, M*N, A, B );
-					if ( A != -1 && B != -1 )
-					{
-						regions.reset();
-						
-						while ( !regions.atEnd() )
+				// clear the screen
+				clearScreen();
+
+				choice = showMenu( menu, "Find Regions...", menuHeight,
+				    menuWidth, yLoc, xLoc, choices, 6 );
+
+				int A, B;
+				double a, b;
+
+				switch ( choice )
+				{
+					case 0:		// size
+						promptForIntValues( "Enter Size Bounds", minRegion,
+							M*N, A, B );
+						if ( A != -1 && B != -1 )
 						{
-							reg = regions.getNextItem();
-
-							if ( reg.getSize() < A || reg.getSize() > B )
+							// reset list location
+							regions.reset();
+							
+							while ( !regions.atEnd() )
 							{
-								// delete item from list
-								regions.deleteItem(reg);
+								// get the next item in the list
+								reg = regions.getNextItem();
+								
+								// remove images from list not in range [A,B]
+								if ( reg.getSize() < A || reg.getSize() > B )
+								{
+									// delete item from list
+									regions.deleteItem(reg);
 
-								// traverse again
-								regions.reset();
+									// reset the list because the current
+									// location no longer exists
+									regions.reset();
+								}
 							}
 						}
-					}
-					break;
-				case 1:
-					promptForDoubleValues( "Enter Orientation Bounds (Degrees)", 0.0, 180.0, a, b );
-					
-					if ( a != -1.0 && b != -1.0 )
-					{
-						regions.reset();
+						break;
+					case 1:		// orientation
+						promptForDoubleValues( "Enter Orientation Bounds (Degre"
+							"es)", 0.0, 180.0, a, b );
 						
-						while ( !regions.atEnd() )
+						if ( a != -1.0 && b != -1.0 )
 						{
-							reg = regions.getNextItem();
-
-							if ( reg.getOrientation() < a || reg.getOrientation() > b )
+							// reset list location
+							regions.reset();
+							
+							while ( !regions.atEnd() )
 							{
-								// delete item from list
-								regions.deleteItem(reg);
+								// get the next item in the list
+								reg = regions.getNextItem();
 
-								// traverse again
-								regions.reset();
+								// remove images from list not in range [a,b]
+								if ( reg.getOrientation() < a ||
+									 reg.getOrientation() > b )
+								{
+									// delete item from list
+									regions.deleteItem(reg);
+
+									// reset the list because the current
+									// location no longer exists
+									regions.reset();
+								}
 							}
 						}
-					}
-					break;
-				case 2:
-					promptForDoubleValues( "Enter Eccentricity Bounds", 1.0, (M>N?M:N), a, b );
+						break;
+					case 2:		// eccentricity
+						// make the max value the length across the longest side
+						promptForDoubleValues( "Enter Eccentricity Bounds", 1.0,
+							(M>N?M:N), a, b );
 
-					if ( a != -1.0 && b != -1.0 )
-					{
-						regions.reset();
-						
-						while ( !regions.atEnd() )
+						if ( a != -1.0 && b != -1.0 )
 						{
-							reg = regions.getNextItem();
-
-							if ( reg.getEccentricity() < a || reg.getEccentricity() > b )
+							// reset list location
+							regions.reset();
+							
+							while ( !regions.atEnd() )
 							{
-								// delete item from list
-								regions.deleteItem(reg);
+								// get the next item in the list
+								reg = regions.getNextItem();
 
-								// traverse again
-								regions.reset();
+								// remove images from list not in range [a,b]
+								if ( reg.getEccentricity() < a ||
+									 reg.getEccentricity() > b )
+								{
+									// delete item from list
+									regions.deleteItem(reg);
+
+									// reset the list because the current
+									// location no longer exists
+									regions.reset();
+								}
 							}
 						}
-					}
-					break;
-				case 3:
-					promptForIntValues( "Enter Intensity Bounds", 0, Q, A, B );
-					if ( A != -1 && B != -1 )
-					{
-						regions.reset();
-						
-						while ( !regions.atEnd() )
+						break;
+					case 3:		// intensity
+						promptForIntValues( "Enter Intensity Bounds", 0, Q, A,
+							B );
+						if ( A != -1 && B != -1 )
 						{
-							reg = regions.getNextItem();
-
-							if ( reg.getMeanVal() < A || reg.getMeanVal() > B )
+							// reset list location
+							regions.reset();
+							
+							while ( !regions.atEnd() )
 							{
-								// delete item from list
-								regions.deleteItem(reg);
+								// get the next region
+								reg = regions.getNextItem();
 
-								// traverse again
-								regions.reset();
+								// remove images from list not in range [A,B]
+								if ( reg.getMeanVal() < A ||
+									 reg.getMeanVal() > B )
+								{
+									// delete item from list
+									regions.deleteItem(reg);
+
+									// reset the list because the current
+									// location no longer exists
+									regions.reset();
+								}
 							}
 						}
-					}
-					break;
-				case 4:
-					// reset the list
-					regions.reset();
+						break;
+					case 4:		// save
+						// reset the list
+						regions.reset();
 
-					// go through each region and the list of registers inside it
-					while ( !regions.atEnd() )
-					{
-						// get the next region
-						reg = regions.getNextItem();
-
-						// reset the positions list
-						reg.positions.reset();
-
-						// make the new image of just the defined regions
-						while ( !reg.positions.atEnd() )
+						// go through each region and the print the regions
+						while ( !regions.atEnd() )
 						{
-							loc = reg.positions.getNextItem();
+							// get the next region
+							reg = regions.getNextItem();
 
-							newImage.setPixelVal(loc.r, loc.c, 
-								img[index].getPixelVal(loc.r,loc.c) );
+							// reset the positions list
+							reg.positions.reset();
+
+							// make the new image of just the defined regions
+							while ( !reg.positions.atEnd() )
+							{
+								loc = reg.positions.getNextItem();
+
+								newImage.setPixelVal(loc.r, loc.c, 
+									img[index].getPixelVal(loc.r,loc.c) );
+							}
 						}
-					}
-					// set image to the new image
-					img[index] = newImage;
+						// set image to the new image
+						img[index] = newImage;
 
-					// adds modified to register name
-					if ( name[index][strlen(name[index])-1] != ')' )
-						strcat( name[index], " (modified)" );
-					break;
-				case 5:
-					// exit (do nothing)
-					break;
+						// adds modified to register name
+						if ( name[index][strlen(name[index])-1] != ')' )
+							strcat( name[index], " (modified)" );
+						break;
+					case 5:		// exit
+						// exit (do nothing)
+						break;
+				}
 			}
 		}
-
 	}
 }
 
@@ -2255,10 +2300,11 @@ int promptForAngle( const char title[], const char prompt[] )
 }
 
 /******************************************************************************\
- Prompt for a pixel value which is from 0 to maxVal, if not display message
- box and re-prompt user until valid choice is made.
+ Prompt for a integer value which is from minVal to maxVal, if not input is
+ invalid re-prompt user until valid choice is made. Range must not include -1.
 \******************************************************************************/
-int promptForPixValue( const char title[], const char prompt[], int maxVal )
+int promptForIntValue( const char title[], const char prompt[], int minVal,
+    int maxVal )
 {
 	// message box window
 	WINDOW *pixWin;
@@ -2276,7 +2322,7 @@ int promptForPixValue( const char title[], const char prompt[], int maxVal )
 	val = promptForInt( pixWin, 1, 2, prompt );
 
 	// check for valid input
-	while ( val < -1 || val > maxVal )
+	while ( (val < minVal || val > maxVal) && val != -1 )
 	{
 		// display error
 		sprintf( msg, "Please input a value (0-%i)", maxVal );
@@ -2327,50 +2373,6 @@ char promptForMirror( const char title[], const char prompt[] )
 	delwin( pixWin );
 
 	// return the users input
-	return val;
-}
-
-/******************************************************************************\
- This function prompts the user for a scale value and checks to make sure it
- is not greater than maxVal and not less than 2.  This is used in the enlarge
- and shrink functions.
-\******************************************************************************/
-int promptForScaleValue( const char title[], const char prompt[], int maxVal )
-{
-	// points to the WINDOW that is our prompting window
-	WINDOW *pixWin;
-
-	// holds the error message (which needs some formating)
-	char msg[NAME_LEN];
-
-	// the users input value
-	int val;
-
-	// draw message window
-	stdWindow( pixWin, title );
-
-	// prompt user for an integer value
-	val = promptForInt( pixWin, 1, 2, prompt );
-
-	// if value is not valid display error message and re-prompt
-	while ( val != -1 && ( val < 2 || val > maxVal ) )
-	{
-		// display error
-		sprintf( msg, "Please input a value (2-%i)", maxVal );
-		messageBox( "Invalid Value", msg );
-
-		// redraw window
-		delwin( pixWin );
-		stdWindow( pixWin, title );
-
-		// re-prompt user
-		val = promptForInt( pixWin, 1, 2, prompt );
-	}
-
-	// delete dynamically allocated window
-	delwin( pixWin );
-
-	// return the user's input value
 	return val;
 }
 
@@ -2897,15 +2899,24 @@ void deleteSmallRegions( sortedList<RegionType<pType> >& regions, int thresh )
 {
 	RegionType<pType> reg;
 	regions.reset();
+
+	// don't even start looping if list is empty
 	bool loop = (!regions.atEnd());
 
 	while ( loop )
 	{
+		// get the next item in the list
 		reg = regions.getNextItem();
+
 		if ( reg.getSize() <= thresh )
 		{
+			// delete the item
 			regions.deleteItem( reg );
+			
+			// reset the list because the current location no longer exists
 			regions.reset();
+			
+			// loop again if not at the end of the list
 			loop = (!regions.atEnd());
 		}
 		else

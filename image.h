@@ -1,7 +1,7 @@
 /******************************************************************************\
  Authors: Josiah Humphrey and Joshua Gleason
 
- Date Due for Review: 02/16/2010
+ Last Modified : 04-18-2010
 
  This object is used for storing and manipulating images, it allows the images
  to be processed and manipulated in multiple ways including, re-scaling,
@@ -93,15 +93,20 @@ public:
 	// sum two images giving no particular bias to one or the other
 	ImageType& operator+ ( const ImageType<pType>& );
 
-////// Josh's functions ////////////////////////////////////////////////////////
-    void dilate();
+	// threshold the image using the passed value
+	void threshold(pType);
 
-	void blackOut();
-
-////// Josiah's functions //////////////////////////////////////////////////////
-    void erode();
+	// determine threshold value automatically
     void threshold();
-    void threshold(pType);
+
+    // dilate the image (assuming it has already been thresholded)
+	void dilate();
+
+	// erode the image (assuming it has already been thresholded)
+	void erode();
+
+	// make the entire image black
+	void blackOut();
 
 private:
 	int N; // # of rows
