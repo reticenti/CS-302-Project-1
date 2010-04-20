@@ -284,13 +284,16 @@ void RegionType<pType>::theta(){
 	double halfpi = 2.0 * atan(1.0);
 
 	// calculate orientation
-	orientation = atan2((lambdaMax - mu(2,0)) ,mu(1,1) );
+	orientation = atan2((lambdaMax - mu(2,0)), mu(1,1) );
 
 	// this makes x axis axis of origin
 	orientation += halfpi;
 	
 	// convert to degrees
 	orientation *= 180.0 / (2.0 * halfpi);
+
+	// make sure orientation is between 0 and 180
+	if (orientation > 180.0) orientation -= 180.0;
 }
 
 /******************************************************************************\
