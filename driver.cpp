@@ -1083,22 +1083,25 @@ void saveImage( ImageType<int> img[], bool loaded[], char name[][NAME_LEN] )
 	if ( index != BAD_REG )
 	{
 		// prompt the user for a file name
-		promptForFilename( "Save Image", "Enter filename: ", strInput );
+		promptForFilename( "Save Image", "Enter filename(\"C\" to cancel): ", strInput );
 
-		// add .pgm to the filename if it wasnt already
-		if ( strlen( strInput ) < 4 )
-			strcat( strInput, ".pgm" );
-		else if ( strcmp( (strInput+strlen(strInput)-4), ".pgm" ) != 0 )
-			strcat( strInput, ".pgm" );
+		if ( strcmp( strInput, "c" ) != 0 && strcmp( strInput, "C" ) != 0 )
+		{
+			// add .pgm to the filename if it wasnt already
+			if ( strlen( strInput ) < 4 )
+				strcat( strInput, ".pgm" );
+			else if ( strcmp( (strInput+strlen(strInput)-4), ".pgm" ) != 0 )
+				strcat( strInput, ".pgm" );
 
-		// add the file path to the filename
-		sprintf( imageLoc, "%s%s", IMAGELOC, strInput );
+			// add the file path to the filename
+			sprintf( imageLoc, "%s%s", IMAGELOC, strInput );
 
-		// save the image to the given filename
-		writeImage( imageLoc, img[index] );
+			// save the image to the given filename
+			writeImage( imageLoc, img[index] );
 
-		// set register name to match file name
-		sprintf( name[index], "Register %i: %s", index+1, strInput );
+			// set register name to match file name
+			sprintf( name[index], "Register %i: %s", index+1, strInput );
+		}
 	}
 }
 
@@ -2065,7 +2068,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 						break;
 					case 2:		// orientation
 						promptForDoubleValues( "Enter Orientation Bounds (Degre"
-							"es)", 0.0, 180.0, a, b );
+							"es)", 0.0, 360.0, a, b );
 						
 						if ( a != -1.0 && b != -1.0 )
 						{
@@ -3016,6 +3019,9 @@ void printSummary( sortedList<RegionType<pType> >& regions )
 	int i = 0;	// current region
 
 	int input;
+
+	// enable other keys so arrows don't cause page skipping
+	keypad( pixWin, TRUE );
 
 	while ( loop )
 	{
