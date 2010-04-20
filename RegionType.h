@@ -284,7 +284,7 @@ void RegionType<pType>::theta(){
 	double halfpi = 2.0 * atan(1.0);
 
 	// calculate orientation
-	orientation = atan2((lambdaMax - mu(2,0)) ,mu(1,1) );
+	orientation = atan2((lambdaMax - mu(2,0)), mu(1,1) );
 
 	// this makes x axis axis of origin
 	orientation += halfpi;
