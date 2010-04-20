@@ -87,6 +87,23 @@ for $p$ and $q$.
 
 \section{Use of Code}
 
+The use of this code should be fairly straight forward. The main menu is easy to understand, just select the option you
+want and hit enter. To load images into the programs image registers, you can either do it with the menu option, or on
+the command line. To load images on the command line, just enter them as arguments. For instance, you could do \texttt{\$
+./main.out images/hubble1.pgm}. You can enter as many images as you want on the command line like so: \texttt{\$
+./main.out images/hubble1.pgm images/hubble2.pgm images/hubble3.pgm}
+
+To classify the regions in an image, you need to choose the classify region option in the menu. Once you do this, you
+will be able to choose which of the classifiers you would like to do. You can do multiple things to the same image. Once
+you are done classifying the image, make sure you choose the save image option that is in that sub-menu to save all of
+the changes. You will then need to save the image at the top of the main menu in order to output the image. 
+
+One note about the classifiers. There are minimum and maximum values for each function, but to make them easier to use,
+if the user inputs bounds that are below the minimum and/or above the maximum, it defaults to the minimum and/or maximum
+value respectively. This was done to create a more user friendly program that is capable of accepting data that the
+user intends. For instance, if the user wants to include the maximum size, you can just enter "99999999" and it will
+interpret that input as a maximum value, but the program will automatically make that input sane for the environment.
+
 \section{Functions}
 
 \subsection{Image.h}
