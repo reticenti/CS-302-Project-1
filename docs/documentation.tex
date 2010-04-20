@@ -54,7 +54,7 @@
 
 \tableofcontents
 
-\listoffigures
+%\listoffigures
 \newpage
 
 \lhead{Joshua Gleason \& Josiah Humphrey}
@@ -110,34 +110,1285 @@ interpret that input as a maximum value, but the program will automatically make
 
 \begin{description}
 
-		\item{\textsc{dilate}}
-			\begin{description}
+	\item{\textsc{regionType()}}
+		\begin{description}
+\begin{lstlisting}
+	RegionType();
+\end{lstlisting}
 
-	\begin{lstlisting}
-	void ImageType<pType>::dilate()
-	\end{lstlisting}
+			\item{Purpose}
 
-				\item{Purpose}
+				Sets all of the data to 0 or 0.0.
 
-					This function changes any pixel to black that is
-					touching a black pixel on any of its 8 sides.
+			\item{Input}
 
-				\item{Input}
+				None
 
-					None
+			\item{Output}
 
-				\item{Output}
+				None
 
-					None
+			\item{Assumption}
 
-				\item{Assumptions}
+				None
 
-					Nothing is assumed but it makes sense to
-					actually have a defined picture.
+		\end{description}
 
-			\end{description}
+		RegionType(const RegionType<pType>\&);
+	\item{\textsc{operator>}}
+		\begin{description}
+\begin{lstlisting}
+	bool operator>(const RegionType<pType> &rhs) const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Overloaded function for greater than.
+
+			\item{Input}
+
+				A RegionType object to compare to
+
+			\item{Output}
+
+				Bool value based on the output of the comparison
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{operator<}}
+		\begin{description}
+\begin{lstlisting}
+	bool operator<(const RegionType<pType> &rhs) const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Overloaded function for less than.
+
+			\item{Input}
+
+				A RegionType object to compare to
+
+			\item{Output}
+
+				Bool value based on the output of the comparison
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{operator>=}}
+		\begin{description}
+\begin{lstlisting}
+	bool operator>=(const RegionType<pType> &rhs) const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Overloaded function for greater than or equal
+
+			\item{Input}
+
+				A RegionType object to compare to
+
+			\item{Output}
+
+				Bool value based on the output of the comparison
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{operator<=}}
+		\begin{description}
+\begin{lstlisting}
+	bool operator<=(const RegionType<pType> &rhs) const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Overloaded function for less than or equal
+
+			\item{Input}
+
+				A RegionType object to compare to
+
+			\item{Output}
+
+				Bool value based on the output of the comparison
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{operator==}}
+		\begin{description}
+\begin{lstlisting}
+	bool operator==(const RegionType<pType> &rhs) const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Overloaded function for equal to
+
+			\item{Input}
+
+				A RegionType object to compare to
+
+			\item{Output}
+
+				Bool value based on the output of the comparison
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{operator= }}
+		\begin{description}
+\begin{lstlisting}
+	RegionTypep& operator=(const RegionType<pType> &rhs);
+\end{lstlisting}
+
+			\item{Purpose}
+
+				The overloaded $=$ sign that will copy the object on the left into the object on the right
+
+			\item{Input}
+
+				The object to be copied from
+
+			\item{Output}
+
+				The object itself to allow chaining
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{setData}}
+		\begin{description}
+\begin{lstlisting}
+	void setData( const ImageType<pType>& );
+\end{lstlisting}
+
+			\item{Purpose}
+
+				The function that calls all of the other functions to set all of the data members
+
+			\item{Input}
+
+				An image of some sort
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				Assumes the picture is valid, but it will work for an image as long as the image exists.
+
+		\end{description}
+
+	\item{\textsc{getCentroidR}}
+		\begin{description}
+\begin{lstlisting}
+	double getCentroidR() const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Gets the $R$ centroid for the image
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The double value for the centroid
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getCentroidC}}
+		\begin{description}
+\begin{lstlisting}
+	double getCentroidC() const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Gets the $C$ centroid for the image
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getSize}}
+		\begin{description}
+\begin{lstlisting}
+	int getSize() const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Gets the size of the region using the moment calculation
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The integer value for the size
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getOrientation}}
+		\begin{description}
+\begin{lstlisting}
+	double getOrientation() const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Gets the orientation for a region
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The double value for the orientation of the region
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getEccentricity}}
+		\begin{description}
+\begin{lstlisting}
+	double getEccentricity() const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Gets the eccentricity value for the region
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The double value for the eccentricity
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getMeanVal}}
+		\begin{description}
+\begin{lstlisting}
+	pType getMeanVal() const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Gets the mean pixel value
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The average pixel value returned as a pixelType
+
+
+
+			\item{Assumption}
+				None
+
+		\end{description}
+
+	\item{\textsc{getMinVal}}
+		\begin{description}
+\begin{lstlisting}
+	pType getMinVal() const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Gets the minimum value for the region
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The pixelType value for the minimum pixel value
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getMaxVal}}
+		\begin{description}
+\begin{lstlisting}
+	pType getMaxVal() const;
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Gets the maximum value for the region
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The pixelType value for the maximum pixel value
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{moment}}
+		\begin{description}
+\begin{lstlisting}
+	double moment(int, int);
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Calculates the moment using this formula:
+\[
+M_{p,q} = \sum_{i,j \in R} i^{p} j^{q}
+\]
+
+			\item{Input}
+
+				Two ints that correspond to $p$ and $q$ in the equation
+
+			\item{Output}
+
+				The double value that is calculated by the function.				
+
+			\item{Assumption}
+
+				A natural number for $p$ and $q$.
+
+		\end{description}
+
+	\item{\textsc{mu}}
+		\begin{description}
+\begin{lstlisting}
+	double mu(int, int);
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Calculates the equation defined by
+				\[
+				\mu_{p,q} = \sum_{i,r \in R} (i-\bar{x})^p (j-\bar{y})^q
+				\]
+
+			\item{Input}
+				
+				Two ints for $p$ and $q$
+
+			\item{Output}
+
+				The double value calculated by $\mu$
+
+			\item{Assumption}
+				Natural numbers for the ints
+
+		\end{description}
+
+	\item{\textsc{xyBar}}
+		\begin{description}
+\begin{lstlisting}
+	void xyBar();
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Calculates the equation defined by 
+				\[
+				\bar{x} = \frac{M_{1,0}}{M_{0,0}}
+				\]
+				and 
+				\[
+				\bar{y} = \frac{M_{0,1}}{M_{0,0}}
+				\]
+
+			\item{Input}
+			
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{lambda}}
+		\begin{description}
+\begin{lstlisting}
+	void lambda();
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Calculates the equation defined by
+				\[
+				\lambda_{max} = \frac{1}{2} (\mu_{2,0} + \mu_{0,2}) + \frac{1}{2} \sqrt{ \mu_{2,0}^2 \mu_{0,2}^2 -
+				2\mu_{0,2} \mu_{2,0} + 4 \mu_{1,1}^2 }
+				\]
+				and
+				\[
+				\lambda_{min} = \frac{1}{2} (\mu_{2,0} + \mu_{0,2}) - \frac{1}{2} \sqrt{ \mu_{2,0}^2 \mu_{0,2}^2 -
+				2\mu_{0,2} \mu_{2,0} + 4 \mu_{1,1}^2 }
+				\]
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{theta}}
+		\begin{description}
+\begin{lstlisting}
+	void theta();
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Calculates the equation defined by
+				\[
+				\theta = \tan^{-1} { \frac{\lambda_{max} - \mu_{2,0}}{\mu_{1,1}} }	
+				\]
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{epsilon}}
+		\begin{description}
+\begin{lstlisting}
+	void epsilon();
+\end{lstlisting}
+
+			\item{Purpose}
+
+				Calculates the eccentricity defined by the equation
+				\[
+				\varepsilon = \sqrt{\frac{\lambda_{max}}{\lambda_{min}}}
+				\]
+
+			\item{Input}
+
+			\item{Output}
+
+			\item{Assumption}
+
+		\end{description}
 
 \end{description}
+
+\subsection{sortedList.h}
+
+\begin{description}
+
+	\item{\textsc{sortedList()}}
+\begin{lstlisting}
+	sortedList();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Sets the data to null and length to 0
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{~sortedList}}
+\begin{lstlisting}
+	~sortedList();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Deletes the list
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getLength}}
+\begin{lstlisting}
+	int getLength();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Returns the length of the list
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				Returns the length of the list
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{makeEmpty}}
+\begin{lstlisting}
+	void makeEmpty();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Empties the list
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{retrieveItem}}
+\begin{lstlisting}
+	bool retrieveItem( T& );
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Checks to see if the item passed to the function is in the list
+
+			\item{Input}
+
+				The item to be checked if it exists in the list
+
+			\item{Output}
+
+				The bool to say if the item was found
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{insertItem}}
+\begin{lstlisting}
+	void insertItem( T );
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Inserts the item into the correct place into the list
+
+			\item{Input}
+
+				The item to be inserted
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{deleteItem}}
+\begin{lstlisting}
+	void deleteItem( T );
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Deletes the item and relinks the list to preserve the sorted attribute
+
+			\item{Input}
+
+				The item to be deleted
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{reset}}
+\begin{lstlisting}
+	void reset(');
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Resets the head pointer to be at the top of the list. This needs to be done before running through the
+				list.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{isEmpty}}
+\begin{lstlisting}
+	bool isEmpty();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				A function to tell you if the list is empty
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				Bool telling you if the list is empty
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{atEnd}}
+\begin{lstlisting}
+	bool atEnd();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Tells the user if the current list pointer is pointing at the last element. Useful for using a while
+				loop to do things to the list.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				Bool telling you if the current list item is pointing to NULL
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getNextItem}}
+\begin{lstlisting}
+	T getNextItem();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Gets the next item in the list
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The item that comes next in the list
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+
+	\item{\textsc{operator=}}
+\begin{lstlisting}
+	sortedList<T>& operator=(const sortedList<T>&);
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Copies the list into another list
+
+			\item{Input}
+
+				The list to be copied from
+
+			\item{Output}
+
+				The object to allow for chaining
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+\end{description}
+
+\subsection{list.h}
+
+\begin{description}
+
+	\item{\textsc{list()}}
+\begin{lstlisting}
+	sortedList();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Sets the data to null and length to 0
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{~ist}}
+\begin{lstlisting}
+	~sortedList() { makeEmpty(); }
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Deletes the list
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getLength}}
+\begin{lstlisting}
+	int getLength();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Returns the length of the list
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				Returns the length of the list
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{makeEmpty}}
+\begin{lstlisting}
+	void makeEmpty();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Empties the list
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{retrieveItem}}
+\begin{lstlisting}
+	bool retrieveItem( T& );
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Checks to see if the item passed to the function is in the list
+
+			\item{Input}
+
+				The item to be checked if it exists in the list
+
+			\item{Output}
+
+				The bool to say if the item was found
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{insertItem}}
+\begin{lstlisting}
+	void insertItem( T );
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Inserts the item into the list
+
+			\item{Input}
+
+				The item to be inserted
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{deleteItem}}
+\begin{lstlisting}
+	void deleteItem( T );
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Deletes the item and relinks the list 
+
+			\item{Input}
+
+				The item to be deleted
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{reset}}
+\begin{lstlisting}
+	void reset();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Resets the head pointer to be at the top of the list. This needs to be done before running through the
+				list.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				None
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{isEmpty}}
+\begin{lstlisting}
+	bool isEmpty();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				A function to tell you if the list is empty
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				Bool telling you if the list is empty
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{atEnd}}
+\begin{lstlisting}
+	bool atEnd();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Tells the user if the current list pointer is pointing at the last element. Useful for using a while
+				loop to do things to the list.
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				Bool telling you if the current list item is pointing to NULL
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+	\item{\textsc{getNextItem}}
+\begin{lstlisting}
+	T getNextItem();
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Gets the next item in the list
+
+			\item{Input}
+
+				None
+
+			\item{Output}
+
+				The item that comes next in the list
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+
+\item{\textsc{operator=}}
+\begin{lstlisting}
+	sortedList<T>& operator=(const sortedList<T>&);
+		\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Copies the list into another list
+
+			\item{Input}
+
+				The list to be copied from
+
+			\item{Output}
+
+				The object to allow for chaining
+
+			\item{Assumption}
+
+				None
+
+		\end{description}
+
+\end{description}
+
+\subsection{driver.cpp}
+
+\begin{description}
+
+	\item{\textsc{computeComponents}}
+\begin{lstlisting}
+	int computeComponents( ImageType<pType>,
+		sortedList<RegionType<pType> >& );
+\end{lstlisting}
+		\begin{description}
+
+			\item{Purpose}
+
+				The main calling function that will get all of the regions and classify them
+
+			\item{Input}
+
+				A single image and a list of regions
+
+			\item{Output}
+
+				Fills the refion list with all the regions in the image and returns the total number of regions
+
+			\item{Assumption}
+
+				That the image is a valid image and sorted list is initialized
+
+		\end{description}
+		
+	\item{\textsc{findComponentsDFS}}
+\begin{lstlisting}
+	void findComponentsDFS( ImageType<pType>, 
+		ImageType<pType>&, int, int, pType,
+		RegionType<pType>&, const ImageType<pType>& );
+\end{lstlisting}
+		\begin{description}
+
+			\item{Purpose}
+
+				Computes the region's attributes and stores them in the region node
+
+			\item{Input}
+
+				Input image, output image, location of a pixel in the region, a region node to store the data in, the
+				original image
+
+			\item{Output}
+
+				Fills the region object as well as flooding the region in the output image
+
+			\item{Assumption}
+
+				That the input is already thresholded and the location is part of the region.
+
+		\end{description}
+
+	\item{\textsc{deleteSmallRegions}}
+\begin{lstlisting}
+	void deleteSmallRegions( sortedList<RegionType<pType> >&,
+		int );
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Finds the regions in an image that are below in size of a certain threshold and deletes them
+
+			\item{Input}
+
+				A list of regions 
+
+			\item{Output}
+
+				Prints a summary of all the regions to the screen
+
+			\item{Assumption}
+
+				That the region list is a valid list
+
+		\end{description}
+
+	\item{\textsc{printSummary}}
+\begin{lstlisting}
+	void printSummary( sortedList<RegionType<pType> >& );
+\end{lstlisting}
+
+		\begin{description}
+
+			\item{Purpose}
+
+				Prints a summary of the regions to the screen
+
+			\item{Input}
+
+				A list of regions
+
+			\item{Output}
+
+				A summary of all of the regions
+
+			\item{Assumption}
+
+				That the list of regions is valid
+
+		\end{description}
+
+
+\end{description}
+
 
 \section{Bugs and Errors}
 
@@ -189,8 +1440,46 @@ experienced with GDB.
 
 \section{What was Learned}
 
+In this lab, the students learned about classifying regions in images. The students also learned about moments from
+probability theory. The students combined these aspects of problem solving to come up with a solution to make
+probabilistic calculations on regions found in an image.  The students used these tools to better understand the
+application and development of image processing. The students were able to combine these tools successfully to implement
+a working program that can correctly classify regions found within an image. To store the regions unique data, the
+students implemented a sorted list and an unsorted list that contained the $x,y$ coordinates of the regions and a sorted
+list of the regions and their associated data. This helped the students better understand data structures and helped the
+students to know how to implement and develop a data structure. Since it was suggested to template these data
+structures, the students choose to do this and had a template for the unsorted and sorted list types. This proved to
+further the student's knowledge and prowess of templates in C++.  The students also learned how to embed other objects
+into objects. This was done with the region object that had embedded in it an unsorted list to hold the region pixel
+locations. This was not too hard, but still taught the students how to embed objects in objects.
+
 \section{Division of Labor}
 
+For this assignment, the labor was divided equally among the partners. Each student contributed equally to the
+production and development of the code. The work was divided after the assignment was announced, and the students each
+had about the same work to be done.
+
 \section{Extra Credit}
+\begin{description}
+	\item{Sorted List}
+
+		The implementation for the sorted list was completed and done using templates. The lists were some of the first
+		things that were templated because they were needed in order to complete the rest of the assignment. The sorted
+		list uses a link list implementation and keeps the list sorted. While a array based implementation would have
+		been faster to search and retrieve items, we choose a linked list implementation because we would not know how
+		large the list would need to be. Therefore the only possible implementation that is efficient is a linked list
+		implementation of the sorted list.
+
+	\item{Unsorted List}
+
+		The implementation for the unsorted list was completed and done using templates. The lists were some of the
+		first things that were templated because they were needed in order to complete the rest of the assignment. The
+		unsorted list uses a link list implementation and inserts at the fastest possible place because it is unsorted
+		and it does not matter where the nodes are inserted. While a array based implementation would have been faster
+		to search and retrieve items, we choose a linked list implementation because we would not know how large the
+		list would need to be. Therefore the only possible implementation that is efficient is a linked list
+		implementation of the unsorted list.
+
+\end{description}
 
 \end{document}
