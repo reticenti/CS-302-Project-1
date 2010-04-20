@@ -325,6 +325,13 @@ using namespace std;
 	template <class pType>
 	void deleteSmallRegions( sortedList<RegionType<pType> >&, int );
 
+	// name        : printSummary
+	// input       : a list of regions
+	// output      : prints a summary of all the regions to the screen
+	// assumptions : regions is a valid list of regions
+	template <class pType>
+	void printSummary( sortedList<RegionType<pType> >& );
+
 // File Reading ////////////////////////////////////////////////////////////////
 
 	// name        : findLocalPGM/PPM
@@ -652,8 +659,6 @@ void showRegs( WINDOW *& regWin, const bool loaded[],
 		  - 3) / 2; i++ )
 			mvwprintw( regWin, i*2+2, 2, "%-32.32s", names[i] );
 	}
-
-
 
 	// make sure the new characters are printed!
 	wrefresh( regWin );
@@ -1979,7 +1984,8 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 			// will be used for message box
 			char msg[NAME_LEN];
 
-			char choices[6][NAME_LEN] = {
+			char choices[7][NAME_LEN] = {
+				"Print Summary of Regions",
 				"Regions of Specific Sizes",
 				"Regions with Particular Orientation",
 				"Regions having Certain Eccentricities",
@@ -1989,38 +1995,49 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 			};
 
 			int choice = 0,
-				menuHeight = 6*2+3,
+				menuHeight = 17,
 				menuWidth = 45,
 				xLoc,
 				yLoc,
 				len;
 			
-			if ( menuHeight > screenHeight() - 2 )
-				menuHeight = screenHeight() - 2;
-
-			if ( menuWidth > screenWidth() - 2 )
-				menuWidth = screenWidth() - 2;
-
 			xLoc = screenWidth() / 2 - menuWidth / 2;
 			yLoc = screenHeight() / 2 - menuHeight / 2;
 
-			while ( choice < 4 )
+			if ( menuHeight > screenHeight() - 2 )
+			{
+				menuHeight = (screenHeight()-5)/2*2+3;
+				yLoc = 1;
+			}
+
+			if ( menuWidth > screenWidth() - 2 )
+			{
+				menuWidth = screenWidth() - 2;
+				xLoc = 1;
+			}
+
+
+			while ( choice < 5 )
 			{
 				// clear the screen
 				clearScreen();
 
-				sprintf( msg, "%i Regions Remain - Find Regions...",
+				sprintf( msg, "%i Regions Remain - Find Regions",
 					regions.getLength() );
 
 				choice = showMenu( menu, msg, menuHeight, menuWidth, yLoc, xLoc,
-					choices, 6 );
+					choices, 7 );
 
 				int A, B;
 				double a, b;
 
 				switch ( choice )
 				{
-					case 0:		// size
+					case 0:		// print summary
+						// print a summary of regions
+						printSummary(regions);
+						break;
+					case 1:		// size
 						promptForIntValues( "Enter Size Bounds", minRegion,
 							M*N, A, B );
 						if ( A != -1 && B != -1 )
@@ -2046,7 +2063,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 							}
 						}
 						break;
-					case 1:		// orientation
+					case 2:		// orientation
 						promptForDoubleValues( "Enter Orientation Bounds (Degre"
 							"es)", 0.0, 180.0, a, b );
 						
@@ -2074,7 +2091,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 							}
 						}
 						break;
-					case 2:		// eccentricity
+					case 3:		// eccentricity
 						// make the max value the length across the longest side
 						promptForDoubleValues( "Enter Eccentricity Bounds", 1.0,
 							(M>N?M:N), a, b );
@@ -2103,7 +2120,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 							}
 						}
 						break;
-					case 3:		// intensity
+					case 4:		// intensity
 						promptForIntValues( "Enter Intensity Bounds", 0, Q, A,
 							B );
 						if ( A != -1 && B != -1 )
@@ -2130,7 +2147,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 							}
 						}
 						break;
-					case 4:		// save
+					case 5:		// save
 						// reset the list
 						regions.reset();
 
@@ -2159,7 +2176,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 						if ( name[index][strlen(name[index])-1] != ')' )
 							strcat( name[index], " (modified)" );
 						break;
-					case 5:		// exit
+					case 6:		// exit
 						// exit (do nothing)
 						break;
 				}
@@ -2961,5 +2978,115 @@ void deleteSmallRegions( sortedList<RegionType<pType> >& regions, int thresh )
 			loop = false;
 		}
 	}
+}
+
+/******************************************************************************\
+ Print a summary of all the regions to the screen
+\******************************************************************************/
+template <class pType>
+void printSummary( sortedList<RegionType<pType> >& regions )
+{
+	// make the window
+	WINDOW* pixWin;
+
+	// calculate the height of the window
+	int height = (screenHeight()-6)/8*8+4;
+	if ( height < 5 ) height = screenHeight();
+	
+	// calculate the width of the window
+	int width = (screenWidth()-7)/35*35+5;
+	if ( width < 10 ) width = screenWidth();
+
+	int xLoc = screenWidth() / 2 - width / 2;
+	int yLoc = screenHeight() / 2 - height / 2;
+
+	// initialize the window
+	drawWindow( pixWin, "Region Summary", height, width, yLoc, xLoc );
+
+	// reset list to be traversed
+	regions.reset();
+
+	// loop if regions isn't empty
+	bool loop = !regions.atEnd();
+	bool esc = false;
+	RegionType<pType> reg;
+
+	int y = 2;	// y location currently printing
+	int x = 2;	// x location currently printing
+	int i = 0;	// current region
+
+	int input;
+
+	while ( loop )
+	{
+		// if there is no room for another region to be listed in the column
+		if ( y + 9 >= height )
+		{
+			// if there is room for another column
+			if ( x + 40 < width )
+				x += 35;	// move over a column
+			else	// otherwise wait for user to react then clear everything
+			{
+				mvwprintw( pixWin, height-2, 2, "Press any key or <Q>uit..." );
+				wrefresh( pixWin );
+
+				// hold for input
+				input = wgetch( pixWin );
+
+				// check input for escape
+				esc = (input == 'q' || input == 'Q');
+
+				// clear the window
+				for ( int col = 1; col < width-1; col++ )
+					for ( int row = 1; row < height-1; row++ )
+						mvwaddch( pixWin, row, col, ' ' );
+
+				// reset x
+				x = 2;
+			}
+
+			// reset y
+			y = 2;
+		}
+
+		// if quit was not choosen
+		if ( !esc )
+		{
+			// obtain the next region
+			reg = regions.getNextItem();
+			i++;
+
+			// print region info
+			mvwprintw(pixWin,y++, x,"Region %i", i);
+			mvwprintw(pixWin,y++, x,"Centered At  : (%.1f, %.1f)",
+				reg.getCentroidC(), reg.getCentroidR());
+			mvwprintw(pixWin,y++, x,"Size         : %i", reg.getSize());
+			mvwprintw(pixWin,y++, x,"Orientation  : %.1f Degrees",
+				reg.getOrientation());
+			mvwprintw(pixWin,y++, x,"Eccentricity : %.1f",
+				reg.getEccentricity());
+			mvwprintw(pixWin,y++, x,"Mean Color   : %i",
+				toInt(reg.getMeanVal()));
+			mvwprintw(pixWin,y++, x,"Color Range  : %i - %i",
+				toInt(reg.getMinVal()), toInt(reg.getMaxVal()));
+
+			y++;	// skip a line
+			
+		}
+
+		// keep looping if not at end and 'q' not pressed
+		loop = !regions.atEnd() && !esc;
+	}
+
+	// last pause
+	if ( !esc )
+	{
+		mvwprintw( pixWin, height-2, 2, "Press any key to continue..." );
+		wrefresh( pixWin );
+		wgetch( pixWin );
+	}
+
+	// delete the window
+	delwin( pixWin );
 }
 

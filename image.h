@@ -883,9 +883,10 @@ void ImageType<pType>::threshold(){
 				divisor++;
 			}
 		}
-		
+	
 	// this is the average value of the pixels greater than old average
-	T = T / divisor;
+	if ( divisor != 0 )
+		T = T / divisor;
 
 	// take the value 2/5 of the way to Q from the current location
 	T = T + (Q - toInt(T)) / 2.5;
