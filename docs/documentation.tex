@@ -1415,27 +1415,23 @@ was the case.
 After setting a breakpoint in the deleteItem function I ran the program and selected the Classify Regions option.  The
 program paused at the first breakpoint where I obtained some very interesting information about the RegionType in
 question.  I ran the command \texttt{print *this} in GDB so that I could quickly see all of the private members of the
-current object.  To my surprise a few of the values were definitely invalid values, which may explain why the $==$
-operator never returned true, even if the values had the same data members.  What would happen if you tried to compare
-two invalid double values, even if they were copies of one another?  I had to determine the answer to this question.  By
-continuing execution I found where the two had all the same valid data members and when finished the $==$ function I
-discovered that the returned value was false, which would explain why deleteItem never found the right value.
+current object.  To my surprise one of the values was definitely invalid, which may explain why the $==$ operator never
+returned true, even if the values had the same data members.  What would happen if you tried to compare two invalid double
+values, even if they were copies of one another?  I had to determine the answer to this question.  By continuing execution
+I found where two regions had all the same valid data members and when finished the $==$ function I discovered that the
+returned value was false, which would explain why deleteItem never found the right value.
 
 At this point I was feeling pretty good about having narrowed down the problem to a calculation issue, but why was I
-getting invalid values for eccentricity and theta for some of the regions?  To determine this I set a breakpoint in the
+getting invalid values for eccentricity for some of the regions?  To determine this I set a breakpoint in the
 setData function of RegionType and recreated the error yet again.  To my surprise the first region had some invalid
 values, but I also noticed that the value for lambdaMin was zero; I thought I recalled the eccentricity requiring
 dividing by lambdaMin, so I checked it out.  I verified that this was the indeed true, so I decided to find why
-lambdaMin was zero.  After using similar techniques I discovered that lambdaMin was zero because the central moment was
-returning zero with non-zero parameters because the centroids were equal to the location of the pixel.  This calculation
-was correct and I received the same value when I did the calculations by hand, so the problem wasn't actually a problem
-with the code, it was a problem with the function (I found that this is true for any shape that is 1 pixel wide or
-long).  As for the value of theta, I discovered that if the shape is a single pixel or has an orientation of exactly
-parallel to the x-axis then the central moment with parameters 1, 1 was returning zero.  I added exceptions for both of
-these (making the orientation one-hundred eighty degrees if in this case, although zero would have been equally as
-correct).  This single bug took nearly two hours to track down, but after discovering the cause I feel much more
-experienced with GDB.
-
+lambdaMin was being set to zero.  After using similar techniques I discovered that lambdaMin was zero because the central
+moment was returning zero for regions of width or height one.  I determined that the calculation was correct because I
+had received the same value when I did it by hand, so the problem wasn't actually a coding problem, it was a problem with
+the function equation.  To fix this problem, I added an exception to prevent dividing by zero by adding one to the
+numerator and denominator if the central moment of 1,1 returned zero.  This single bug took nearly two hours to track
+down, but after discovering the cause I at least feel much more compentent with GDB.
 
 
 \section{What was Learned}
@@ -1458,6 +1454,12 @@ locations. This was not too hard, but still taught the students how to embed obj
 For this assignment, the labor was divided equally among the partners. Each student contributed equally to the
 production and development of the code. The work was divided after the assignment was announced, and the students each
 had about the same work to be done.
+
+Joshua was responsible for writing the sorted list and Josiah wrote the unsorted list.  For the calculations Josiah
+wrote most of the functions in RegionType dealing with moment and central moments and Joshua wrote the intensity
+calculations.  Joshua also wrote most of the extra curses based code in driver including printSummary, both students
+contributed equally to the classifyRegions function.  The documentation was split evenly while both students put their
+own part into most of the sections and reviewed all of the sections.
 
 \section{Extra Credit}
 \begin{description}
