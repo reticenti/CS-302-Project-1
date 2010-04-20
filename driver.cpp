@@ -2068,7 +2068,7 @@ void classifyRegions( ImageType<pType> img[], bool loaded[],
 						break;
 					case 2:		// orientation
 						promptForDoubleValues( "Enter Orientation Bounds (Degre"
-							"es)", 0.0, 360.0, a, b );
+							"es)", 0.0, 180.0, a, b );
 						
 						if ( a != -1.0 && b != -1.0 )
 						{

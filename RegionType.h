@@ -291,6 +291,9 @@ void RegionType<pType>::theta(){
 	
 	// convert to degrees
 	orientation *= 180.0 / (2.0 * halfpi);
+
+	// make sure orientation is between 0 and 180
+	if (orientation > 180.0) orientation -= 180.0;
 }
 
 /******************************************************************************\
