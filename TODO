@@ -7,3 +7,4 @@ Low Priority:
 	- make it so that it can be run from command line only
 		ie: main.out -resize 50% image.pgm
 
+test
