@@ -1,6 +1,7 @@
 #!/bin/bash
 
 tempfile=`tempfile`
+userlist="UserIdPasswd"
 
 dialog --title "User IDs and Passwords" \
 --menu "Choose an option" 15 55 7 \
@@ -15,6 +16,8 @@ dialog --title "User IDs and Passwords" \
 return_value=$?
 
 choice=`cat $tempfile`
+		#$(sort $userlist | while read -i line; do; awk '{print \
+		#"\42"$1"\42" "\t" "\42"$2"\42" " " "off" " \\"}'; done;)
 
 case $choice in
 	1)
@@ -24,15 +27,22 @@ case $choice in
     tmppass=$(dialog --title "Password" \
         --inputbox "Please Enter a New User Password" 0 0 2>&1 1>&3)
     exec 3>&-
-    echo "$tmpuser $tmppass" >> UserIdPasswd.txt
+    echo "$tmpuser $tmppass" >> $userlist
 	;;
 	2)
+	dialog --title "Deleting" \
+		--checklist  "Delete Users" 15 30 15 \
+		--file $userlist  2> deleted
+
+		cat deleted | tr -d \" | tr " " "\n" > deleted # puts the file into a good format
+		grep -vf deleted $userlist > UserIdPasswd1.txt # deletes the users not found in deleted
+		rm deleted
 	;;
 	3)
 	;;
 	4)
     dialog --title "Users and their IDS" \
-        --msgbox "`sort UserIdPasswd.txt`" 15 `wc -L UserIdPasswd.txt | awk '{print $1 + 4}'`
+        --msgbox "`sort $userlist`" 0 0
 	;;
 	5)
 	;;
