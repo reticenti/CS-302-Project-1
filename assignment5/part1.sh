@@ -13,7 +13,7 @@ addNewUser() {
 	tmppass=$(dialog --title "Password" \
 				--inputbox "Please Enter a New User Password" 0 0 2>&1 1>&3)
 	exec 3>&-
-	echo "$tmpuser $tmppass" >> $userpass
+	echo "$tmpuser $tmppass" >> $userlist
 }
 
 deleteUser() {
@@ -23,8 +23,8 @@ deleteUser() {
 
 	cat deleted | tr -d \" | tr " " "\n" > deleted # puts the file into a good format
 	grep -vf deleted $userlist > tmp # deletes the users not found in deleted
-	cp tmp $userlist
-	#rm deleted
+	mv tmp $userlist
+	rm deleted
 }
 
 printUsers(){
