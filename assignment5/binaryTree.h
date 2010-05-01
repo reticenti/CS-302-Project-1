@@ -2,7 +2,7 @@
 #define BINARY_TREE
 
 #include <iostream>
-#include "queue.h"
+#include "../queue.h"
 
 using namespace std;
 
