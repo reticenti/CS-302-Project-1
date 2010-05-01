@@ -170,6 +170,12 @@ bool binaryTree<iType>::getNextItem( iType& item, oType order )
 }
 
 template <class iType>
+bool binaryTree<iType>::isEmpty() const
+{
+	return ( root == NULL );
+}
+
+template <class iType>
 void preOrder(treeNode<iType>*& tree, queue<iType>& preQue)
 {
 	if ( tree != NULL )
@@ -295,7 +301,7 @@ void print(treeNode<iType>* tree, ostream& out)
 	if ( tree != NULL )
 	{
 		print(tree->left, out);
-		out << tree->info << ' ';
+		out << tree->info << endl;
 		print(tree->right, out);
 	}
 }
