@@ -12,13 +12,8 @@ class U_PQType: public PQType<ItemType>
 };
 
 template <class ItemType>
-U_PQType<ItemType>::U_PQType(int max)
-{
-	PQType<ItemType>::maxItems = max;
-	PQType<ItemType>::items.elements = new ItemType[max];
-	PQType<ItemType>::numItems = 0;
-
-}
+U_PQType<ItemType>::U_PQType(int max) : PQType<ItemType>(max)
+{ }
 
 
 template <class ItemType>
