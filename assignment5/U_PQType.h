@@ -1,25 +1,25 @@
 #include "pqueue.h"
 
 template <class ItemType>
-class U_PQType: protected PQType
+class U_PQType: public PQType
 {
 	public:
-		Void Remove(ItemType);
+		void Remove(ItemType);
 		void Update(ItemType, ItemType);
 
-}
+};
 
-tempalte <class ItemType>
+template <class ItemType>
 void U_PQType<ItemType>::Remove(ItemType item)
 {
 	
 }
 
-tempalte <class ItemType>
+template <class ItemType>
 void U_PQType<ItemType>::Update(ItemType item, ItemType newItem)
 {
 
-	U_PQType list = new U_PQType[maxItems];
+	U_PQType list<ItemType> = new U_PQType[PQType::maxItems];
 	ItemType tmp;
 
 	while(!isEmpty()){

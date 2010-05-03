@@ -11,7 +11,7 @@ class PQType
 		bool isFull() const;
 		void enqueue(ItemType newItem);
 		void dequeue(ItemType& item);
-	protected;
+	protected:
 		int numItems;
 		HeapType<ItemType> items;
 		int maxItems;
