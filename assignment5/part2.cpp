@@ -12,6 +12,8 @@ int main()
 
 	test.enqueue('b');
 
+	test.Update('b', 'c');
+
 	test.dequeue(tmp);
 
 	cout << tmp;
