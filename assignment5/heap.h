@@ -1,32 +1,28 @@
 template <class ItemType>
 struct HeapType
 {
-
 	void reheapDown(int root, int bottom);
-	void reheadUp(int root, int bottom);
+	void reheapUp(int root, int bottom);
 	void swap(ItemType &a, ItemType &b);
 	ItemType * elements;
 	int numElements;
-}
-
+};
 
 template <class ItemType>
-void swap(ItemTypei &a, ItemType &b)
+void HeapType<ItemType>::swap(ItemType &a, ItemType &b)
 {
-
 	ItemType c = a;
 	a = b;
 	b = c;
 }
 
 template <class ItemType>
-void HeadType<ItemType>::reheapDown(int root, int bottomr)
+void HeapType<ItemType>::reheapDown(int root, int bottom)
 {
-
 	int maxChild, rightChild, leftChild;
 
 	leftChild = root*2+1;
-	rightchild = root*2+2
+	rightChild = root*2+2;
 
 		if(leftChild <= bottom)
 		{
@@ -50,7 +46,7 @@ void HeadType<ItemType>::reheapDown(int root, int bottomr)
 }
 
 template <class ItemType>
-void HeadType<itemType>::reheapUp(int root, int bottom)
+void HeapType<ItemType>::reheapUp(int root, int bottom)
 {
 
 	int parent;
@@ -65,3 +61,4 @@ void HeadType<itemType>::reheapUp(int root, int bottom)
 		}
 	}
 }
+
