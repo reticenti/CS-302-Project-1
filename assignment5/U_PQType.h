@@ -24,17 +24,20 @@ U_PQType<ItemType>::~U_PQType()
 template <class ItemType>
 void U_PQType<ItemType>::Remove(ItemType item)
 {
-	U_PQType<ItemType>:: list(PQType<ItemType>::maxItems);
+	U_PQType<ItemType> list(PQType<ItemType>::maxItems);
 	ItemType tmp;
 
 	while(!PQType<ItemType>::isEmpty()){
 		PQType<ItemType>::dequeue(tmp);
 		if(tmp != item)
-			PQType<ItemType>::list.enqueue(tmp);
+			list.enqueue(tmp);
 	}
 
-	delete [] PQType<ItemType>::items.elements;
-	PQType<ItemType>::items = PQType<ItemType>::list;
+	while(!list.isEmpty()){
+		list.dequeue(tmp);
+		PQType<ItemType>::enqueue(tmp);
+	}
+
 }
 
 template <class ItemType>
