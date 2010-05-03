@@ -1,13 +1,31 @@
 #include "pqueue.h"
 
 template <class ItemType>
-class U_PQType: public PQType
+class U_PQType: public PQType<ItemType>
 {
 	public:
+		U_PQType(int);
+		~U_PQType();
 		void Remove(ItemType);
 		void Update(ItemType, ItemType);
 
 };
+
+template <class ItemType>
+U_PQType<ItemType>::U_PQType(int max)
+{
+	PQType<ItemType>::maxItems = max;
+	PQType<ItemType>::items.elements = new ItemType[max];
+	PQType<ItemType>::numItems = 0;
+
+}
+
+
+template <class ItemType>
+U_PQType<ItemType>::~U_PQType()
+{
+	delete [] PQType<ItemType>::items.elements;
+}
 
 template <class ItemType>
 void U_PQType<ItemType>::Remove(ItemType item)
@@ -19,16 +37,16 @@ template <class ItemType>
 void U_PQType<ItemType>::Update(ItemType item, ItemType newItem)
 {
 
-	U_PQType list<ItemType> = new U_PQType[PQType::maxItems];
+	U_PQType<ItemType>  list(PQType<ItemType>::maxItems);
 	ItemType tmp;
 
-	while(!isEmpty()){
-		dequeue(tmp);
+	while(!PQType<ItemType>::isEmpty()){
+		PQType<ItemType>::dequeue(tmp);
 		if(tmp == item)
 			tmp = newItem;
-		list.enqueue(tmp);
+		PQType<ItemType>::list.enqueue(tmp);
 	}
 
-	delete items;
-	items = list;
+	delete PQType<ItemType>::items;
+	PQType<ItemType>::items = PQType<ItemType>::list;
 }
