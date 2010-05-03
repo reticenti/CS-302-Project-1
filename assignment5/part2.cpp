@@ -6,11 +6,11 @@ using namespace std;
 int main()
 {
 
-	U_PQType<int> test(5);
+	U_PQType<char> test(5);
 
-	int tmp;
+	char tmp;
 
-	test.enqueue(5);
+	test.enqueue('b');
 
 	test.dequeue(tmp);
 
