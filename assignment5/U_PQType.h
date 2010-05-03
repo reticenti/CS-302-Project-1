@@ -33,7 +33,7 @@ void U_PQType<ItemType>::Remove(ItemType item)
 			PQType<ItemType>::list.enqueue(tmp);
 	}
 
-	delete PQType<ItemType>::items.elements;
+	delete [] PQType<ItemType>::items.elements;
 	PQType<ItemType>::items = PQType<ItemType>::list;
 }
 
@@ -48,9 +48,10 @@ void U_PQType<ItemType>::Update(ItemType item, ItemType newItem)
 		PQType<ItemType>::dequeue(tmp);
 		if(tmp == item)
 			tmp = newItem;
-		list.PQType<ItemType>::enqueue(tmp);
+		list.enqueue(tmp);
 	}
-
-	delete items.elements;
-	PQType<ItemType>::items.elements = list.PQType<ItemType>::items.elements;
+	while(!list.isEmpty()){
+		list.dequeue(tmp);
+		PQType<ItemType>::enqueue(tmp);
+	}
 }

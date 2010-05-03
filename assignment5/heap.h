@@ -5,7 +5,6 @@ struct HeapType
 	void reheapUp(int root, int bottom);
 	void swap(ItemType &a, ItemType &b);
 	ItemType * elements;
-	int numElements;
 };
 
 template <class ItemType>
