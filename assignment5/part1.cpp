@@ -227,12 +227,16 @@ menuChoice promptForMenu()
 
 	system("clear");
 
+	// display menu
 	cout << "1) Add new user\n2) Delete user\n3) Verify User\n4) Print user\n5) St"
 			"ore data in file using inorder traversal\n6) Store data in file using"
 			" preorder traversal\n7) Store data in file using postorder traveral\n"
 			"8) Exit without saving\n\nEnter choice: ";
 
+	// get input value
 	cin >> val;
+
+	// loop until val is valid
 	while ( val < 1 || val > 8 )
 	{
 		cout << "Invalid choice!\nEnter choice: ";
