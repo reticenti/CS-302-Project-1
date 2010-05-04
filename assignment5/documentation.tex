@@ -66,6 +66,25 @@
 
 \section{Introduction}
 
+In this assignment, we looked at 3 different data structures that are very important for computer science. We examined
+the usefulness and implementation of the heap, the priority queue, and the binary search tree. The program that we
+designed to test these data structures were fairly trivial, but the challenge was implementing the assignment using the
+data structures that we were supposed to implement. 
+
+The first part of the assignment was to make a binary search tree that help users and their passwords. The binary search
+tree was built using the name of the user as the node name. This allowed us to quickly search the list of users. This is
+efficient when there are many users and when the program user needs to find a specific user quickly. The implementation
+of the binary search tree we implemented was a template class that could handle any data structure. For this assignment,
+we made our own data structure that included the name and the pass as string objects. This allowed us to do many useful
+things such as compare. This was useful because it allowed the quick comparison of the string objects when building the
+binary search tree. 
+
+In the second part of the assignment, we were asked to implement an updated priority queue that allowed the users to
+remove a specific item from the tree and to update the elements within the tree. This was done through inheritance. A
+class called ``pqueue.h'' was defined that was a basic priority queue. The new updated queue, U\_PQType, was derived
+from this class in order to include the two new functions. This derived class used the heap property of the priority
+queue to implement the assignments challenge. We were asked to read in numbers from a file and place them into a heap.
+
 \section{Use of Code}
 
 \section{Functions}
@@ -933,7 +952,7 @@
 
 	\item{\textsc{U\_PQType}}
 		\begin{lstlisting}
-			U_PQType(int);
+			U\_PQType(int);
 		\end{lstlisting}
 		\begin{description}
 
@@ -996,7 +1015,7 @@
 \begin{description}
 	\item{\textsc{readFile}}
 		\begin{lstlisting}
-			bool readFile( string fileName, U_PQType<int>* &tree);
+			bool readFile( string fileName, U\_PQType<int>* &tree);
 		\end{lstlisting}
 		\begin{description}
 
