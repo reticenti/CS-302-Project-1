@@ -100,7 +100,7 @@ int main()
 				break;
 			case PRINT:
 				system("clear");
-				//userTree->printTree( cout );
+				userTree->printTree( cout );
 				cin.get();
 				cout << "Press Enter to continue";
 				cin.get();
