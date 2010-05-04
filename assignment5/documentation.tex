@@ -361,7 +361,7 @@ what each menu item does.
 
 			\item{Assumptions}
 
-				Assumes that the left shift opperator << has been overloaded for ostream to output the iType values
+				Assumes that the left shift operator << has been overloaded for ostream to output the iType values
 				properly.
 
 		\end{description}
@@ -566,7 +566,7 @@ what each menu item does.
 
 			\item{Input}
 
-				The first parameter is the original tree, the second is a the new tree.
+				The first parameter is the original tree, the second is the new tree.
 
 			\item{Output}
 
@@ -574,7 +574,7 @@ what each menu item does.
 
 			\item{Assumptions}
 
-				Both trees are intialized and the left one is a valid tree.
+				Both trees are initialized and the left one is a valid tree.
 
 		\end{description}
 	\item{\textsc{preOrder}}
@@ -758,7 +758,7 @@ what each menu item does.
 
 			\item{Purpose}
 				
-				Used to compaire one user to another.
+				Used to compare one user to another.
 
 			\item{Input}
 
@@ -766,7 +766,7 @@ what each menu item does.
 
 			\item{Output}
 
-				Return correct bool value depending on which opperator is being used.
+				Return correct bool value depending on which operator is being used.
 
 			\item{Assumptions}
 
@@ -827,7 +827,7 @@ what each menu item does.
 
 			\item{Assumptions}
 
-				Assumes that if the file exists it does in fact contain a list of users and passwords seperated only by
+				Assumes that if the file exists it does in fact contain a list of users and passwords separated only by
 				whitespace.
 
 		\end{description}
@@ -1313,14 +1313,14 @@ what each menu item does.
 For the first section of the assignment there were no errors creating the binary tree, but there were however some
 problems when I began trying to use the binary tree in the code.  The main problem was that the list of users we were
 given was stored in order which caused some headaches when trying to create a binary tree because I was ending up with a
-linked list rather than a tree.  The way i knew this was that the pre-order traversal was outputing the same values as
+linked list rather than a tree.  The way I knew this was that the pre-order traversal was outputting the same values as
 the in-order traversal.  To correct this issue I created a function that read the file into an array first and then;
 using the property that any element in the array can be accessed in constant time; picked random elements in the array
 and placed them into the tree which worked very nicely in fact.
 
 Another rather silly issue I spent way too much time on was that I forgot that ostream is part of the std namespace. It
-took nearly an hour of debugging to realize why I was recieving an entire page of cryptic comile errors.  After adding a
-single line (using namespace std) to the begining of the binaryTree.h file all those errors dissapeared.
+took nearly an hour of debugging to realize why I was receiving an entire page of cryptic compile errors.  After adding a
+single line (using namespace std) to the beginning of the binaryTree.h file all those errors disappeared.
 
 In part 2 of the assignment, the biggest bug that was found was that I could not figure out how to access the heaps
 element pointer in the U\_PQType class. Even though the data members of pqueue were protected, the compiler would not
@@ -1359,7 +1359,7 @@ the report for the assignment and wrote the documentation for the functions that
 \section{Inner workings of Remove and Update}
 
 The way the Remove function was implemented for the U\_PQType is that it actually dequeues the entire list and then
-enqueues only the values that are not equal to the value being removed.  While we do realize this is definitaly not the
+enqueues only the values that are not equal to the value being removed.  While we do realize this is definitely not the
 most efficient method to accomplish this, we were rather pressed for time due to many end of the semester projects,
 tests, and assignments.  The time complexity for this function is $O(N*(lg_2(n)+lg_2(n))=O(n*lg_2(n))$ to dequeue the entire
 list then the same to enqueue it again. This makes the entire function a total of...
