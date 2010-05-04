@@ -30,10 +30,8 @@ public:
 	binaryTree();
 	~binaryTree();
 	binaryTree(const binaryTree<iType>&);
-	void operator=(const binaryTree<iType>&);
 	void makeEmpty();
 	bool isEmpty() const;
-	bool isFull() const;
 	int numberOfNodes() const;
 	bool retrieveItem(iType&);
 	void insertItem(iType);
@@ -66,8 +64,6 @@ template <class iType>
 void destroy(treeNode<iType>*&);
 template <class iType>
 void copyTree(treeNode<iType>*&, treeNode<iType>*);
-template <class iType>
-void countNodes(treeNode<iType>*&);
 template <class iType>
 void preOrder(treeNode<iType>*&, queue<iType>&);
 template <class iType>
