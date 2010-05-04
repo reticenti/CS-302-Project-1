@@ -9,6 +9,8 @@
 \usepackage{amsmath}
 \usepackage[pdftex,bookmarks=true,colorlinks=true,linkcolor=blue]{hyperref}
 \usepackage{subfig}
+\usepackage{amssymb}
+
 
 %this sets the line at the header
 \setlength{\headheight}{15.2pt}
@@ -1361,15 +1363,15 @@ the report for the assignment and wrote the documentation for the functions that
 The way the Remove function was implemented for the U\_PQType is that it actually dequeues the entire list and then
 enqueues only the values that are not equal to the value being removed.  While we do realize this is definitely not the
 most efficient method to accomplish this, we were rather pressed for time due to many end of the semester projects,
-tests, and assignments.  The time complexity for this function is $O(N*(lg_2(n)+lg_2(n))=O(n*lg_2(n))$ to dequeue the entire
+tests, and assignments.  The time complexity for this function is $\mathcal{O}(N*(lg_2(n)+lg_2(n))=\mathcal{O}(n*lg_2(n))$ to dequeue the entire
 list then the same to enqueue it again. This makes the entire function a total of...
 
-$O(n*lg_2(n))$
+$\mathcal{O}(n*lg_2(n))$
 
 The method used for the Update function nearly identical to that of Remove where we simply dequeued the entire list and
 enqueued everything back onto it.  The only difference is that when dequeueing the list, when we came across the desired
 item to be updated we changed it's value.  The efficiency is therefore the exact same being...
 
-$O(n*lg_2(n))$
+$\mathcal{O}(n*lg_2(n))$
 
 \end{document}
