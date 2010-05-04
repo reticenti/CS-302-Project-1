@@ -1104,6 +1104,17 @@ what each menu item does.
 \end{description}
 \section{Bugs and Errors}
 
+For the first section of the assignment there were no errors creating the binary tree, but there were however some
+problems when I began trying to use the binary tree in the code.  The main problem was that the list of users we were
+given was stored in order which caused some headaches when trying to create a binary tree because I was ending up with a
+linked list rather than a tree.  The way i knew this was that the pre-order traversal was outputing the same values as
+the in-order traversal.  To correct this issue I created a function that read the file into an array first and then;
+using the property that any element in the array can be accessed in constant time; picked random elements in the array
+and placed them into the tree which worked very nicely in fact.
+
+Another rather silly issue I spent way too much time on was that I forgot that ostream is part of the std namespace. It
+took nearly an hour of debugging to realize why I was recieving an entire page of cryptic comile errors.  After adding a
+single line (using namespace std) to the begining of the binaryTree.h file all those errors dissapeared.
 
 In part 2 of the assignment, the biggest bug that was found was that I could not figure out how to access the heaps
 element pointer in the U\_PQType class. Even though the data members of pqueue were protected, the compiler would not
@@ -1131,12 +1142,28 @@ assignment.
 \section{Division of Labor}
 
 For this assignment, Josh did part 1 of the assignment. He wrote the binary tree implementation, the user class, and the
-driver.The binary tree was implemented using a linked list approach to allow for it's ease of expandability.  He also
+driver. The binary tree was implemented using a linked list approach to allow for it's ease of expandability. He also
 worked on the documentation for those parts and helped overall with the report and with its writing.
 
 Josiah wrote part 2 of the assignment. This involved writing the pqueue implementation which relied on the heap
 implementation that he also wrote. Josiah also wrote the U\_PQType class that was derived from the pqueue class. Josiah
 implemented all of this using dynamic arrays so that the heap could be implemented efficiently. Josiah also worked on
 the report for the assignment and wrote the documentation for the functions that he implemented. 
+
+\section{Inner workings of Remove and Update}
+
+The way the Remove function was implemented for the U\_PQType is that it actually dequeues the entire list and then
+enqueues only the values that are not equal to the value being removed.  While we do realize this is definitaly not the
+most efficient method to accomplish this, we were rather pressed for time due to many end of the semester projects,
+tests, and assignments.  The time complexity for this function is O(N*lg\^2(N)) to dequeue the entire list then
+O(N*ln\^2(N)). The reason it is log squared is because the structure used to hold the nodes between 
+to enqueue everything back onto it leaving the total efficiency as...
+
+\begin{lstlisting}
+	O(N*lg(N))
+\end{lstlisting}
+
+The method used for the Update function nearly identical to that of Remove where we simply dequeued the entire list and
+enqueued everything back onto it 
 
 \end{document}
