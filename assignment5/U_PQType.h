@@ -19,6 +19,7 @@ U_PQType<ItemType>::U_PQType(int max) : PQType<ItemType>(max)
 template <class ItemType>
 U_PQType<ItemType>::~U_PQType()
 {
+	delete [] PQType<ItemType>::items.elements;
 }
 
 template <class ItemType>
