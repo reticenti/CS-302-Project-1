@@ -655,12 +655,20 @@ what each menu item does.
 		\begin{description}
 
 			\item{Purpose}
+			
+				Return the name of the user as a string.
 
 			\item{Input}
 
+				N/A
+
 			\item{Output}
+			
+				Returns a copy of the private name member.
 
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{getPass}}
@@ -671,11 +679,19 @@ what each menu item does.
 
 			\item{Purpose}
 
+				Obtain a copy of the password string.
+
 			\item{Input}
+
+				N/A
 
 			\item{Output}
 
+				Returns a copy of the private pass member.
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{setName}}
@@ -686,11 +702,19 @@ what each menu item does.
 
 			\item{Purpose}
 
+				Change the name of the user.
+
 			\item{Input}
+
+				A string which will replace the current name.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{setPass}}
@@ -701,87 +725,72 @@ what each menu item does.
 
 			\item{Purpose}
 
+				Change the password for the user.
+
 			\item{Input}
+
+				A string which will replace the current password.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 
-	\item{\textsc{operator>}}
+	\item{\textsc{operator\(compare\)}}
 		\begin{lstlisting}
 			bool operator>( const user& rhs )
-		\end{lstlisting}
-		\begin{description}
-
-			\item{Purpose}
-
-			\item{Input}
-
-			\item{Output}
-
-			\item{Assumptions}
-
-		\end{description}
-	\item{\textsc{operator<}}
-		\begin{lstlisting}
 			bool operator<( const user& rhs )
-		\end{lstlisting}
-		\begin{description}
-
-			\item{Purpose}
-
-			\item{Input}
-
-			\item{Output}
-
-			\item{Assumptions}
-
-		\end{description}
-	\item{\textsc{operator>=}}
-		\begin{lstlisting}
 			bool operator>=( const user& rhs )
-		\end{lstlisting}
-		\begin{description}
-
-			\item{Purpose}
-
-			\item{Input}
-
-			\item{Output}
-
-			\item{Assumptions}
-
-		\end{description}
-	\item{\textsc{operator<=}}
-		\begin{lstlisting}
 			bool operator<=( const user& rhs )
-		\end{lstlisting}
-		\begin{description}
-
-			\item{Purpose}
-
-			\item{Input}
-
-			\item{Output}
-
-			\item{Assumptions}
-
-		\end{description}
-	\item{\textsc{operator==}}
-		\begin{lstlisting}
 			bool operator==( const user& rhs )
 		\end{lstlisting}
 		\begin{description}
 
 			\item{Purpose}
+				
+				Used to compaire one user to another.
 
 			\item{Input}
 
+				Using the string class's compare function return how the current user compares to the right hand side.
+
 			\item{Output}
 
+				Return correct bool value depending on which opperator is being used.
+
 			\item{Assumptions}
+
+				N/A
+
+		\end{description}
+
+	\item{\textsc{operator<<}}
+		\begin{lstlisting}
+			friend ostream& operator<<( ostream &out, user& rhs );
+		\end{lstlisting}
+		\begin{description}
+
+			\item{Purpose}
+
+				The overloaded left shift operator for ostream using a user in the right hand side, this makes ostream
+				object correctly output user information using the << operator.
+
+			\item{Input}
+
+				When used with an ostream object only the rhs is actually input.
+
+			\item{Output}
+
+				Print to the ostream the values inside of user.
+
+			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 
@@ -797,11 +806,22 @@ what each menu item does.
 
 			\item{Purpose}
 
+				Read in a file and store it in the tree, this function randomizes the values to be inserted to prevent
+				the tree from being unbalanced.
+
 			\item{Input}
+
+				The filename where the users are stored and a binary tree to store those users in.
 
 			\item{Output}
 
+				Store all the users in the file into the binary tree in random order, return true if file exists, false
+				if it doesn't.
+
 			\item{Assumptions}
+
+				Assumes that if the file exists it does in fact contain a list of users and passwords seperated only by
+				whitespace.
 
 		\end{description}
 	\item{\textsc{storeTree}}
@@ -812,11 +832,20 @@ what each menu item does.
 
 			\item{Purpose}
 
+				Store the tree into a file in a particular order.
+
 			\item{Input}
+
+				A binary tree to be stores, an enumerated order \(IN\_ORDER, PRE\_ORDER, POST\_ORDER\). Also a file name
+				where to store the information.
 
 			\item{Output}
 
+				Output the values in the given order to a file.
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{promptForMenu}}
@@ -827,11 +856,20 @@ what each menu item does.
 
 			\item{Purpose}
 
+				Prompt the user for a menu option and return the option when a valid choice is made.
+
 			\item{Input}
+
+				N/A
 
 			\item{Output}
 
+				Display the menu and continue to prompt the user until a valid value is entered.  Return the value as an
+				enumerated type menuChoice which can be ADD, DEL, VERIFY, PRINT, IN\_ORD, PRE\_ORD, POST\_ORD, and EXIT.
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 \end{description}
