@@ -97,7 +97,10 @@ int main()
 				break;
 			case PRINT:
 				system("clear");
+				cout << "Usernames and Passwords" << endl
+					 << "--------------------------------" << endl;
 				userTree.printTree( cout );
+				cout << endl << endl;
 				cin.get();
 				cout << "Press Enter to continue";
 				cin.get();
@@ -228,10 +231,19 @@ menuChoice promptForMenu()
 	system("clear");
 
 	// display menu
-	cout << "1) Add new user\n2) Delete user\n3) Verify User\n4) Print user\n5) St"
-			"ore data in file using inorder traversal\n6) Store data in file using"
-			" preorder traversal\n7) Store data in file using postorder traveral\n"
-			"8) Exit without saving\n\nEnter choice: ";
+	cout << "  +----Main-Menu-------------------------------------+" << endl
+		 << "  |                                                  |" << endl
+		 << "  | 1) Add new user                                  |" << endl
+		 << "  | 2) Delete user                                   |" << endl
+		 << "  | 3) Verify User                                   |" << endl
+		 << "  | 4) Print user                                    |" << endl
+		 << "  | 5) Store data in file using inorder traversal    |" << endl
+		 << "  | 6) Store data in file using preorder traversal   |" << endl
+		 << "  | 7) Store data in file using postorder traveral   |" << endl
+		 << "  | 8) Exit without saving                           |" << endl
+		 << "  |                                                  |" << endl
+		 << "  +--------------------------------------------------+" << endl
+		 << endl << "Enter choice: ";
 
 	// get input value
 	cin >> val;
