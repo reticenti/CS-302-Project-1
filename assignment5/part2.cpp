@@ -115,6 +115,8 @@ int main()
 	cout << "Press Enter to continue";
 	cin.get();
 
+	delete userTree;
+
 	system("clear");
 
 	return 0;
