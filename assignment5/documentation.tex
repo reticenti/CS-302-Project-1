@@ -90,8 +90,14 @@ queue to implement the assignments challenge. We were asked to read in numbers f
 In order to use this program, you will need data files that correspond to how we implemented the program. For assignment
 one, there needs to be a data file that has a user name and password that are separated by white space. It should be in
 the format of ``user1 pass1 \\n user2 pass2'' where \\n is an actual new line. We have provided a sample file for your
-convenience.
+convenience. Once you load up the program, it asks you to enter a file name with the user info in it. It will do this
+until you have correctly entered in a file name that is readable and in the correct format. Once this happens, you are
+brought to a menu in which you can do the operations that are required. It should be fairly simple from here.
 
+To use part 2 of the assignment, you will need to use a data file that has integers in it separated by white space. When
+the program begins, it asks for a file name until it is given a suitable file name is given. Once inside the main menu,
+you will have the options of what was assigned for this challenge. Once here, it should be fairly straight forward as to
+what each menu item does.
 \section{Functions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1060,10 +1066,39 @@ convenience.
 \end{description}
 \section{Bugs and Errors}
 
+
+In part 2 of the assignment, the biggest bug that was found was that I could not figure out how to access the heaps
+element pointer in the U\_PQType class. Even though the data members of pqueue were protected, the compiler would not
+let me access them. This bug was avoided by using a different approach to the problem that worked just as well in the
+end. 
+
+Another problem that was encountered was the correct syntax for using a template class as a pointer and passing that
+pointer by reference to a function. This was not so much an error, but more as an experience that helped me understand
+the syntax more clearly. 
+
 \section{What was Learned}
+
+The main thing that was learned in this assignment was the implementation and use of different data structures. We were
+exposed to the binary search tree implemented as a link list and a heap and priority queue implemented as a dynamic
+array. This provided valuable experience to the students in the data structures involved and helped them understand what
+makes a well designed data structure and when to use the appropriate data structure. 
+
+The students also furthered their knowledge of templates and how to implement complex data structures as templates. This
+knowledge will help them in the future because they will be equipped with the knowledge of how to implement complex data
+structures using templates instead of rewriting data structures to handle every object type. The students are therefore
+better equipped to overcome the challenges that they will meet in the real world and are better prospective employees as
+a result of their knowledge and practical application of using the data structures involved in this programming
+assignment.
 
 \section{Division of Labor}
 
-\section{Extra Credit}
+For this assignment, Josh did part 1 of the assignment. He wrote the binary tree implementation, the user class, and the
+driver.The binary tree was implemented using a linked list approach to allow for it's ease of expandability.  He also
+worked on the documentation for those parts and helped overall with the report and with its writing.
+
+Josiah wrote part 2 of the assignment. This involved writing the pqueue implementation which relied on the heap
+implementation that he also wrote. Josiah also wrote the U\_PQType class that was derived from the pqueue class. Josiah
+implemented all of this using dynamic arrays so that the heap could be implemented efficiently. Josiah also worked on
+the report for the assignment and wrote the documentation for the functions that he implemented. 
 
 \end{document}
