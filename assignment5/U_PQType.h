@@ -38,15 +38,15 @@ void U_PQType<ItemType>::Remove(ItemType item)
 	U_PQType<ItemType> list(PQType<ItemType>::maxItems);
 	ItemType tmp;
 
-	while(!PQType<ItemType>::isEmpty()){
-		PQType<ItemType>::dequeue(tmp);
+	while(!PQType<ItemType>::isEmpty()){	// N
+		PQType<ItemType>::dequeue(tmp);		// log(N)
 		if(tmp != item)
-			list.enqueue(tmp);
+			list.enqueue(tmp);				// log(N)
 	}
 
-	while(!list.isEmpty()){
-		list.dequeue(tmp);
-		PQType<ItemType>::enqueue(tmp);
+	while(!list.isEmpty()){					// N
+		list.dequeue(tmp);					// log(N)
+		PQType<ItemType>::enqueue(tmp);		// log(N)
 	}
 
 }
@@ -58,14 +58,14 @@ void U_PQType<ItemType>::Update(ItemType item, ItemType newItem)
 	U_PQType<ItemType> list(PQType<ItemType>::maxItems);
 	ItemType tmp;
 
-	while(!PQType<ItemType>::isEmpty()){
-		PQType<ItemType>::dequeue(tmp);
+	while(!PQType<ItemType>::isEmpty()){	// N
+		PQType<ItemType>::dequeue(tmp);		// log(N)
 		if(tmp == item)
 			tmp = newItem;
-		list.enqueue(tmp);
+		list.enqueue(tmp);					// log(N)
 	}
-	while(!list.isEmpty()){
-		list.dequeue(tmp);
-		PQType<ItemType>::enqueue(tmp);
+	while(!list.isEmpty()){					// N
+		list.dequeue(tmp);					// log(N)
+		PQType<ItemType>::enqueue(tmp);		// log(N)
 	}
 }
