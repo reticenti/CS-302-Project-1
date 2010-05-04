@@ -38,10 +38,15 @@ void U_PQType<ItemType>::Remove(ItemType item)
 	U_PQType<ItemType> list(PQType<ItemType>::maxItems);
 	ItemType tmp;
 
+	// ensures only one value is removed
+	bool once = false;
+
 	while(!PQType<ItemType>::isEmpty()){	// N
 		PQType<ItemType>::dequeue(tmp);		// log(N)
-		if(tmp != item)
+		if(tmp != item || once)
 			list.enqueue(tmp);				// log(N)
+		else
+			once = true;
 	}
 
 	while(!list.isEmpty()){					// N
@@ -58,10 +63,16 @@ void U_PQType<ItemType>::Update(ItemType item, ItemType newItem)
 	U_PQType<ItemType> list(PQType<ItemType>::maxItems);
 	ItemType tmp;
 
+	// ensures only one value is updated
+	bool once = false;
+
 	while(!PQType<ItemType>::isEmpty()){	// N
 		PQType<ItemType>::dequeue(tmp);		// log(N)
-		if(tmp == item)
+		if(tmp == item && !once)
+		{
 			tmp = newItem;
+			once = true;
+		}
 		list.enqueue(tmp);					// log(N)
 	}
 	while(!list.isEmpty()){					// N

@@ -9,7 +9,6 @@ using namespace std;
 enum menuChoice{ENQ, DEL, DEQ, PRINT, UPDATE, EXIT};
 
 bool readFile( string fileName, U_PQType<int>* &tree);
-//void storeTree( U_PQType<int>& tree, oType order, string fileName );
 menuChoice promptForMenu();
 
 int main()
@@ -100,7 +99,10 @@ int main()
 				break;
 			case PRINT:
 				system("clear");
+				cout << "Key values" << endl
+					 << "----------" << endl;
 				userTree->printTree( cout );
+				cout << endl;
 				cin.get();
 				cout << "Press Enter to continue";
 				cin.get();
@@ -186,26 +188,6 @@ bool readFile( string fileName, U_PQType<int>* &tree)
 	return retVal;
 }
 
-/*void storeTree( binaryTree<user>& tree, oType order, string fileName )
-  {
-  user temp;
-
-// reset the tree in all orders and traverse
-tree.resetTree( order );
-
-ofstream fout(fileName.c_str());
-
-// traverse tree in selected order
-if ( !tree.isEmpty() )
-{
-while ( !tree.getNextItem( temp, order ) )
-fout << temp << endl;
-fout << temp << endl;
-}
-
-fout.close();
-}*/
-
 menuChoice promptForMenu()
 {
 	int val;
@@ -214,8 +196,17 @@ menuChoice promptForMenu()
 	system("clear");
 
 	// display menu
-	cout << "1) Enqueue\n2) Dequeue\n3) Delete\n4) Update\n5) Print\n"
-		"6) Exit\n\nEnter choice: ";
+	cout << "  +---Main-Menu-------+" << endl
+		 << "  |                   |" << endl
+		 << "  | 1) Enqueue        |" << endl
+		 << "  | 2) Dequeue        |" << endl
+		 << "  | 3) Delete         |" << endl
+		 << "  | 4) Update         |" << endl
+		 << "  | 5) Print          |" << endl
+		 << "  | 6) Exit           |" << endl
+		 << "  |                   |" << endl
+		 << "  +-------------------+" << endl
+		 << endl << "Enter choice: ";
 
 	// get input value
 	cin >> val;
