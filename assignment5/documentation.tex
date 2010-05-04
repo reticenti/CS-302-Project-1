@@ -84,11 +84,19 @@
 
 			\item{Purpose}
 
+				Constructor, simply initializes root to NULL
+
 			\item{Input}
+
+				N/A
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{~binaryTree}}
@@ -99,30 +107,21 @@
 
 			\item{Purpose}
 
-			\item{Input}
-
-			\item{Output}
-
-			\item{Assumptions}
-
-		\end{description}
-	\item{\textsc{operator=}}
-		\begin{lstlisting}
-			void operator=(const binaryTree<iType>&);
-		\end{lstlisting}
-
-		\begin{description}
-
-			\item{Purpose}
+				Free all the memory in the tree
 
 			\item{Input}
 
+				N/A
+
 			\item{Output}
+
+				N/A
 
 			\item{Assumptions}
 
-		\end{description}
+				N/A
 
+		\end{description}
 	\item{\textsc{makeEmpty}}
 		\begin{lstlisting}
 			void makeEmpty();
@@ -130,12 +129,20 @@
 		\begin{description}
 
 			\item{Purpose}
-
+				
+				Recursively remove all the nodes below the node.
+			
 			\item{Input}
+			
+				A node.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				Node is either NULL or points to an allocated node type.
 
 		\end{description}
 	\item{\textsc{isEmpty}}
@@ -146,26 +153,19 @@
 
 			\item{Purpose}
 
-			\item{Input}
-
-			\item{Output}
-
-			\item{Assumptions}
-
-		\end{description}
-	\item{\textsc{isFull}}
-		\begin{lstlisting}
-			bool isFull() const;
-		\end{lstlisting}
-		\begin{description}
-
-			\item{Purpose}
+				Test if tree is empty.
 
 			\item{Input}
 
+				N/A
+
 			\item{Output}
 
+				Returns true if tree is empty, otherwise returns false.
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{numberOfNodes}}
@@ -176,11 +176,19 @@
 
 			\item{Purpose}
 
+				Count the number of nodes in the tree recursively.
+
 			\item{Input}
+
+				N/A
 
 			\item{Output}
 
+				Return the number of nodes in the tree.
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{retrieveItem}}
@@ -191,11 +199,19 @@
 
 			\item{Purpose}
 
+				Attempts to retrieve an item from the tree, return false if item is not found in the tree.
+
 			\item{Input}
+
+				An item that has the same "key" value as the item in question.
 
 			\item{Output}
 
+				Return true if item is in tree, false otherwise.
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{insertItem}}
@@ -206,11 +222,19 @@
 
 			\item{Purpose}
 
+				Create a new node and insert it into the tree with the value of the parameter.
+
 			\item{Input}
+
+				The value to be placed in the tree.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{deleteItem}}
@@ -221,11 +245,20 @@
 
 			\item{Purpose}
 
+				Remove a node from the tree.
+
 			\item{Input}
+
+				An item with the same key value as the item to be removed.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				The value of the item must exist in the tree, use retrieveItem to test before calling this unless it is
+				certain that the item is in the tree.
 
 		\end{description}
 	\item{\textsc{resetTree}}
@@ -236,11 +269,20 @@
 
 			\item{Purpose}
 
+				Generate a queue to traverse the tree in a particular order.
+
 			\item{Input}
+
+				An order type which can be IN\_ORDER, PRE\_ORDER, or POST\_ORDER, each one initializes a different
+				queue.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				N/A
 
 		\end{description}
 	\item{\textsc{getNextItem}}
@@ -251,11 +293,22 @@
 
 			\item{Purpose}
 
+				Retrieve the next item in the queue corresponding to the value of oType.
+
 			\item{Input}
+
+				A reference parameter used to store the retrieved data and an order type of which queue to retrieve
+				from.
 
 			\item{Output}
 
+				Return true if the item is the last item in the queue, also make the reference parameter equal to the
+				value of the next item in the queue.
+
 			\item{Assumptions}
+
+				Assumes the proper queue as been initialized and is not empty.  Use the resetTree and isEmpty functions
+				to ensure this is the case.
 
 		\end{description}
 	\item{\textsc{printTree}}
@@ -266,11 +319,20 @@
 
 			\item{Purpose}
 
+				Prints the tree to the desired ostream type.
+
 			\item{Input}
+
+				An ostream object by reference, this could be cout or an ofstream.
 
 			\item{Output}
 
+				Outputs all values of the tree to the desired ostream.
+
 			\item{Assumptions}
+
+				Assumes that the left shift opperator << has been overloaded for ostream to output the iType values
+				properly.
 
 		\end{description}
 	\item{\textsc{countNodes}}
@@ -281,11 +343,19 @@
 
 			\item{Purpose}
 
+				The client function called by numberOfNodes that does the recursive counting.
+
 			\item{Input}
+
+				A node pointer.
 
 			\item{Output}
 
+				Recursively determines the number of nodes connected to the parameter node plus 1.
+
 			\item{Assumptions}
+
+				Assumes parameter points to valid node or is NULL.
 
 		\end{description}
 	\item{\textsc{retrieve}}
@@ -296,11 +366,19 @@
 
 			\item{Purpose}
 
+				The recursive component to retrieveItem.
+
 			\item{Input}
+
+				A node pointer and the item in question.
 
 			\item{Output}
 
+				Returns true if item is found, false if it is not.
+
 			\item{Assumptions}
+
+				Assumes parameter points to valid node or is NULL.
 
 		\end{description}
 	\item{\textsc{insert}}
@@ -311,11 +389,20 @@
 
 			\item{Purpose}
 
+				The recursive component to insertItem, recursively traverses the tree to find the appropriate place to
+				put the node.
+
 			\item{Input}
 
+				A node pointer and the item to be inserted.
+				
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				Assumes the pointer points to a valid node or is NULL.
 
 		\end{description}
 	\item{\textsc{deleteOut}}
@@ -326,11 +413,20 @@
 
 			\item{Purpose}
 
+				This portion of the function finds the correct node to be deleted recursively, then calls deleteNode to
+				actually do the delete.
+
 			\item{Input}
+
+				A node pointer and the item to be deleted.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				Assumes the value held by the iType parameter exists in the tree.
 
 		\end{description}
 	\item{\textsc{deleteNode}}
@@ -341,11 +437,19 @@
 
 			\item{Purpose}
 
+				Delete the node without breaking any rules of the binary search tree.
+
 			\item{Input}
+
+				The node the be deleted.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				Assumes the node is part of a valid binary search tree.
 
 		\end{description}
 	\item{\textsc{getPredecessor}}
@@ -356,11 +460,19 @@
 
 			\item{Purpose}
 
+				Return the right most node of a left child.
+
 			\item{Input}
+
+				The left child of some node.
 
 			\item{Output}
 
+				Places the info from the right most child into the iType parameter.
+
 			\item{Assumptions}
+
+				Assumes the node is a valid node.
 
 		\end{description}
 	\item{\textsc{print}}
@@ -370,12 +482,21 @@
 		\begin{description}
 
 			\item{Purpose}
+				
+				The recursive part of the print function, prints the tree inorder by printing the left child, the head,
+				and then the right child.
 
 			\item{Input}
 
+				A node to be printed and an ostream object to print to.
+
 			\item{Output}
 
+				Prints all the values below the given node as well as the node using recursion.
+
 			\item{Assumptions}
+			
+				Assumes the same as printTree as well as assuming the node is a valid node or NULL.
 
 		\end{description}
 	\item{\textsc{destroy}}
@@ -386,31 +507,24 @@
 
 			\item{Purpose}
 
+				Recursively deallocate all values in the tree.
+
 			\item{Input}
+
+				A node pointer.
 
 			\item{Output}
 
+				N/A
+
 			\item{Assumptions}
+
+				Assumes the node pointer points to a valid node or is NULL.
 
 		\end{description}
 	\item{\textsc{copyTree}}
 		\begin{lstlisting}
 			void copyTree(treeNode<iType>*&, treeNode<iType>*);
-		\end{lstlisting}
-		\begin{description}
-
-			\item{Purpose}
-
-			\item{Input}
-
-			\item{Output}
-
-			\item{Assumptions}
-
-		\end{description}
-	\item{\textsc{countNodes}}
-		\begin{lstlisting}
-			void countNodes(treeNode<iType>*&);
 		\end{lstlisting}
 		\begin{description}
 
@@ -430,12 +544,20 @@
 		\begin{description}
 
 			\item{Purpose}
+				
+				Initialize the given queue with the values of the given tree traversed using pre-order traversal.
 
 			\item{Input}
 
+				A valid node pointer and an empty queue.
+
 			\item{Output}
 
+				Set the values of the queue to the pre-order traversal of the tree.
+
 			\item{Assumptions}
+
+				Assumes the queue is empty and the node pointer points to a valid node or is NULL.
 
 		\end{description}
 	\item{\textsc{inOrder}}
@@ -444,13 +566,21 @@
 		\end{lstlisting}
 		\begin{description}
 
-			\item{Purpose}
+		\item{Purpose}
+			
+			Initialize the given queue with the values of the given tree traversed using in-order traversal.
 
-			\item{Input}
+		\item{Input}
 
-			\item{Output}
+			A valid node pointer and an empty queue.
 
-			\item{Assumptions}
+		\item{Output}
+
+			Set the values of the queue to the in-order traversal of the tree.
+
+		\item{Assumptions}
+
+			Assumes the queue is empty and the node pointer points to a valid node or is NULL.
 
 		\end{description}
 	\item{\textsc{postOrder}}
@@ -459,13 +589,21 @@
 		\end{lstlisting}
 		\begin{description}
 
-			\item{Purpose}
+		\item{Purpose}
+			
+			Initialize the given queue with the values of the given tree traversed using post-order traversal.
 
-			\item{Input}
+		\item{Input}
 
-			\item{Output}
+			A valid node pointer and an empty queue.
 
-			\item{Assumptions}
+		\item{Output}
+
+			Set the values of the queue to the post-order traversal of the tree.
+
+		\item{Assumptions}
+
+			Assumes the queue is empty and the node pointer points to a valid node or is NULL.
 
 		\end{description}
 
@@ -790,10 +928,10 @@
 
 		\end{description}
 \end{description}
-\subsection{U_PQType.h}
+\subsection{U\_PQType.h}
 \begin{description}
 
-	\item{\textsc{U_PQType}}
+	\item{\textsc{U\_PQType}}
 		\begin{lstlisting}
 			U_PQType(int);
 		\end{lstlisting}
